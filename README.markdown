@@ -11,6 +11,5 @@ be awesome.
 
 ### Credits
 
-Original Script by Chris Coyier
-Modified into a plugin by Mot Tie 
-  see: http://wowmotty.blogspot.com/2010/06/moving-boxes-updated.html
+- Original Script by Chris Coyier
+- Modified into [a plugin](http://wowmotty.blogspot.com/2010/06/moving-boxes-updated.html) by Mot Tie 
