@@ -12,4 +12,4 @@ be awesome.
 ### Credits
 
 - Original Script by Chris Coyier
-- Modified into [a plugin](http://wowmotty.blogspot.com/2010/06/moving-boxes-updated.html) by Mot Tie 
+- Modified into [a plugin](http://wowmotty.blogspot.com/2010/06/moving-boxes-updated.html) by Rob (aka Fudgey)
