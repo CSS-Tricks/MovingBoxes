@@ -7,55 +7,34 @@ body {
   font: 11px Helvetica, Arial, sans-serif;
 }
 
-#wrapper {
-  width: 800px;
-  margin: 25px auto;
-}
+#wrapper {}
 
-#intro {
-  padding-bottom: 10px;
+#title {
+  text-align: center;
 }
 
 .slider {
-  width: 800px;
+  width: 900px;
+  border: 5px solid #ccc;
   margin: 0 auto;
-  position: relative;
-  border: 10px solid #ccc;
 }
 
-.scroll {
-  overflow: hidden;
-  width: 800px;
-  margin: 0 auto;
-  position: relative;
+.slider div.panel {
+  margin: 5px 0;
+  padding: 5px;
+  width: 350px;
 }
 
-.scrollContainer {
-  position: relative;
-}
-
-.scrollContainer div.panel {
-  padding: 10px;
-  width: 274px;
-  height: 318px;
+.active-slider {
+  border-color: #999bff;
 }
 
 .left-shadow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 12px;
-  bottom: 0;
-  background: url(../images/leftshadow.png) repeat-y;
+  background: url(../images/leftshadow.png) left top repeat-y;
 }
 
 .right-shadow {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 12px;
-  bottom: 0;
-  background: url(../images/rightshadow.png) repeat-y;
+  background: url(../images/rightshadow.png) right top repeat-y;
 }
 
 .inside {
@@ -67,23 +46,23 @@ body {
   display: block;
   border: 1px solid #666;
   margin: 0 0 10px 0;
-  width: 250px;
+  width: 100%;
 }
 
 .inside h2 {
   font-weight: normal;
-  color: #111;
-  font-size: 16px;
+  color: #000;
+  font-size: 20px;
   margin: 0 0 8px 0;
 }
 
 .inside p {
-  font-size: 11px;
-  color: #ccc;
+  font-size: 15px;
+  color: #444;
 }
 
 a {
-  color: #999;
+  color: #333;
   text-decoration: none;
   border-bottom: 1px dotted #ccc;
 }
@@ -94,7 +73,7 @@ a:hover {
 
 .scrollButtons {
   position: absolute;
-  top: 127px;
+  top: 27px;
   cursor: pointer;
 }
 
@@ -108,4 +87,9 @@ a:hover {
 
 .hide {
   display: none;
+}
+
+.dlinks {
+  text-align: center;
+  font-size: 20px;
 }

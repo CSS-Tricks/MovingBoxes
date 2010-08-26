@@ -4,154 +4,147 @@
 <html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
   <meta http-equiv="Content-type" content="text/html; charset=us-ascii" />
-
   <title>Moving Boxes</title>
+
   <link type="text/css" href="css/style.css" media="screen" charset="utf-8" rel="stylesheet"  />
-  <script type="text/javascript" src="js/jquery-1.4.2.min.js" charset="utf-8"></script>
+
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js" charset="utf-8"></script>
   <script type="text/javascript" src="js/jquery.movingboxes.min.js" charset="utf-8"></script>
   <script type="text/javascript">
   $(function(){
-   $('.slider').movingBoxes({ startPanel: 3 });
-   
-   // Example of how to move the panel from outside the plugin, only works on first on called.
-   // $('.slider').data('movingBoxes').currentPanel(1);  // 1 = move to first panel, blank = return current panel
 
-  })
-  </script>
+   $('#slider-one').movingBoxes({
+    startPanel  : 4,   // start with this panel
+    width       : 300, // overall width of movingBoxes
+    imageRatio  : 1    // Image ration set to 1:1
+   });
+
+   $('#slider-two').movingBoxes({
+    startPanel  : 3,   // start with this panel
+    width       : 600, // overall width of movingBoxes
+    panelWidth  : .7,  // current panel width adjusted to 50% of overall width
+    imageRatio  : 16/9 // Image ratio set to 16:9
+   });
+
+   // Example of how to move the panel from outside the plugin, only works on first selector (Use ID instead of class to target other movingboxes).
+   // get: var currentPanel = $('.slider').data('movingBoxes').currentPanel(); // returns # of currently selected/enlarged panel
+   // set: var currentPanel = $('.slider').data('movingBoxes').currentPanel(2); // scrolls to 2nd panel & returns 2.
+
+   // Set up navigation links
+   var i, t = '', len = $('#slider-one .panel').length + 1;
+   for ( i=1; i<len; i++ ){
+    t += '<a href="#" rel="' + i + '">' + i + '</a> ';
+   }
+   $('.dlinks')
+    .find('span').html(t).end()
+    .find('a').click(function(){
+     $('#slider-one').data('movingBoxes').currentPanel( $(this).attr('rel') );
+     return false;
+    });
+
+  });
+ </script>
 </head>
 
 <body>
-  <div id="wrapper">
+ <div id="wrapper">
+  <div id="title">
    <img src="images/movingboxes.png" alt="moving boxes" />
+  </div>
 
-   <!-- Slider #1 -->
-   <div class="slider" id="slider-one">
-    <img class="scrollButtons left" src="images/leftarrow.png" />
+  <br><br>
+  <div class="dlinks">
+   Go to Panel: <span></span>
+  </div>
+  <br><br>
 
-    <div style="overflow: hidden;" class="scroll">
-      <div class="scrollContainer">
-        <div class="panel">
-          <div class="inside">
-            <img src="images/1.jpg" alt="picture" />
 
-            <h2>News Heading</h2>
+  <!-- Slider #1 -->
+  <div class="slider" id="slider-one">
 
-            <p>A very short exerpt goes here... <a href="http://flickr.com/photos/justbcuz/112479862/">more link</a></p>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="inside">
-            <img src="images/2.jpg" alt="picture" />
-
-            <h2>News Heading</h2>
-
-            <p>A very short exerpt goes here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more link</a></p>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="inside">
-            <img src="images/3.jpg" alt="picture" />
-
-            <h2>News Heading</h2>
-
-            <p>A very short exerpt goes here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more link</a></p>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="inside">
-            <img src="images/4.jpg" alt="picture" />
-
-            <h2>News Heading</h2>
-
-            <p>A very short exerpt goes here... <a href="http://flickr.com/photos/emikohime/294092478/">more link</a></p>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="inside">
-            <img src="images/5.jpg" alt="picture" />
-
-            <h2>News Heading</h2>
-
-            <p>A very short exerpt goes here... <a href="http://flickr.com/photos/fensterbme/499006584/">more link</a></p>
-          </div>
-        </div>
-      </div>
-
-      <div class="left-shadow"></div>
-
-      <div class="right-shadow"></div>
-    </div><img class="scrollButtons right" src="images/rightarrow.png" />
+   <div class="panel">
+    <img src="images/1.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="http://flickr.com/photos/justbcuz/112479862/">more</a></p>
    </div>
 
-<br><br><br>
+   <div class="panel">
+    <img src="images/2.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a></p>
+   </div>
+
+   <div class="panel">
+    <img src="images/3.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more</a></p>
+   </div>
+
+   <div class="panel">
+    <img src="images/4.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="http://flickr.com/photos/emikohime/294092478/">more</a></p>
+   </div>
+
+   <div class="panel">
+    <img src="images/5.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="http://www.flickr.com/photos/fensterbme/499006584/">more</a></p>
+   </div>
+
+   <div class="panel">
+    <img src="images/6.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="#">more</a></p>
+   </div>
+
+   <div class="panel">
+    <img src="images/7.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="#">more</a></p>
+   </div>
+
+  </div> <!-- end Slider #1 -->
+
+  <br><br>
 
   <!-- Slider #2 (images of slider #1 reversed) -->
-   <div class="slider" id="slider-two">
-    <img class="scrollButtons left" src="images/leftarrow.png" />
+  <div class="slider" id="slider-two">
 
-    <div style="overflow: hidden;" class="scroll">
-      <div class="scrollContainer">
-        <div class="panel">
-          <div class="inside">
-            <img src="images/5.jpg" alt="picture" />
+   <div class="panel">
+    <img src="images/5.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="http://flickr.com/photos/fensterbme/499006584/">more</a></p>
+   </div>
 
-            <h2>News Heading</h2>
+   <div class="panel">
+    <img src="images/4.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="http://flickr.com/photos/emikohime/294092478/">more</a></p>
+   </div>
 
-            <p>A very short exerpt goes here... <a href="http://flickr.com/photos/justbcuz/112479862/">more link</a></p>
-          </div>
-        </div>
+   <div class="panel">
+    <img src="images/3.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more</a></p>
+   </div>
 
-        <div class="panel">
-          <div class="inside">
-            <img src="images/4.jpg" alt="picture" />
+   <div class="panel">
+    <img src="images/2.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a></p>
+   </div>
 
-            <h2>News Heading</h2>
-
-            <p>A very short exerpt goes here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more link</a></p>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="inside">
-            <img src="images/3.jpg" alt="picture" />
-
-            <h2>News Heading</h2>
-
-            <p>A very short exerpt goes here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more link</a></p>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="inside">
-            <img src="images/2.jpg" alt="picture" />
-
-            <h2>News Heading</h2>
-
-            <p>A very short exerpt goes here... <a href="http://flickr.com/photos/emikohime/294092478/">more link</a></p>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="inside">
-            <img src="images/1.jpg" alt="picture" />
-
-            <h2>News Heading</h2>
-
-            <p>A very short exerpt goes here... <a href="http://flickr.com/photos/fensterbme/499006584/">more link</a></p>
-          </div>
-        </div>
-      </div>
-
-      <div class="left-shadow"></div>
-
-      <div class="right-shadow"></div>
-    </div><img class="scrollButtons right" src="images/rightarrow.png" />
+   <div class="panel">
+    <img src="images/1.jpg" alt="picture" />
+    <h2>News Heading</h2>
+    <p>A very short exerpt goes here... <a href="http://flickr.com/photos/justbcuz/112479862/">more</a></p>
    </div>
 
   </div>
+
+
+</div> <!-- end wrapper -->
+
 </body>
 </html>
