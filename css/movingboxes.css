@@ -1,0 +1,97 @@
+/*** Overall MovingBoxes Slider ***/
+.slider {
+  width: 900px; /* default, this is overridden by script settings */
+  border: 5px solid #ccc;
+  margin: 0 auto;
+  position: relative;
+}
+.scrollContainer, .scroll {
+  width: 100%;
+  overflow: hidden;
+  margin: 0 auto;
+  position: relative;
+}
+.slider, .scrollContainer, .scroll {
+  border-radius: 1em;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+}
+
+/* active slider border highlight */
+.active-slider {
+  border-color: #999bff;
+}
+/* inside shadow */
+.left-shadow {
+  background: url(../images/leftshadow.png) left top repeat-y;
+}
+.right-shadow {
+  background: url(../images/rightshadow.png) right top repeat-y;
+}
+
+/*** Left & Right Navigation Arrows ***/
+a.scrollButtons {
+  display: block;
+  width: 45px;
+  height: 58px;
+  background: transparent no-repeat top center;
+  position: absolute;
+  top: 27px;
+  cursor: pointer;
+  text-decoration: none;
+  outline: 0;
+  border: 0;
+}
+a.scrollButtons:hover {
+  background-position: bottom center;
+}
+.scrollButtons.left {
+  background-image: url(../images/leftarrow.png);
+  left: -45px;
+}
+.scrollButtons.right {
+  background-image: url(../images/rightarrow.png);
+  right: -45px;
+}
+
+/*** Slider panel ***/
+.slider div.panel {
+  width: 350px;  /* default, this is overridden by script settings */
+  margin: 5px 0;
+  padding: 5px;
+}
+
+/*** Inside the panel ***/
+.inside {
+  padding: 10px;
+  border: 1px solid #999;
+}
+
+.inside img {
+  display: block;
+  border: 1px solid #666;
+  margin: 0 0 10px 0;
+  width: 100%;
+}
+
+.inside h2 {
+  font-weight: normal;
+  color: #000;
+  font-size: 20px;
+  margin: 0 0 8px 0;
+}
+
+.inside p {
+  font-size: 15px;
+  color: #444;
+}
+
+.inside a {
+  color: #333;
+  text-decoration: none;
+  border-bottom: 1px dotted #ccc;
+}
+
+.inside a:hover {
+  border-bottom: 1px solid #999;
+}

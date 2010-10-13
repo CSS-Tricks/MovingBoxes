@@ -1,0 +1,22 @@
+/* Moving Boxes demo CSS */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font: 11px Helvetica, Arial, sans-serif;
+}
+
+#wrapper {}
+
+/* Moving Boxes title image wrapper */
+#title {
+  text-align: center;
+}
+
+/* direct link styling */
+.dlinks {
+  text-align: center;
+  font-size: 20px;
+}

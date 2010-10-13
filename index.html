@@ -6,7 +6,8 @@
   <meta http-equiv="Content-type" content="text/html; charset=us-ascii" />
   <title>Moving Boxes</title>
 
-  <link type="text/css" href="css/style.css" media="screen" charset="utf-8" rel="stylesheet"  />
+  <link type="text/css" href="css/demo.css" media="screen" charset="utf-8" rel="stylesheet"  />
+  <link type="text/css" href="css/movingboxes.css" media="screen" charset="utf-8" rel="stylesheet"  />
 
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js" charset="utf-8"></script>
   <script type="text/javascript" src="js/jquery.movingboxes.min.js" charset="utf-8"></script>
@@ -14,9 +15,10 @@
   $(function(){
 
    $('#slider-one').movingBoxes({
-    startPanel  : 4,   // start with this panel
-    width       : 300, // overall width of movingBoxes
-    imageRatio  : 1    // Image ration set to 1:1
+    startPanel  : 4,    // start with this panel
+    wrap        : true, // psuedo wrapping - it just runs to the other end
+    width       : 300,  // overall width of movingBoxes
+    imageRatio  : 1     // Image ration set to 1:1
    });
 
    $('#slider-two').movingBoxes({
@@ -30,7 +32,7 @@
    // get: var currentPanel = $('.slider').data('movingBoxes').currentPanel(); // returns # of currently selected/enlarged panel
    // set: var currentPanel = $('.slider').data('movingBoxes').currentPanel(2); // scrolls to 2nd panel & returns 2.
 
-   // Set up navigation links
+   // Set up demo navigation links
    var i, t = '', len = $('#slider-one .panel').length + 1;
    for ( i=1; i<len; i++ ){
     t += '<a href="#" rel="' + i + '">' + i + '</a> ';
@@ -71,7 +73,7 @@
    <div class="panel">
     <img src="images/2.jpg" alt="picture" />
     <h2>News Heading</h2>
-    <p>A very short exerpt goes here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a></p>
+    <p>A very short exerpt goes here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a> and a whole lot more text goes here, so we can see the height adjust.</p>
    </div>
 
    <div class="panel">
@@ -143,6 +145,7 @@
 
   </div>
 
+  <br><br>
 
 </div> <!-- end wrapper -->
 

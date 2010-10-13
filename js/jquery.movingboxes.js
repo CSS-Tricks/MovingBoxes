@@ -1,7 +1,7 @@
 /*
- * Moving Boxes script by Chris Coyier
+ * Moving Boxes v1.5
+ * by Chris Coyier 
  * http://css-tricks.com/moving-boxes/
- *
  */
 
 (function($){
@@ -11,7 +11,7 @@
         var base = this;
 
         // Access to jQuery and DOM versions of element
-        base.$el = $(el);
+        base.$el = $(el).addClass('movingBoxes');
         base.el = el;
 
         // Add a reverse reference to the DOM object
@@ -31,28 +31,35 @@
              })
              .wrapInner('<div class="scrollContainer" />')
              .wrapInner('<div class="scroll right-shadow" />')
-             .prepend('<img class="scrollButtons left" src="' + base.options.leftArrow + '" />')
-             .append('<img class="scrollButtons right" src="' + base.options.rightArrow + '" />')
+             .prepend('<a class="scrollButtons left"></a>')
+             .append('<a class="scrollButtons right"></a>')
              .find('.panel').wrapInner('<div class="inside" />').end()
              .find('.scroll, .scrollContainer').css({
+                position : 'relative',
                 overflow : 'hidden',
                 width    : '100%'
              });
+            
+            // defaults
+            base.$container = base.$el.find('.scrollContainer');
+            base.$window = base.$el.find('.scroll');
+            base.runTime = $('.movingBoxes').index(base.$el) + 1; // Get index (run time) of this slider on the page
+            base.regex = new RegExp('slider' + base.runTime + '=(\\d+)', 'i'); // hash tag regex
 
             // Set up panes & content sizes
-            base.panels = base.$el.find('.panel');
-            base.panels.css({
-                width  : base.options.width * base.options.panelWidth, // default: panelWidth = 50% of entire width
-                float  : 'left'
-            });
-            base.totalPanels = base.panels.length;
+            base.$panels = base.$el.find('.panel')
+                .css({
+                    width  : base.options.width * base.options.panelWidth, // default: panelWidth = 50% of entire width
+                    float  : 'left'
+                });
+            base.totalPanels = base.$panels.length; // include clones
 
             // save 'cur' numbers (current larger panel size)
-            base.curWidth = base.panels.outerWidth();
-            base.curImgWidth = parseInt( base.panels.find('img').css('width'), 10);
+            base.curWidth = base.$panels.outerWidth();
+            base.curImgWidth = base.$panels.find('img').outerWidth(true);
             base.curImgHeight = base.curImgWidth / base.options.imageRatio; // set images fit a 4:3 ratio
-            base.curTitleSize = parseInt( base.panels.find('h2').css('font-size'), 10 );
-            base.curParSize = parseInt( base.panels.find('p').css('font-size'), 10 );
+            base.curTitleSize = parseInt( base.$panels.find('h2').css('font-size'), 10 );
+            base.curParSize = parseInt( base.$panels.find('p').css('font-size'), 10 );
 
             // save 'reg' (reduced size) numbers
             base.regWidth = base.curWidth * base.options.reducedSize;
@@ -62,116 +69,163 @@
             base.regParSize = base.curParSize * base.options.reducedSize;
 
             // set image heights so scrollContainer height is correctly set
-            base.panels.find('img').css({ height: base.curImgHeight + 'px' });
+            base.$panels.find('img').css({ height: base.curImgHeight });
+
+            // save each panel height... script will resize container as needed
+            base.heights = base.$panels.map(function(i,e){ return $(e).outerHeight(true); }).get();
 
             // make scrollContainer wide enough to contain all the panels
-            base.container = base.$el.find('.scrollContainer').css({
+            base.$container.css({
                 position : 'relative',
                 width    : (base.curWidth + 50) * base.totalPanels,
-                height   : base.panels.outerHeight(true)
+                height   : base.heights[0]
             });
 
             // Set up "Current" panel
+            var startPanel = (base.options.hashTags) ?  base.getHash() || base.options.startPanel : base.options.startPanel;
             base.initialized = false;
             base.currentlyMoving = false;
             base.curPanel = 1;
             base.change(1);
 
             // animate to chosen start panel - starting from the first panel makes it look better
-            setTimeout(function(){ base.change(base.options.startPanel); }, base.options.speed * 2 );
+            setTimeout(function(){ base.change(startPanel); }, base.options.speed * 2 );
             base.initialized = true;
 
             $(window).load(function(){
                 // position the scroll buttons after the images are loaded
                 base.$el.find('.scrollButtons').css({
-                    top : (base.$el.innerHeight() - base.$el.find('.scrollButtons').height())/2 + 'px'
+                    top : (base.$el.innerHeight() - base.$el.find('.scrollButtons').height())/2
                 });
             });
 
             // Set up click on left/right arrows
             base.$el.find('.right').click(function(){
-                base.change(base.curPanel + 1);
+                base.goForward();
+                return false;
             }).end().find('.left').click(function(){
-                base.change(base.curPanel - 1);
+                base.goBack();
+                return false;
             });
 
             // go to clicked panel
-            base.panels.click(function(){
-                base.change( base.panels.index($(this)) + 1 );
+            base.$panels.click(function(){
+                base.change( base.$panels.index($(this)) + 1 );
             });
 
             // Activate moving box on click or when an internal link obtains focus
             base.$el.click(function(){
                 base.active($(this));
             }).find('a').focus(function(){
+                var s = $(this).closest('.slider');
                 // focused link makes moving box active
-                base.active($(this).closest('.slider'));
+                base.active(s);
                 // focused link centered in moving box
-                var index = $(this).closest('.slider').find('.panel').index($(this).closest('.panel')) + 1;
-                base.change(index);
+                base.change( s.find('.panel').index($(this).closest('.panel')) + 1, false );
             });
 
             // Add keyboard navigation
-            $(window).keyup(function(e){
+            $(document).keyup(function(e){
                 switch (e.which) {
                     case 39: case 32: // right arrow & space
                         if (base.$el.is('.active-slider')){
-                            base.change(base.curPanel + 1);
+                            base.goForward();
                         }
                         break;
                     case 37: // left arrow
                         if (base.$el.is('.active-slider')){
-                            base.change(base.curPanel - 1);
+                            base.goBack();
                         }
                         break;
                 }
             });
 
-        };
+        }; // end base.init()
 
         // Resize panels to normal
         base.returnToNormal = function(num){
-            base.panels.not(':eq(' + (num-1) + ')')
-                .animate({ width: base.regWidth + 'px' }, base.options.speed)
-                .find('img').animate({ width: base.regImgWidth + 'px', height: base.regImgHeight + 'px' }, base.options.speed).end()
-                .find('h2').animate({ fontSize: base.regTitleSize + 'px' }, base.options.speed).end()
-                .find('p').animate({ fontSize: base.regParSize + 'px' }, base.options.speed);
+            base.$panels.not(':eq(' + (num-1) + ')')
+                .animate({ width: base.regWidth }, base.options.speed)
+                .find('img').animate({ width: base.regImgWidth, height: base.regImgHeight }, base.options.speed).end()
+                .find('h2').animate({ fontSize: base.regTitleSize }, base.options.speed).end()
+                .find('p').animate({ fontSize: base.regParSize }, base.options.speed);
         };
 
         // Zoom in on selected panel
         base.growBigger = function(num){
-            base.panels.eq(num-1)
-                .animate({ width: base.curWidth + 'px' }, base.options.speed)
-                .find('img').animate({ width: base.curImgWidth + 'px', height: base.curImgHeight + 'px' }, base.options.speed).end()
-                .find('h2').animate({ fontSize: base.curTitleSize + 'px' }, base.options.speed).end()
+            base.$panels.eq(num-1)
+                .animate({ width: base.curWidth }, base.options.speed)
+                .find('img').animate({ width: base.curImgWidth, height: base.curImgHeight }, base.options.speed).end()
+                .find('h2').animate({ fontSize: base.curTitleSize }, base.options.speed).end()
                 // give focus to link after the panel is in view, or it will change the scrollLeft value
-                .find('p').animate({ fontSize: base.curParSize + 'px' }, base.options.speed, function(){ base.panels.eq(num-1).find('a').focus(); });
+                .find('p').animate({ fontSize: base.curParSize }, base.options.speed);
         };
 
+        // go forward/back
+        base.goForward = function(){ base.change(base.curPanel + 1); };
+
+        base.goBack = function(){ base.change(base.curPanel - 1); };
+
         // Change view to display selected panel
-        base.change = function(curPanel){
-            //if not in range or on the same panel then return
-            if (base.initialized && (curPanel < 1 || base.curPanel == curPanel || curPanel > base.panels.length)) {
-                return false;
-            }
+        base.change = function(curPanel, flag){
+
+            // don't do anything if it's the same panel
+            if (base.initialized && base.curPanel == curPanel && !flag) { return false; }
+
             // abort if panel is already animating
             if (!base.currentlyMoving) {
                 base.currentlyMoving = true;
-                // center panel in scroll window
+                            base.$window.scrollLeft(0); // when links get focus, they shift the scrollLeft if not visible
 
-                var leftValue = (base.options.width - base.curWidth) / 2 - base.panels.eq(curPanel-1).position().left;
+                // psuedo wrap - it's a pain to clone the first & last panel then resize them correctly while wrapping AND make it look good
+                if ( base.options.wrap ) {
+                    if ( curPanel < 1 ) { curPanel = base.totalPanels; }
+                    if ( curPanel > base.totalPanels ) { curPanel = 1; }
+                } else {
+                    if ( curPanel < 1 ) { curPanel = 1; }
+                    if ( curPanel > base.totalPanels ) { curPanel = base.totalPanels; }
+                }
+
+                // center panel in scroll window
+                var leftValue = (base.options.width - base.curWidth) / 2 - base.$panels.eq(curPanel-1).position().left;
                 // when scrolling right, add the difference of the larger current panel width
                 if (curPanel > base.curPanel) { leftValue += ( base.curWidth - base.regWidth ); }
 
-                base.curPanel = curPanel;
-                base.$el.find('.scroll').scrollLeft(0); // when links get focus, they shift the scrollLeft if not visible
-                base.container.stop().animate({
-                    left : leftValue
-                }, base.options.speed, function(){
-                    base.currentlyMoving = false;
-                });
+                // animate the panels
+                base.$container.animate({
+                        height   : base.heights[curPanel - 1],
+                        left     : leftValue
+                    },{ 
+                        queue    : false,
+                        duration : base.options.speed,
+                        complete : function(){
+                            base.curPanel = curPanel;
+                            base.$panels.eq(curPanel - 1).find('a').focus();
+                            base.$window.scrollLeft(0); // when links get focus, they shift the scrollLeft if not visible
+                            base.currentlyMoving = false;
+                        }
+                    }
+                );
+                // This is silly, but Chrome needs this if you tab through the links inside the panels
+                base.$window.animate({ scrollLeft: 0 }, base.options.speed);
+
                 base.returnToNormal(curPanel);
                 base.growBigger(curPanel);
+                if (base.options.hashTags) { base.setHash(curPanel); }
+            }
+        };
+
+        // get & set hash tags
+        base.getHash = function(){
+            var n = window.location.hash.match(base.regex);
+            return (n===null) ? '' : parseInt(n[1],10);
+        };
+
+        base.setHash = function(n){
+            var s = 'slider' + base.runTime + "=",
+                h = window.location.hash;
+            if ( typeof h !== 'undefined' ) {
+                window.location.hash = (h.indexOf(s) > 0) ? h.replace(base.regex, s + n) : h + "&" + s + n;
             }
         };
 
@@ -195,14 +249,14 @@
     };
 
     $.movingBoxes.defaultOptions = {
-        startPanel  : 1,   // start with this panel
-        width       : 800, // overall width of movingBoxes
-        panelWidth  : 0.5, // current panel width adjusted to 50% of overall width
-        reducedSize : 0.8, // non-current panel size: 80% of panel size
-        imageRatio  : 4/3, // Image ratio set to 4:3
-        speed       : 500, // animation time in milliseconds
-        leftArrow   : 'images/leftarrow.png',
-        rightArrow  : 'images/rightarrow.png'
+        startPanel  : 1,     // start with this panel
+        width       : 800,   // overall width of movingBoxes
+        panelWidth  : 0.5,   // current panel width adjusted to 50% of overall width
+        reducedSize : 0.8,   // non-current panel size: 80% of panel size
+        imageRatio  : 4/3,   // Image ratio set to 4:3
+        speed       : 500,   // animation time in milliseconds
+        hashTags    : true,  // if true, hash tags are enabled
+        wrap        : false  // if true, the panel will "wrap" at the ends
     };
 
     $.fn.movingBoxes = function(options){
