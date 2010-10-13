@@ -1,4 +1,4 @@
-### Usage & Options ([Demo][http://chriscoyier.github.com/MovingBoxes])
+### Usage & Options ([Demo](http://chriscoyier.github.com/MovingBoxes))
 
 	$('.slider').movingBoxes({
 		startPanel  : 1,     // start with this panel
