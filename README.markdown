@@ -1,4 +1,4 @@
-### Usage & Options
+### Usage & Options ([Demo][http://chriscoyier.github.com/MovingBoxes])
 
 	$('.slider').movingBoxes({
 		startPanel  : 1,     // start with this panel
@@ -15,13 +15,13 @@
 * Uses standard index (starts from one)
 * Get/Set:
 
-	var panel = $('.slider').data('movingBoxes').currentPanel();  // returns # of currently selected/enlarged panel
-	var panel = $('.slider').data('movingBoxes').currentPanel(2); // returns # and scrolls to 2nd panel
+		var panel = $('.slider').data('movingBoxes').currentPanel();  // returns # of currently selected/enlarged panel
+		var panel = $('.slider').data('movingBoxes').currentPanel(2); // returns # and scrolls to 2nd panel
 
 * External Controls
 
-	$('.slider').data('movingBoxes').goForward(); // go forward one slide (if possible)
-	$('.slider').data('movingBoxes').goBack();    // go back one slide (if possible)
+		$('.slider').data('movingBoxes').goForward(); // go forward one slide (if possible)
+		$('.slider').data('movingBoxes').goBack();    // go back one slide (if possible)
 
 ### Credits
 
