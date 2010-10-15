@@ -14,6 +14,9 @@ body {
 #title {
   text-align: center;
 }
+#title img {
+  border: 0;
+}
 
 /* direct link styling */
 .dlinks {

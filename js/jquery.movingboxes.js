@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v1.5
+ * Moving Boxes v1.5.1
  * by Chris Coyier 
  * http://css-tricks.com/moving-boxes/
  */
@@ -50,7 +50,7 @@
             base.$panels = base.$el.find('.panel')
                 .css({
                     width  : base.options.width * base.options.panelWidth, // default: panelWidth = 50% of entire width
-                    float  : 'left'
+                    'float': 'left'
                 });
             base.totalPanels = base.$panels.length; // include clones
 
@@ -78,7 +78,7 @@
             base.$container.css({
                 position : 'relative',
                 width    : (base.curWidth + 50) * base.totalPanels,
-                height   : base.heights[0]
+                height   : Math.max.apply( this, base.heights )
             });
 
             // Set up "Current" panel
@@ -91,13 +91,6 @@
             // animate to chosen start panel - starting from the first panel makes it look better
             setTimeout(function(){ base.change(startPanel); }, base.options.speed * 2 );
             base.initialized = true;
-
-            $(window).load(function(){
-                // position the scroll buttons after the images are loaded
-                base.$el.find('.scrollButtons').css({
-                    top : (base.$el.innerHeight() - base.$el.find('.scrollButtons').height())/2
-                });
-            });
 
             // Set up click on left/right arrows
             base.$el.find('.right').click(function(){
@@ -169,6 +162,15 @@
         // Change view to display selected panel
         base.change = function(curPanel, flag){
 
+            // psuedo wrap - it's a pain to clone the first & last panel then resize them correctly while wrapping AND make it look good
+            if ( base.options.wrap ) {
+                if ( curPanel < 1 ) { curPanel = base.totalPanels; }
+                if ( curPanel > base.totalPanels ) { curPanel = 1; }
+            } else {
+                if ( curPanel < 1 ) { curPanel = 1; }
+                if ( curPanel > base.totalPanels ) { curPanel = base.totalPanels; }
+            }
+
             // don't do anything if it's the same panel
             if (base.initialized && base.curPanel == curPanel && !flag) { return false; }
 
@@ -177,25 +179,16 @@
                 base.currentlyMoving = true;
                             base.$window.scrollLeft(0); // when links get focus, they shift the scrollLeft if not visible
 
-                // psuedo wrap - it's a pain to clone the first & last panel then resize them correctly while wrapping AND make it look good
-                if ( base.options.wrap ) {
-                    if ( curPanel < 1 ) { curPanel = base.totalPanels; }
-                    if ( curPanel > base.totalPanels ) { curPanel = 1; }
-                } else {
-                    if ( curPanel < 1 ) { curPanel = 1; }
-                    if ( curPanel > base.totalPanels ) { curPanel = base.totalPanels; }
-                }
-
                 // center panel in scroll window
                 var leftValue = (base.options.width - base.curWidth) / 2 - base.$panels.eq(curPanel-1).position().left;
                 // when scrolling right, add the difference of the larger current panel width
                 if (curPanel > base.curPanel) { leftValue += ( base.curWidth - base.regWidth ); }
 
+                var ani = (base.options.fixedHeight) ? { left : leftValue } : { left: leftValue, height: base.heights[curPanel - 1] };
+
                 // animate the panels
-                base.$container.animate({
-                        height   : base.heights[curPanel - 1],
-                        left     : leftValue
-                    },{ 
+                base.$container.animate( ani,
+                    {
                         queue    : false,
                         duration : base.options.speed,
                         complete : function(){
@@ -255,8 +248,9 @@
         reducedSize : 0.8,   // non-current panel size: 80% of panel size
         imageRatio  : 4/3,   // Image ratio set to 4:3
         speed       : 500,   // animation time in milliseconds
+        fixedHeight : false, // if true, slider height set to max panel height; if false, slider height will auto adjust.
         hashTags    : true,  // if true, hash tags are enabled
-        wrap        : false  // if true, the panel will "wrap" at the ends
+        wrap        : false  // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
     };
 
     $.fn.movingBoxes = function(options){

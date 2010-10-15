@@ -9,6 +9,7 @@
   width: 100%;
   overflow: hidden;
   margin: 0 auto;
+  padding: 0;
   position: relative;
 }
 .slider, .scrollContainer, .scroll {
@@ -36,7 +37,7 @@ a.scrollButtons {
   height: 58px;
   background: transparent no-repeat top center;
   position: absolute;
-  top: 27px;
+  top: 40%; /* if you change the arrow images, you may have to adjust this (distance from top) */
   cursor: pointer;
   text-decoration: none;
   outline: 0;

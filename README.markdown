@@ -7,8 +7,9 @@
 		reducedSize : .8,    // non-current panel size: 80% of current panel size
 		imageRatio  : 4/3,   // Image ratio set to 4:3
 		speed       : 500,   // animation time in milliseconds
+		fixedHeight : true,  // if true, slider height set to max panel height; if false, slider height will auto adjust.
 		hashTags    : true,  // if true, hash tags are enabled
-		wrap        : false  // if true, the panel will "wrap" at the ends
+		wrap        : false  // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
 	});
 
 ### Methods
@@ -29,6 +30,10 @@
 * Modified into [a plugin](http://wowmotty.blogspot.com/2010/06/moving-boxes-updated.html) by Rob Garrison (aka Mottie)
 
 ### Changelog
+
+* Version 1.5.1 (10/15/2010)
+    * Added `fixedHeight` option, which if true will set the overall slider height to the tallest panel.
+    * Adjusted navigation arrow css to use a percentage from top of slider instead of calculating it in the script (removed).
 
 * Version 1.5 (10/13/2010)
     * Added panel height auto-resizing, in case there is extra text inside a panel - thanks dlopez2000!
