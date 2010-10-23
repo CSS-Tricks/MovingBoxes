@@ -1,15 +1,20 @@
 ### Usage & Options ([Demo](http://chriscoyier.github.com/MovingBoxes))
 
 	$('.slider').movingBoxes({
-		startPanel  : 1,     // start with this panel
-		width       : 800,   // overall width of movingBoxes
-		panelWidth  : .5,    // current panel width adjusted to 50% of movingBoxes width
-		reducedSize : .8,    // non-current panel size: 80% of current panel size
-		imageRatio  : 4/3,   // Image ratio set to 4:3
-		speed       : 500,   // animation time in milliseconds
-		fixedHeight : true,  // if true, slider height set to max panel height; if false, slider height will auto adjust.
-		hashTags    : true,  // if true, hash tags are enabled
-		wrap        : false  // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
+		startPanel   : 1,         // start with this panel
+		width        : 800,       // overall width of movingBoxes
+		panelWidth   : .5,        // current panel width adjusted to 50% of movingBoxes width
+		reducedSize  : .8,        // non-current panel size: 80% of current panel size
+		imageRatio   : 4/3,       // Image ratio set to 4:3
+		speed        : 500,       // animation time in milliseconds
+		fixedHeight  : true,      // if true, slider height set to max panel height; if false, slider height will auto adjust.
+		hashTags     : true,      // if true, hash tags are enabled
+		wrap         : false      // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
+		buildNav     : false,     // if true, navigation links will be added
+		navFormatter : null,      // function which returns the navigation text
+		tooltipClass : 'tooltip', // added to the navigation, but the title attribute is blank unless the link text-indent is negative
+		panelTitle   : 'h2',      // panel title selector; this can also be a jQuery selector, e.g. 'h2.title'
+		panelText    : 'p'        // panel content contained within this tag; this can also be a jQuery selector, e.g. 'p.wrap'
 	});
 
 ### Methods
@@ -24,12 +29,34 @@
 		$('.slider').data('movingBoxes').goForward(); // go forward one slide (if possible)
 		$('.slider').data('movingBoxes').goBack();    // go back one slide (if possible)
 
+* Formatting Navigation Link Text
+
+		// Example 1
+		$('.slider').movingBoxes({
+			buildNav     : true,
+			navFormatter : function(index, panel){ return "&#9679;"; }
+		})
+		// Example 2 - see index.html source
+		$('.slider').movingBoxes({
+			buildNav     : true,
+			navFormatter : function(index, panel){ return panel.find('h2 span').text(); }
+		})
+
 ### Credits
 
 * Original Script by Chris Coyier
 * Modified into [a plugin](http://wowmotty.blogspot.com/2010/06/moving-boxes-updated.html) by Rob Garrison (aka Mottie)
 
 ### Changelog
+
+* Version 1.6 (10/22/2010)
+
+    * Added `buildNav` option, which if true will build navigation links which will contain panel numbers by default.
+    * Added `navFormatter` option. This is an optional setting which can contain a function that returns a value for each tab index. See formatting navigation link text instructions above.
+    * Added `tooltipClass` option which will be added to the navigation links, but only if a `navFormatter` function exists. Also note that the title attribute will be empty unless.the link text is hidden using a negative text-indent css class.
+    * Added `panelTitle` option to target the title tag inside the MovingBoxes panel. Selectors or multiple tags can be included (e.g. 'h1, h2.title').
+    * Added `panelText` option to target the text content of the MovingBoxes panel. This too can include a selector or multiple tags (e.g. 'p.wrap, div').
+    * Added the CSS class `current` to the expanded panel & updated the CSS to change the cursor to a pointer in non-"current" panels.
 
 * Version 1.5.1 (10/15/2010)
     * Added `fixedHeight` option, which if true will set the overall slider height to the tallest panel.

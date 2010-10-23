@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v1.5.1
+ * Moving Boxes v1.6
  * by Chris Coyier 
  * http://css-tricks.com/moving-boxes/
  */
@@ -45,6 +45,7 @@
             base.$window = base.$el.find('.scroll');
             base.runTime = $('.movingBoxes').index(base.$el) + 1; // Get index (run time) of this slider on the page
             base.regex = new RegExp('slider' + base.runTime + '=(\\d+)', 'i'); // hash tag regex
+            base.$navLinks = {};
 
             // Set up panes & content sizes
             base.$panels = base.$el.find('.panel')
@@ -58,8 +59,8 @@
             base.curWidth = base.$panels.outerWidth();
             base.curImgWidth = base.$panels.find('img').outerWidth(true);
             base.curImgHeight = base.curImgWidth / base.options.imageRatio; // set images fit a 4:3 ratio
-            base.curTitleSize = parseInt( base.$panels.find('h2').css('font-size'), 10 );
-            base.curParSize = parseInt( base.$panels.find('p').css('font-size'), 10 );
+            base.curTitleSize = parseInt( base.$panels.find(base.options.panelTitle).css('font-size'), 10 );
+            base.curParSize = parseInt( base.$panels.find(base.options.panelText).css('font-size'), 10 );
 
             // save 'reg' (reduced size) numbers
             base.regWidth = base.curWidth * base.options.reducedSize;
@@ -88,6 +89,9 @@
             base.curPanel = 1;
             base.change(1);
 
+            base.buildNav();
+
+
             // animate to chosen start panel - starting from the first panel makes it look better
             setTimeout(function(){ base.change(startPanel); }, base.options.speed * 2 );
             base.initialized = true;
@@ -109,8 +113,9 @@
             // Activate moving box on click or when an internal link obtains focus
             base.$el.click(function(){
                 base.active($(this));
-            }).find('a').focus(function(){
-                var s = $(this).closest('.slider');
+            });
+            base.$panels.find('a').focus(function(){
+                var s = $(this).closest('.movingBoxes');
                 // focused link makes moving box active
                 base.active(s);
                 // focused link centered in moving box
@@ -135,23 +140,54 @@
 
         }; // end base.init()
 
+        // Creates the numbered navigation links
+        base.buildNav = function() {
+            if (base.options.buildNav && (base.totalPanels > 1)) {
+                base.$nav = $('<div class="controls"><a class="testing"></a></div>').appendTo(base.$el);
+                var j, a = '',
+                    navFormat = $.isFunction(base.options.navFormatter),
+                    // need link in place to get CSS properties
+                    hiddenText = parseInt( base.$nav.find('.testing').css('text-indent'), 10) < 0;
+                base.$panels.each(function(i) {
+                    j = i + 1;
+                    a += '<a href="#" class="' + base.options.tooltipClass + ' panel' + j;
+                    // If a formatter function is present, use it
+                    if (navFormat) {
+                        var tmp = base.options.navFormatter(j, $(this));
+                        a += (hiddenText) ? '" title="' + tmp : '';
+                        a += '">' + tmp + '</a> ';
+                        // Add formatting to title attribute if text is hidden
+                    } else {
+                        a += '">' + j + '</a> ';
+                    }
+                });
+                base.$navLinks = base.$nav
+                    .html(a)
+                    .find('a').bind('click', function() {
+                        base.change( base.$navLinks.index($(this)) + 1 );
+                        return false;
+                    });
+            }
+        };
+
         // Resize panels to normal
         base.returnToNormal = function(num){
             base.$panels.not(':eq(' + (num-1) + ')')
+                .removeClass('current')
                 .animate({ width: base.regWidth }, base.options.speed)
                 .find('img').animate({ width: base.regImgWidth, height: base.regImgHeight }, base.options.speed).end()
-                .find('h2').animate({ fontSize: base.regTitleSize }, base.options.speed).end()
-                .find('p').animate({ fontSize: base.regParSize }, base.options.speed);
+                .find(base.options.panelTitle).animate({ fontSize: base.regTitleSize }, base.options.speed).end()
+                .find(base.options.panelText).animate({ fontSize: base.regParSize }, base.options.speed);
         };
 
         // Zoom in on selected panel
         base.growBigger = function(num){
             base.$panels.eq(num-1)
+                .addClass('current')
                 .animate({ width: base.curWidth }, base.options.speed)
                 .find('img').animate({ width: base.curImgWidth, height: base.curImgHeight }, base.options.speed).end()
-                .find('h2').animate({ fontSize: base.curTitleSize }, base.options.speed).end()
-                // give focus to link after the panel is in view, or it will change the scrollLeft value
-                .find('p').animate({ fontSize: base.curParSize }, base.options.speed);
+                .find(base.options.panelTitle).animate({ fontSize: base.curTitleSize }, base.options.speed).end()
+                .find(base.options.panelText).animate({ fontSize: base.curParSize }, base.options.speed);
         };
 
         // go forward/back
@@ -161,6 +197,9 @@
 
         // Change view to display selected panel
         base.change = function(curPanel, flag){
+
+            // make sure it's a number and not a string
+            curPanel = parseInt(curPanel, 10);
 
             // psuedo wrap - it's a pain to clone the first & last panel then resize them correctly while wrapping AND make it look good
             if ( base.options.wrap ) {
@@ -177,7 +216,7 @@
             // abort if panel is already animating
             if (!base.currentlyMoving) {
                 base.currentlyMoving = true;
-                            base.$window.scrollLeft(0); // when links get focus, they shift the scrollLeft if not visible
+                base.$window.scrollLeft(0); // when links get focus, they shift the scrollLeft if not visible
 
                 // center panel in scroll window
                 var leftValue = (base.options.width - base.curWidth) / 2 - base.$panels.eq(curPanel-1).position().left;
@@ -206,6 +245,9 @@
                 base.growBigger(curPanel);
                 if (base.options.hashTags) { base.setHash(curPanel); }
             }
+            base.$el.find('.controls a')
+                .removeClass('current')
+                .eq(curPanel - 1).addClass('current');
         };
 
         // get & set hash tags
@@ -232,7 +274,7 @@
         // set: var currentPanel = $('.slider').data('movingBoxes').currentPanel(2); // returns and scrolls to 2nd panel
         base.currentPanel = function(panel){
             if (typeof(panel) !== 'undefined') {
-                base.change(parseInt(panel,10)); // parse in case someone sends a string
+                base.change(panel); // parse in case someone sends a string
             }
             return base.curPanel;
         };
@@ -242,15 +284,20 @@
     };
 
     $.movingBoxes.defaultOptions = {
-        startPanel  : 1,     // start with this panel
-        width       : 800,   // overall width of movingBoxes
-        panelWidth  : 0.5,   // current panel width adjusted to 50% of overall width
-        reducedSize : 0.8,   // non-current panel size: 80% of panel size
-        imageRatio  : 4/3,   // Image ratio set to 4:3
-        speed       : 500,   // animation time in milliseconds
-        fixedHeight : false, // if true, slider height set to max panel height; if false, slider height will auto adjust.
-        hashTags    : true,  // if true, hash tags are enabled
-        wrap        : false  // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
+        startPanel   : 1,         // start with this panel
+        width        : 800,       // overall width of movingBoxes
+        panelWidth   : 0.5,       // current panel width adjusted to 50% of overall width
+        reducedSize  : 0.8,       // non-current panel size: 80% of panel size
+        imageRatio   : 4/3,       // Image ratio set to 4:3
+        speed        : 500,       // animation time in milliseconds
+        fixedHeight  : false,     // if true, slider height set to max panel height; if false, slider height will auto adjust.
+        hashTags     : true,      // if true, hash tags are enabled
+        wrap         : false,     // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
+        buildNav     : false,     // if true, navigation links will be added
+        navFormatter : null,      // function which returns the navigation text for each panel
+        tooltipClass : 'tooltip', // added to the navigation, but the title attribute is blank unless the link text-indent is negative
+        panelTitle   : 'h2',      // panel title selector; this can also be a jQuery selector, e.g. 'h2.title'
+        panelText    : 'p'        // panel content contained within this tag; this can also be a jQuery selector, e.g. 'p.wrap'
     };
 
     $.fn.movingBoxes = function(options){

@@ -4,6 +4,9 @@
   border: 5px solid #ccc;
   margin: 0 auto;
   position: relative;
+  box-shadow: 0 0 10px #888;
+  -moz-box-shadow: 0 0 10px #888;
+  -webkit-box-shadow: 0 0 10px #888;
 }
 .scrollContainer, .scroll {
   width: 100%;
@@ -12,7 +15,7 @@
   padding: 0;
   position: relative;
 }
-.slider, .scrollContainer, .scroll {
+.slider {
   border-radius: 1em;
   -moz-border-radius: 1em;
   -webkit-border-radius: 1em;
@@ -24,35 +27,10 @@
 }
 /* inside shadow */
 .left-shadow {
-  background: url(../images/leftshadow.png) left top repeat-y;
+/*  background: url(../images/leftshadow.png) left top repeat-y; */
 }
 .right-shadow {
-  background: url(../images/rightshadow.png) right top repeat-y;
-}
-
-/*** Left & Right Navigation Arrows ***/
-a.scrollButtons {
-  display: block;
-  width: 45px;
-  height: 58px;
-  background: transparent no-repeat top center;
-  position: absolute;
-  top: 40%; /* if you change the arrow images, you may have to adjust this (distance from top) */
-  cursor: pointer;
-  text-decoration: none;
-  outline: 0;
-  border: 0;
-}
-a.scrollButtons:hover {
-  background-position: bottom center;
-}
-.scrollButtons.left {
-  background-image: url(../images/leftarrow.png);
-  left: -45px;
-}
-.scrollButtons.right {
-  background-image: url(../images/rightarrow.png);
-  right: -45px;
+/*  background: url(../images/rightshadow.png) right top repeat-y; */
 }
 
 /*** Slider panel ***/
@@ -60,6 +38,10 @@ a.scrollButtons:hover {
   width: 350px;  /* default, this is overridden by script settings */
   margin: 5px 0;
   padding: 5px;
+  cursor: pointer;
+}
+.slider div.panel.current {
+ cursor: auto;
 }
 
 /*** Inside the panel ***/
@@ -95,4 +77,52 @@ a.scrollButtons:hover {
 
 .inside a:hover {
   border-bottom: 1px solid #999;
+}
+
+/*** Left & Right Navigation Arrows ***/
+a.scrollButtons {
+  display: block;
+  width: 45px;
+  height: 58px;
+  background: transparent no-repeat top center;
+  position: absolute;
+  top: 40%; /* if you change the arrow images, you may have to adjust this (distance from top) */
+  cursor: pointer;
+  text-decoration: none;
+  outline: 0;
+  border: 0;
+}
+a.scrollButtons:hover {
+  background-position: bottom center;
+}
+.scrollButtons.left {
+  background-image: url(../images/leftarrow.png);
+  left: -45px;
+}
+.scrollButtons.right {
+  background-image: url(../images/rightarrow.png);
+  right: -45px;
+}
+
+.controls {
+  margin: 0 auto;
+  text-align: center;
+  background: #ccc;
+}
+.controls a {
+  color: #444;
+  font: 12px Georgia, Serif;
+  display: inline-block;
+  text-decoration: none;
+  padding: 2px;
+  height: 18px;
+  margin: 0 5px 0 0;
+  text-align: center;
+  outline: 0;
+}
+.controls a.current, .controls a:hover {
+  color: #fff;
+}
+.active-slider .controls {
+  background: #999bff;
 }
