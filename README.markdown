@@ -36,7 +36,7 @@
 			buildNav     : true,
 			navFormatter : function(index, panel){ return "&#9679;"; }
 		})
-		// Example 2 - see index.html source
+		// Example 2 - see index.html source (function which gets nav text from span inside the panel header)
 		$('.slider').movingBoxes({
 			buildNav     : true,
 			navFormatter : function(index, panel){ return panel.find('h2 span').text(); }
@@ -52,11 +52,12 @@
 * Version 1.6 (10/22/2010)
 
     * Added `buildNav` option, which if true will build navigation links which will contain panel numbers by default.
-    * Added `navFormatter` option. This is an optional setting which can contain a function that returns a value for each tab index. See formatting navigation link text instructions above.
+    * Added `navFormatter` option. This is an optional setting which can contain a function that returns a value for each tab index. See formatting navigation link text examples above.
     * Added `tooltipClass` option which will be added to the navigation links, but only if a `navFormatter` function exists. Also note that the title attribute will be empty unless.the link text is hidden using a negative text-indent css class.
     * Added `panelTitle` option to target the title tag inside the MovingBoxes panel. Selectors or multiple tags can be included (e.g. 'h1, h2.title').
     * Added `panelText` option to target the text content of the MovingBoxes panel. This too can include a selector or multiple tags (e.g. 'p.wrap, div').
     * Added the CSS class `current` to the expanded panel & updated the CSS to change the cursor to a pointer in non-"current" panels.
+    * Thanks again to dlopez2000 for suggestions and code samples :)
 
 * Version 1.5.1 (10/15/2010)
     * Added `fixedHeight` option, which if true will set the overall slider height to the tallest panel.
