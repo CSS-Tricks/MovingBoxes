@@ -12,6 +12,7 @@
 		wrap         : false      // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
 		buildNav     : false,     // if true, navigation links will be added
 		navFormatter : null,      // function which returns the navigation text
+		easing       : 'swing',   // anything other than "linear" or "swing" requires the easing plugin
 		tooltipClass : 'tooltip', // added to the navigation, but the title attribute is blank unless the link text-indent is negative
 		panelTitle   : 'h2',      // panel title selector; this can also be a jQuery selector, e.g. 'h2.title'
 		panelText    : 'p'        // panel content contained within this tag; this can also be a jQuery selector, e.g. 'p.wrap'
@@ -48,6 +49,10 @@
 * Modified into [a plugin](http://wowmotty.blogspot.com/2010/06/moving-boxes-updated.html) by Rob Garrison (aka Mottie)
 
 ### Changelog
+
+* Version 1.6.1 (10/24/2010)
+
+    * Added `easing` option which if set to anything other than 'linear' or 'swing' then the easing plugin would be required.
 
 * Version 1.6 (10/22/2010)
 

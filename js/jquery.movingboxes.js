@@ -230,6 +230,7 @@
                     {
                         queue    : false,
                         duration : base.options.speed,
+                        easing   : base.options.easing,
                         complete : function(){
                             base.curPanel = curPanel;
                             base.$panels.eq(curPanel - 1).find('a').focus();
@@ -295,6 +296,7 @@
         wrap         : false,     // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
         buildNav     : false,     // if true, navigation links will be added
         navFormatter : null,      // function which returns the navigation text for each panel
+        easing       : 'swing',   // anything other than "linear" or "swing" requires the easing plugin
         tooltipClass : 'tooltip', // added to the navigation, but the title attribute is blank unless the link text-indent is negative
         panelTitle   : 'h2',      // panel title selector; this can also be a jQuery selector, e.g. 'h2.title'
         panelText    : 'p'        // panel content contained within this tag; this can also be a jQuery selector, e.g. 'p.wrap'
