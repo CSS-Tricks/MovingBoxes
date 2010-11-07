@@ -25,13 +25,6 @@
 .active-slider {
   border-color: #999bff;
 }
-/* inside shadow */
-.left-shadow {
-/*  background: url(../images/leftshadow.png) left top repeat-y; */
-}
-.right-shadow {
-/*  background: url(../images/rightshadow.png) right top repeat-y; */
-}
 
 /*** Slider panel ***/
 .slider div.panel {
@@ -84,7 +77,7 @@ a.scrollButtons {
   display: block;
   width: 45px;
   height: 58px;
-  background: transparent no-repeat top center;
+  background: transparent url(../images/arrows.png) no-repeat;
   position: absolute;
   top: 40%; /* if you change the arrow images, you may have to adjust this (distance from top) */
   cursor: pointer;
@@ -92,16 +85,19 @@ a.scrollButtons {
   outline: 0;
   border: 0;
 }
-a.scrollButtons:hover {
-  background-position: bottom center;
-}
-.scrollButtons.left {
-  background-image: url(../images/leftarrow.png);
+a.scrollButtons.left {
+  background-position: left top;
   left: -45px;
 }
-.scrollButtons.right {
-  background-image: url(../images/rightarrow.png);
+a.scrollButtons.right {
+  background-position: right top;
   right: -45px;
+}
+a.scrollButtons.left:hover {
+  background-position: left bottom;
+}
+a.scrollButtons.right:hover {
+  background-position: right bottom;
 }
 
 .controls {

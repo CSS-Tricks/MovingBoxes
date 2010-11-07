@@ -52,7 +52,10 @@
 
 * Version 1.6.2 (11/7/2010)
 
+    * Added new "arrows.png" and "arrows.gif" to combine the separate arrow images.
     * Changed the initialization of the MovingBoxes script to not give internal links focus. Without this, MovingBoxes panels not at the top of a page will make the page to scroll down.
+    * Fixed active panel problem introduced with the above change :P
+    * Removed "leftarrow.png", "rightarrow.png", "leftshadow.png" and "rightshadow.png" images.
 
 * Version 1.6.1 (10/24/2010)
 

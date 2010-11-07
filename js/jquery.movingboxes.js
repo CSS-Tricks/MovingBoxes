@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v1.6.2
+ * Moving Boxes v1.6.3
  * by Chris Coyier 
  * http://css-tricks.com/moving-boxes/
  */
@@ -93,8 +93,10 @@
 
 
             // animate to chosen start panel - starting from the first panel makes it look better
-            setTimeout(function(){ base.change(startPanel); }, base.options.speed * 2 );
-            base.initialized = true;
+            setTimeout(function(){ 
+             base.change(startPanel); 
+             base.initialized = true;
+            }, base.options.speed * 2 );
 
             // Set up click on left/right arrows
             base.$el.find('.right').click(function(){
@@ -112,14 +114,11 @@
 
             // Activate moving box on click or when an internal link obtains focus
             base.$el.click(function(){
-                base.active($(this));
+                base.active();
             });
             base.$panels.find('a').focus(function(){
-                var s = $(this).closest('.movingBoxes');
-                // focused link makes moving box active
-                base.active(s);
                 // focused link centered in moving box
-                base.change( s.find('.panel').index($(this).closest('.panel')) + 1, false );
+                base.change( base.$el.find('.panel').index($(this).closest('.panel')) + 1, false );
             });
 
             // Add keyboard navigation
@@ -198,6 +197,9 @@
         // Change view to display selected panel
         base.change = function(curPanel, flag){
 
+            // make this moving box active
+            if (base.initialized) { base.active(); }
+
             // make sure it's a number and not a string
             curPanel = parseInt(curPanel, 10);
 
@@ -268,7 +270,7 @@
         // Make moving box active (for keyboard navigation)
         base.active = function(el){
             $('.active-slider').removeClass('active-slider');
-            el.addClass('active-slider');
+            base.$el.addClass('active-slider');
         };
 
         // get: var currentPanel = $('.slider').data('movingBoxes').currentPanel(); // returns # of currently selected/enlarged panel
