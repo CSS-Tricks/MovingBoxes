@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v1.6
+ * Moving Boxes v1.6.2
  * by Chris Coyier 
  * http://css-tricks.com/moving-boxes/
  */
@@ -233,7 +233,7 @@
                         easing   : base.options.easing,
                         complete : function(){
                             base.curPanel = curPanel;
-                            base.$panels.eq(curPanel - 1).find('a').focus();
+                            if (!base.initialized) { base.$panels.eq(curPanel - 1).find('a').focus(); }
                             base.$window.scrollLeft(0); // when links get focus, they shift the scrollLeft if not visible
                             base.currentlyMoving = false;
                         }

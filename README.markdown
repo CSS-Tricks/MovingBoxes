@@ -50,6 +50,10 @@
 
 ### Changelog
 
+* Version 1.6.2 (11/7/2010)
+
+    * Changed the initialization of the MovingBoxes script to not give internal links focus. Without this, MovingBoxes panels not at the top of a page will make the page to scroll down.
+
 * Version 1.6.1 (10/24/2010)
 
     * Added `easing` option which if set to anything other than 'linear' or 'swing' then the easing plugin would be required.
