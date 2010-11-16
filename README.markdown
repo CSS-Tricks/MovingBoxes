@@ -16,6 +16,8 @@
 		tooltipClass : 'tooltip', // added to the navigation, but the title attribute is blank unless the link text-indent is negative
 		panelTitle   : 'h2',      // panel title selector; this can also be a jQuery selector, e.g. 'h2.title'
 		panelText    : 'p'        // panel content contained within this tag; this can also be a jQuery selector, e.g. 'p.wrap'
+		returnToNormalCallback: null, // callback called while before to normal - the callback get one parameter
+		growBiggerCallback: null  // callback called after growing - the callback get one parameter 
 	});
 
 ### Methods

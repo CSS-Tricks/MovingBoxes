@@ -171,22 +171,33 @@
 
         // Resize panels to normal
         base.returnToNormal = function(num){
+    	    var callback = $.isFunction(base.options.returnToNormalCallback);
+            // if callback is present then call it
+            if(callback) {
+        	base.options.returnToNormalCallback( base.$panels.not(':eq(' + (num-1) + ')') ) ;
+    	    }
+    	    
             base.$panels.not(':eq(' + (num-1) + ')')
                 .removeClass('current')
                 .animate({ width: base.regWidth }, base.options.speed)
                 .find('img').animate({ width: base.regImgWidth, height: base.regImgHeight }, base.options.speed).end()
                 .find(base.options.panelTitle).animate({ fontSize: base.regTitleSize }, base.options.speed).end()
                 .find(base.options.panelText).animate({ fontSize: base.regParSize }, base.options.speed);
+                
         };
 
         // Zoom in on selected panel
         base.growBigger = function(num){
+    	    var callback = $.isFunction(base.options.growBiggerCallback);
             base.$panels.eq(num-1)
                 .addClass('current')
                 .animate({ width: base.curWidth }, base.options.speed)
                 .find('img').animate({ width: base.curImgWidth, height: base.curImgHeight }, base.options.speed).end()
                 .find(base.options.panelTitle).animate({ fontSize: base.curTitleSize }, base.options.speed).end()
                 .find(base.options.panelText).animate({ fontSize: base.curParSize }, base.options.speed);
+            if(callback) {
+        	base.options.growBiggerCallback( base.$panels.eq(num-1) );
+    	    }
         };
 
         // go forward/back
@@ -301,7 +312,9 @@
         easing       : 'swing',   // anything other than "linear" or "swing" requires the easing plugin
         tooltipClass : 'tooltip', // added to the navigation, but the title attribute is blank unless the link text-indent is negative
         panelTitle   : 'h2',      // panel title selector; this can also be a jQuery selector, e.g. 'h2.title'
-        panelText    : 'p'        // panel content contained within this tag; this can also be a jQuery selector, e.g. 'p.wrap'
+        panelText    : 'p',        // panel content contained within this tag; this can also be a jQuery selector, e.g. 'p.wrap'
+        returnToNormalCallback: null, // callback called while before to normal - the callback get one parameter
+        growBiggerCallback: null  // callback called after growing - the callback get one parameter        
     };
 
     $.fn.movingBoxes = function(options){
