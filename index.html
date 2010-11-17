@@ -48,6 +48,16 @@
      return false;
     });
 
+   // Report events to firebug console
+   $('.slider').bind('initialized initChange beforeAnimation completed',function(e, slider, tar){
+    // show object ID + event in the firebug console
+    if (window.console && window.console.firebug){
+     var txt = slider.$el[0].id + ': ' + e.type + ', now on panel #' + slider.curPanel
+     txt += (typeof(tar) == 'undefined') ? '' : ', targeted panel is ' + tar;
+     console.debug( txt );
+    }
+   });
+
   });
  </script>
 </head>

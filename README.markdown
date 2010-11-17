@@ -1,23 +1,33 @@
 ### Usage & Options ([Demo](http://chriscoyier.github.com/MovingBoxes))
 
 	$('.slider').movingBoxes({
+		// Appearance
 		startPanel   : 1,         // start with this panel
 		width        : 800,       // overall width of movingBoxes
-		panelWidth   : .5,        // current panel width adjusted to 50% of movingBoxes width
-		reducedSize  : .8,        // non-current panel size: 80% of current panel size
+		panelWidth   : 0.5,       // current panel width adjusted to 50% of overall width
+		reducedSize  : 0.8,       // non-current panel size: 80% of panel size
 		imageRatio   : 4/3,       // Image ratio set to 4:3
+		fixedHeight  : false,     // if true, slider height set to max panel height; if false, slider height will auto adjust.
+
+		// Behaviour
 		speed        : 500,       // animation time in milliseconds
-		fixedHeight  : true,      // if true, slider height set to max panel height; if false, slider height will auto adjust.
 		hashTags     : true,      // if true, hash tags are enabled
-		wrap         : false      // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
+		wrap         : false,     // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
 		buildNav     : false,     // if true, navigation links will be added
-		navFormatter : null,      // function which returns the navigation text
+		navFormatter : null,      // function which returns the navigation text for each panel
 		easing       : 'swing',   // anything other than "linear" or "swing" requires the easing plugin
+
+		// Selectors & classes
+		currentPanel : 'current', // current panel class
 		tooltipClass : 'tooltip', // added to the navigation, but the title attribute is blank unless the link text-indent is negative
 		panelTitle   : 'h2',      // panel title selector; this can also be a jQuery selector, e.g. 'h2.title'
-		panelText    : 'p'        // panel content contained within this tag; this can also be a jQuery selector, e.g. 'p.wrap'
-		returnToNormalCallback: null, // callback called while before to normal - the callback get one parameter
-		growBiggerCallback: null  // callback called after growing - the callback get one parameter 
+		panelText    : 'p',       // panel content contained within this tag; this can also be a jQuery selector, e.g. 'p.wrap'
+
+		// Callbacks
+		initialized     : null,   // callback when MovingBoxes has completed initialization
+		initChange      : null,   // callback upon change panel initialization
+		beforeAnimation : null,   // callback before any animation occurs
+		completed       : null    // callback after animation completes
 	});
 
 ### Methods
@@ -45,12 +55,55 @@
 			navFormatter : function(index, panel){ return panel.find('h2 span').text(); }
 		})
 
+### Extending
+* Event Hooks (callback functions)
+
+    * <code>initialized</code> (<code>initialized</code>) - Triggered when MovingBoxes has completed its initialization. It may occur before all animation has completed (hash tag updating).
+    * <code>initChange</code> (<code>initChange</code>) - Triggered immediately after the script is called to change the panels. No checks have been done at this point. An additional variable of the targeted panel number is available - see the examples below.
+    * <code>beforeAnimation</code> (<code>beforeAnimation</code>) - Triggered before the movingBoxes panels animate. An additional variable of the targeted panel number is available - see the examples below.
+    * <code>completed</code> (<code>completed</code>) - Triggered after the panels have completed their animations (sliding and resizing).
+
+* Binding to events
+
+		$('.slider').bind('initChange beforeAnimation completed',function(e, slider, tar){
+			var txt = 'MovingBoxes with ID #' + slider.$el[0].id + ' has just triggered ' + e.type +
+				' is now on panel #' + slider.curPanel;
+			txt += (typeof(tar) == 'undefined') ? '' : ', and the targeted panel is ' + tar;
+			alert( txt );
+		});
+
+* Using a callback function (added to the MovingBoxes initialization options):
+
+		$('.slider').movingBoxes({
+			initChange      : function(slider, tar){
+				alert( 'MovingBoxes was called to change panels, the targeted panel is #' + tar );
+			},
+			beforeAnimation : function(slider, tar){
+				alert( 'You are about to switch from panel #' + slider.curPanel + ' to panel #' + tar);
+			},
+			completed       : function(slider){
+				alert( 'Now on panel #' + slider.curPanel );
+			}
+		})
+
+* Callback/Event Arguments (assuming you used slider as the variable name inside the function <code>function(slider){}</code>)
+
+    * slider.curPanel - Current active panel (enlarged and centered). Standard based index (e.g. first panel is number 1, second is number 2). This value is not updated with the targeted panel until the <code>completed</code> event is called.
+    * slider.totalPanels - Number of panels inside that slider.
+    * slider.$el - jQuery object of the entire movingBoxes slider - this is the movingBoxes target when the script was initialized.
+    * slider.$panels - jQuery object of all of the panels. To target the current panel, use <code>slider.$panels.eq( slider.curPanel - 1 )</code>.
+    * slider.options.{name} - Access any of the options this way. Do not try to set any of the options in this manner because it may break the movingBoxes slider.
+
 ### Credits
 
 * Original Script by Chris Coyier
 * Modified into [a plugin](http://wowmotty.blogspot.com/2010/06/moving-boxes-updated.html) by Rob Garrison (aka Mottie)
 
 ### Changelog
+
+* Version 1.6.3 (11/17/2010)
+
+    * Added callbacks and triggered events: <code>initialized</code>, <code>initChange</code>, <code>beforeAnimation</code> and <code>completed</code>.
 
 * Version 1.6.2 (11/7/2010)
 
