@@ -75,13 +75,13 @@
 * Using a callback function (added to the MovingBoxes initialization options):
 
 		$('.slider').movingBoxes({
-			initChange      : function(slider, tar){
+			initChange      : function(e, slider, tar){
 				alert( 'MovingBoxes was called to change panels, the targeted panel is #' + tar );
 			},
-			beforeAnimation : function(slider, tar){
+			beforeAnimation : function(e, slider, tar){
 				alert( 'You are about to switch from panel #' + slider.curPanel + ' to panel #' + tar);
 			},
-			completed       : function(slider){
+			completed       : function(e, slider){
 				alert( 'Now on panel #' + slider.curPanel );
 			}
 		})
