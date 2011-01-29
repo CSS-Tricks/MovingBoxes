@@ -1,6 +1,6 @@
 /*
- * Moving Boxes v1.6.3
- * by Chris Coyier 
+ * Moving Boxes v1.7
+ * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
 
@@ -22,23 +22,12 @@
 
 			// Setup formatting (to reduce the amount of initial HTML)
 			base.$el
-				.addClass('left-shadow')
-				.css({
-					position : 'relative',
-					left     : 0,
-					top      : 0,
-					width    : base.options.width // override css width
-				})
+				.css({ width : base.options.width }) // override css width
 				.wrapInner('<div class="scrollContainer" />')
-				.wrapInner('<div class="scroll right-shadow" />')
+				.wrapInner('<div class="scroll" />')
 				.prepend('<a class="scrollButtons left"></a>')
 				.append('<a class="scrollButtons right"></a>')
-				.find('.panel').wrapInner('<div class="inside" />').end()
-				.find('.scroll, .scrollContainer').css({
-					position : 'relative',
-					overflow : 'hidden',
-					width    : '100%'
-				});
+				.find('.panel').wrapInner('<div class="inside" />');
 
 			// defaults
 			base.$container = base.$el.find('.scrollContainer');
@@ -47,12 +36,8 @@
 			base.regex = new RegExp('slider' + base.runTime + '=(\\d+)', 'i'); // hash tag regex
 			base.$navLinks = {};
 
-			// Set up panes & content sizes
-			base.$panels = base.$el.find('.panel')
-				.css({
-					width  : base.options.width * base.options.panelWidth, // default: panelWidth = 50% of entire width
-					'float': 'left'
-				});
+			// Set up panes & content sizes; default: panelWidth = 50% of entire width
+			base.$panels = base.$el.find('.panel').css({ width : base.options.width * base.options.panelWidth });
 			base.totalPanels = base.$panels.length;
 
 			// save 'cur' numbers (current larger panel size)
@@ -77,10 +62,13 @@
 
 			// make scrollContainer wide enough to contain all the panels
 			base.$container.css({
-				position : 'relative',
+				position : 'absolute',
 				width    : (base.curWidth + 50) * base.totalPanels,
 				height   : Math.max.apply( this, base.heights )
 			});
+			base.$window.css({ height : Math.max.apply( this, base.heights ) });
+			// add padding so scrollLeft = 0 centers the left-most panel (needed because scrollLeft cannot be < 0)
+			base.$panels.eq(0).css({ 'margin-left' : (base.options.width - base.curWidth) / 2 });
 
 			// Set up "Current" panel
 			var startPanel = (base.options.hashTags) ?  base.getHash() || base.options.startPanel : base.options.startPanel;
@@ -230,20 +218,19 @@
 			// abort if panel is already animating
 			if (!base.currentlyMoving) {
 				base.currentlyMoving = true;
-				base.$window.scrollLeft(0); // when links get focus, they shift the scrollLeft if not visible
 
 				// center panel in scroll window
-				var leftValue = (base.options.width - base.curWidth) / 2 - base.$panels.eq(curPanel-1).position().left;
+				var leftValue = base.$panels.eq(curPanel-1).position().left - (base.options.width - base.curWidth) / 2;
 				// when scrolling right, add the difference of the larger current panel width
-				if (curPanel > base.curPanel) { leftValue += ( base.curWidth - base.regWidth ); }
+				if (curPanel > base.curPanel) { leftValue -= ( base.curWidth - base.regWidth ); }
 
-				var ani = (base.options.fixedHeight) ? { left : leftValue } : { left: leftValue, height: base.heights[curPanel - 1] };
+				var ani = (base.options.fixedHeight) ? { scrollLeft : leftValue } : { scrollLeft: leftValue, height: base.heights[curPanel - 1] };
 
 				// before animation trigger
 				base.$el.trigger( 'beforeAnimation', [ base, curPanel ] );
 
 				// animate the panels
-				base.$container.animate( ani,
+				base.$window.animate( ani,
 					{
 						queue    : false,
 						duration : base.options.speed,
@@ -251,13 +238,10 @@
 						complete : function(){
 							base.curPanel = curPanel;
 							if (!base.initialized) { base.$panels.eq(curPanel - 1).find('a').focus(); }
-							base.$window.scrollLeft(0); // when links get focus, they shift the scrollLeft if not visible
 							base.currentlyMoving = false;
 						}
 					}
 				);
-				// This is silly, but Chrome needs this if you tab through the links inside the panels
-				base.$window.animate({ scrollLeft: 0 }, base.options.speed);
 
 				base.returnToNormal(curPanel);
 				base.growBigger(curPanel);

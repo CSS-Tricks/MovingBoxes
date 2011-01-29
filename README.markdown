@@ -101,6 +101,11 @@
 
 ### Changelog
 
+* Version 1.7 (1/29/2011)
+
+    * Fixed [issue #8](https://github.com/chriscoyier/MovingBoxes/issues#issue/8), sliding glitch error which actually turned out to be a [jQuery error](http://bugs.jquery.com/ticket/7193) to be fixed in jQuery 1.5... but this version completely bypasses this bug by now using scrollLeft instead of left to position the panels.
+    * Cleaned up and removed duplicates in the css.
+
 * Version 1.6.3 (11/17/2010)
 
     * Added callbacks and triggered events: <code>initialized</code>, <code>initChange</code>, <code>beforeAnimation</code> and <code>completed</code>.
