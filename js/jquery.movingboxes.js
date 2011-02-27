@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v1.7
+ * Moving Boxes v1.7.1
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -79,19 +79,6 @@
 
 			base.buildNav();
 
-			// Bind Events
-			if ($.isFunction(base.options.initialized)) { base.$el.bind('initialized', base.options.initialized); }
-			if ($.isFunction(base.options.initChange)) { base.$el.bind('initChange', base.options.initChange); }
-			if ($.isFunction(base.options.beforeAnimation)) { base.$el.bind('beforeAnimation', base.options.beforeAnimation); }
-			if ($.isFunction(base.options.completed)) { base.$el.bind('completed', base.options.completed); }
-
-			// animate to chosen start panel - starting from the first panel makes it look better
-			setTimeout(function(){ 
-				base.change(startPanel); 
-				base.initialized = true;
-				base.$el.trigger( 'initialized', base );
-			}, base.options.speed * 2 );
-
 			// Set up click on left/right arrows
 			base.$el.find('.right').click(function(){
 				base.goForward();
@@ -112,7 +99,8 @@
 			});
 			base.$panels.find('a').focus(function(){
 				// focused link centered in moving box
-				base.change( base.$el.find('.panel').index($(this).closest('.panel')) + 1, false );
+				var loc = base.$el.find('.panel').index($(this).closest('.panel')) + 1;
+				if (loc !== base.curPanel){ base.change( base.$el.find('.panel').index($(this).closest('.panel')) + 1, {}, false ); }
 			});
 
 			// Add keyboard navigation
@@ -130,6 +118,22 @@
 						break;
 				}
 			});
+
+			// animate to chosen start panel - starting from the first panel makes it look better
+			setTimeout(function(){
+				base.change(startPanel, function(){
+
+					// Bind Events
+					$.each('initialized initChange beforeAnimation completed'.split(' '), function(i,o){
+						if ($.isFunction(base.options[o])){
+							base.$el.bind(o, base.options[o]);
+						}
+					});
+
+					base.initialized = true;
+					base.$el.trigger( 'initialized', base );
+				});
+			}, base.options.speed * 2 );
 
 		}; // end base.init()
 
@@ -180,7 +184,7 @@
 			.animate({ width: base.curWidth }, base.options.speed, function(){
 				// completed event trigger
 				// even though animation is not queued, trigger is here because it is the last animation to complete
-				base.$el.trigger( 'completed', base );
+				if (base.initialized) { base.$el.trigger( 'completed', base ); }
 			})
 			.find('img').animate({ width: base.curImgWidth, height: base.curImgHeight }, base.options.speed).end()
 			.find(base.options.panelTitle).animate({ fontSize: base.curTitleSize }, base.options.speed).end()
@@ -193,12 +197,14 @@
 		base.goBack = function(){ base.change(base.curPanel - 1); };
 
 		// Change view to display selected panel
-		base.change = function(curPanel, flag){
-			// initChange event - has extra parameter with targeted panel (not cleaned)
-			base.$el.trigger( 'initChange', [ base, curPanel ] );
+		base.change = function(curPanel, callback, flag){
 
-			// make this moving box active
-			if (base.initialized) { base.active(); }
+			if (base.initialized) {
+				// make this moving box active
+				base.active();
+				// initChange event - has extra parameter with targeted panel (not cleaned)
+				base.$el.trigger( 'initChange', [ base, curPanel ] );
+			}
 
 			// make sure it's a number and not a string
 			curPanel = parseInt(curPanel, 10);
@@ -220,14 +226,14 @@
 				base.currentlyMoving = true;
 
 				// center panel in scroll window
-				var leftValue = base.$panels.eq(curPanel-1).position().left - (base.options.width - base.curWidth) / 2;
+				var ani, leftValue = base.$panels.eq(curPanel-1).position().left - (base.options.width - base.curWidth) / 2;
 				// when scrolling right, add the difference of the larger current panel width
 				if (curPanel > base.curPanel) { leftValue -= ( base.curWidth - base.regWidth ); }
 
-				var ani = (base.options.fixedHeight) ? { scrollLeft : leftValue } : { scrollLeft: leftValue, height: base.heights[curPanel - 1] };
+				ani = (base.options.fixedHeight) ? { scrollLeft : leftValue } : { scrollLeft: leftValue, height: base.heights[curPanel - 1] };
 
 				// before animation trigger
-				base.$el.trigger( 'beforeAnimation', [ base, curPanel ] );
+				if (base.initialized) { base.$el.trigger( 'beforeAnimation', [ base, curPanel ] ); }
 
 				// animate the panels
 				base.$window.animate( ani,
@@ -237,8 +243,9 @@
 						easing   : base.options.easing,
 						complete : function(){
 							base.curPanel = curPanel;
-							if (!base.initialized) { base.$panels.eq(curPanel - 1).find('a').focus(); }
+							if (base.initialized) { base.$panels.eq(curPanel - 1).find('a').focus(); }
 							base.currentlyMoving = false;
+							if (typeof(callback) === 'function') { callback(); }
 						}
 					}
 				);
@@ -273,10 +280,10 @@
 		};
 
 		// get: var currentPanel = $('.slider').data('movingBoxes').currentPanel();  // returns # of currently selected/enlarged panel
-		// set: var currentPanel = $('.slider').data('movingBoxes').currentPanel(2); // returns and scrolls to 2nd panel
-		base.currentPanel = function(panel){
+		// set: var currentPanel = $('.slider').data('movingBoxes').currentPanel(2, function(){ alert('done!'); }); // returns and scrolls to 2nd panel
+		base.currentPanel = function(panel, callback){
 			if (typeof(panel) !== 'undefined') {
-				base.change(panel); // parse in case someone sends a string
+				base.change(panel, callback); // parse in case someone sends a string
 			}
 			return base.curPanel;
 		};
@@ -323,8 +330,8 @@
 
 	// This function breaks the chain, but returns
 	// the movingBoxes if it has been attached to the object.
-	$.fn.getmovingBoxes = function(){
-		this.data('movingBoxes');
+	$.fn.getMovingBoxes = function(){
+		return this.data('movingBoxes');
 	};
 
 })(jQuery);
