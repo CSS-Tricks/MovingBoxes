@@ -9,27 +9,28 @@
   <link type="text/css" href="css/demo.css" media="screen" charset="utf-8" rel="stylesheet"  />
   <link type="text/css" href="css/movingboxes.css" media="screen" charset="utf-8" rel="stylesheet"  />
 
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js" charset="utf-8"></script>
   <script type="text/javascript" src="js/jquery.movingboxes.js" charset="utf-8"></script>
   <script type="text/javascript">
   $(function(){
 
    $('#slider-one').movingBoxes({
-    startPanel   : 4,    // start with this panel
-    wrap         : true, // psuedo wrapping - it just runs to the other end
-    width        : 300,  // overall width of movingBoxes
-    imageRatio   : 1,    // Image ration set to 1:1 (square image)
-    buildNav     : true, // if true, navigation links will be added
+    startPanel   : 4,      // start with this panel
+    width        : 300,    // overall width of movingBoxes (not including navigation arrows)
+    imageRatio   : 1,      // Image ration set to 1:1 (square image)
+    wrap         : true,   // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
+    buildNav     : true,   // if true, navigation links will be added
+    panelType    : '> li', // selector to find the immediate ">" children "li" of "#slider-one" in this case
     navFormatter : function(){ return "&#9679;"; } // function which returns the navigation text for each panel
    });
 
    $('#slider-two').movingBoxes({
-    startPanel  : 3,     // start with this panel
-    width       : 600,   // overall width of movingBoxes
-    panelWidth  : .7,    // current panel width adjusted to 50% of overall width
-    imageRatio  : 16/9,  // Image ratio set to 16:9
-    buildNav     : true, // if true, navigation links will be added
-    navFormatter : function(index, panel){ return panel.find('h2 span').text(); }, // function which gets nav text from span inside the panel header
+    startPanel   : 3,      // start with this panel
+    width        : 600,    // overall width of movingBoxes (not including navigation arrows)
+    panelWidth   : .7,     // current panel width adjusted to 70% of overall width
+    imageRatio   : 16/9,   // Image ratio set to 16:9
+    buildNav     : true,   // if true, navigation links will be added
+    navFormatter : function(index, panel){ return panel.find('h2 span').text(); } // function which gets nav text from span inside the panel header
    });
 
    // Example of how to move the panel from outside the plugin, only works on first selector (Use ID instead of class to target other movingboxes).
@@ -37,7 +38,7 @@
    // set: var currentPanel = $('.slider').data('movingBoxes').currentPanel(2); // scrolls to 2nd panel & returns 2.
 
    // Set up demo external navigation links
-   var i, t = '', len = $('#slider-one .panel').length + 1;
+   var i, t = '', len = $('#slider-one .mb-panel').length + 1;
    for ( i=1; i<len; i++ ){
     t += '<a href="#" rel="' + i + '">' + i + '</a> ';
    }
@@ -49,11 +50,11 @@
     });
 
    // Report events to firebug console
-   $('.slider').bind('initialized initChange beforeAnimation completed',function(e, slider, tar){
+   $('.mb-slider').bind('initialized.movingBoxes initChange.movingBoxes beforeAnimation.movingBoxes completed.movingBoxes',function(e, slider, tar){
     // show object ID + event in the firebug console
+    // namespaced events: e.g. e.type = "completed", e.namespace = "movingBoxes"
     if (window.console && window.console.firebug){
-     var txt = slider.$el[0].id + ': ' + e.type + ', now on panel #' + slider.curPanel
-     txt += (typeof(tar) == 'undefined') ? '' : ', targeted panel is ' + tar;
+     var txt = slider.$el[0].id + ': ' + e.type + ', now on panel #' + slider.curPanel + ', targeted panel is ' + tar;
      console.debug( txt );
     }
    });
@@ -75,82 +76,82 @@
   <br><br>
 
   <!-- Slider #1 -->
-  <div class="slider" id="slider-one">
+  <ul class="mb-slider" id="slider-one">
 
-   <div class="panel">
+   <li>
     <img src="images/1.jpg" alt="picture" />
     <h2>News Heading</h2>
     <p>A very short exerpt goes here... <a href="http://flickr.com/photos/justbcuz/112479862/">more</a></p>
-   </div>
+   </li>
 
-   <div class="panel">
+   <li>
     <img src="images/2.jpg" alt="picture" />
     <h2>News Heading</h2>
     <p>A very short exerpt goes here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a> and a whole lot more text goes here, so we can see the height adjust.</p>
-   </div>
+   </li>
 
-   <div class="panel">
+   <li>
     <img src="images/3.jpg" alt="picture" />
     <h2>News Heading</h2>
     <p>A very short exerpt goes here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more</a></p>
-   </div>
+   </li>
 
-   <div class="panel">
+   <li>
     <img src="images/4.jpg" alt="picture" />
     <h2>News Heading</h2>
     <p>A very short exerpt goes here... <a href="http://flickr.com/photos/emikohime/294092478/">more</a></p>
-   </div>
+   </li>
 
-   <div class="panel">
+   <li>
     <img src="images/5.jpg" alt="picture" />
     <h2>News Heading</h2>
     <p>A very short exerpt goes here... <a href="http://www.flickr.com/photos/fensterbme/499006584/">more</a></p>
-   </div>
+   </li>
 
-   <div class="panel">
+   <li>
     <img src="images/6.jpg" alt="picture" />
     <h2>News Heading</h2>
     <p>A very short exerpt goes here... <a href="#">more</a></p>
-   </div>
+   </li>
 
-   <div class="panel">
+   <li>
     <img src="images/7.jpg" alt="picture" />
     <h2>News Heading</h2>
     <p>A very short exerpt goes here... <a href="#">more</a></p>
-   </div>
+   </li>
 
-  </div> <!-- end Slider #1 -->
+  </ul> <!-- end Slider #1 -->
 
   <br><br>
 
   <!-- Slider #2 (images of slider #1 reversed) -->
-  <div class="slider" id="slider-two">
+  <div class="mb-slider" id="slider-two">
 
-   <div class="panel">
+   <div>
     <img src="images/5.jpg" alt="picture" />
     <h2>News Heading - <span>Lisa</span></h2>
     <p>A very short exerpt goes here... <a href="http://flickr.com/photos/fensterbme/499006584/">more</a></p>
    </div>
 
-   <div class="panel">
+   <div>
     <img src="images/4.jpg" alt="picture" />
     <h2>News Heading - <span>Monica</span></h2>
     <p>A very short exerpt goes here... <a href="http://flickr.com/photos/emikohime/294092478/">more</a></p>
    </div>
 
-   <div class="panel">
+   <div>
     <img src="images/3.jpg" alt="picture" />
     <h2>News Heading - <span>Lin</span></h2>
     <p>A very short exerpt goes here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more</a></p>
    </div>
 
-   <div class="panel">
+   <div>
     <img src="images/2.jpg" alt="picture" />
     <h2>News Heading - <span>Shiela</span></h2>
     <p>A very short exerpt goes here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a></p>
    </div>
 
-   <div class="panel">
+   <div>
     <img src="images/1.jpg" alt="picture" />
     <h2>News Heading - <span>Joanne</span></h2>
     <p>A very short exerpt goes here... <a href="http://flickr.com/photos/justbcuz/112479862/">more</a></p>

@@ -1,5 +1,5 @@
 /*** Overall MovingBoxes Slider ***/
-.slider {
+.mb-slider {
   width: 900px; /* default, this is overridden by script settings */
   border: 5px solid #ccc;
   margin: 0 auto;
@@ -14,102 +14,113 @@
   -webkit-box-shadow: 0 0 10px #888;
 }
 
-.scrollContainer, .scroll {
+/* Panel Wrapper */
+.mb-scrollContainer, .mb-scroll {
   width: 100%;
   height: 100%;
   overflow: hidden;
   margin: 0 auto;
   padding: 0;
   position: relative;
+  left: 0;
+  top: 0;
+
+  /***(>'-')> Control Panel Font size here <('-'<)***/
+  font-size: 18px;
 }
 
 /* active slider border highlight */
-.active-slider {
+.mb-active-slider {
   border-color: #999bff;
 }
 
 /*** Slider panel ***/
-.slider div.panel {
+.mb-slider .mb-panel {
   width: 350px;  /* default, this is overridden by script settings */
   margin: 5px 0;
   padding: 5px;
   cursor: pointer;
   float: left;
+  list-style: none;
 }
-.slider div.panel.current {
+
+/* Cursor to arrow over current panel, pointer for all others,
+  change .current class name using plugin option, currentPanel : 'current' */
+.mb-slider .mb-panel.current {
  cursor: auto;
 }
 
 /*** Inside the panel ***/
-.inside {
+.mb-inside {
   padding: 10px;
   border: 1px solid #999;
 }
 
-.inside img {
+.mb-inside img {
   display: block;
   border: 1px solid #666;
   margin: 0 0 10px 0;
   width: 100%;
 }
 
-.inside h2 {
+.mb-inside h2 {
   font-weight: normal;
   color: #000;
-  font-size: 20px;
+  font-size: 140%; /* Adjust panel header font size using em or % */
   margin: 0 0 8px 0;
 }
 
-.inside p {
-  font-size: 15px;
+.mb-inside p {
+  font-size: 100%; /* Adjust panel text font size using em or % */
   color: #444;
 }
 
-.inside a {
+.mb-inside a {
   color: #333;
   text-decoration: none;
   border-bottom: 1px dotted #ccc;
 }
 
-.inside a:hover {
+.mb-inside a:hover {
   border-bottom: 1px solid #999;
 }
 
 /*** Left & Right Navigation Arrows ***/
-a.scrollButtons {
+a.mb-scrollButtons {
   display: block;
   width: 45px;
   height: 58px;
   background: transparent url(../images/arrows.png) no-repeat;
   position: absolute;
-  top: 40%; /* if you change the arrow images, you may have to adjust this (distance from top) */
+  top: 50%;
+  margin-top: -29px; /* if you change the arrow images, you may have to adjust this (1/2 height of arrow image) */
   cursor: pointer;
   text-decoration: none;
   outline: 0;
   border: 0;
 }
-a.scrollButtons.left {
+a.mb-scrollButtons.mb-left {
   background-position: left top;
   left: -45px;
 }
-a.scrollButtons.right {
+a.mb-scrollButtons.mb-right {
   background-position: right top;
   right: -45px;
 }
-a.scrollButtons.left:hover {
+a.mb-scrollButtons.mb-left:hover {
   background-position: left bottom;
 }
-a.scrollButtons.right:hover {
+a.mb-scrollButtons.mb-right:hover {
   background-position: right bottom;
 }
 
 /*** Controls added below the panels ***/
-.controls {
+.mb-controls {
   margin: 0 auto;
   text-align: center;
   background: #ccc;
 }
-.controls a {
+.mb-controls a {
   color: #444;
   font: 12px Georgia, Serif;
   display: inline-block;
@@ -120,9 +131,9 @@ a.scrollButtons.right:hover {
   text-align: center;
   outline: 0;
 }
-.controls a.current, .controls a:hover {
+.mb-controls a.current, .mb-controls a:hover {
   color: #fff;
 }
-.active-slider .controls {
+.mb-active-slider .mb-controls {
   background: #999bff;
 }

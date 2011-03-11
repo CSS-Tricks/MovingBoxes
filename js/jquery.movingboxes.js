@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v1.7.1
+ * Moving Boxes v2.0
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -23,36 +23,33 @@
 			// Setup formatting (to reduce the amount of initial HTML)
 			base.$el
 				.css({ width : base.options.width }) // override css width
-				.wrapInner('<div class="scrollContainer" />')
-				.wrapInner('<div class="scroll" />')
-				.prepend('<a class="scrollButtons left"></a>')
-				.append('<a class="scrollButtons right"></a>')
-				.find('.panel').wrapInner('<div class="inside" />');
+				.wrapInner('<div class="mb-scrollContainer" />')
+				.wrapInner('<div class="mb-scroll" />')
+				.prepend('<a class="mb-scrollButtons mb-left"></a>')
+				.append('<a class="mb-scrollButtons mb-right"></a>')
+				// find panels (immediate children of the starting element
+				.find('.mb-scrollContainer ' + base.options.panelType).addClass('mb-panel').wrapInner('<div class="mb-inside" />');
 
 			// defaults
-			base.$container = base.$el.find('.scrollContainer');
-			base.$window = base.$el.find('.scroll');
+			base.$container = base.$el.find('.mb-scrollContainer');
+			base.$window = base.$el.find('.mb-scroll');
 			base.runTime = $('.movingBoxes').index(base.$el) + 1; // Get index (run time) of this slider on the page
 			base.regex = new RegExp('slider' + base.runTime + '=(\\d+)', 'i'); // hash tag regex
 			base.$navLinks = {};
 
 			// Set up panes & content sizes; default: panelWidth = 50% of entire width
-			base.$panels = base.$el.find('.panel').css({ width : base.options.width * base.options.panelWidth });
+			base.$panels = base.$el.find('.mb-panel').css({ width : base.options.width * base.options.panelWidth });
 			base.totalPanels = base.$panels.length;
 
 			// save 'cur' numbers (current larger panel size)
 			base.curWidth = base.$panels.outerWidth();
 			base.curImgWidth = base.$panels.find('img').outerWidth(true);
 			base.curImgHeight = base.curImgWidth / base.options.imageRatio; // set images fit a 4:3 ratio
-			base.curTitleSize = parseInt( base.$panels.find(base.options.panelTitle).css('font-size'), 10 );
-			base.curParSize = parseInt( base.$panels.find(base.options.panelText).css('font-size'), 10 );
 
 			// save 'reg' (reduced size) numbers
 			base.regWidth = base.curWidth * base.options.reducedSize;
 			base.regImgWidth = base.curImgWidth * base.options.reducedSize;
 			base.regImgHeight = base.curImgHeight * base.options.reducedSize;
-			base.regTitleSize = base.curTitleSize * base.options.reducedSize;
-			base.regParSize = base.curParSize * base.options.reducedSize;
 
 			// set image heights so scrollContainer height is correctly set
 			base.$panels.find('img').css({ height: base.curImgHeight });
@@ -80,10 +77,10 @@
 			base.buildNav();
 
 			// Set up click on left/right arrows
-			base.$el.find('.right').click(function(){
+			base.$el.find('.mb-right').click(function(){
 				base.goForward();
 				return false;
-			}).end().find('.left').click(function(){
+			}).end().find('.mb-left').click(function(){
 				base.goBack();
 				return false;
 			});
@@ -99,20 +96,20 @@
 			});
 			base.$panels.find('a').focus(function(){
 				// focused link centered in moving box
-				var loc = base.$el.find('.panel').index($(this).closest('.panel')) + 1;
-				if (loc !== base.curPanel){ base.change( base.$el.find('.panel').index($(this).closest('.panel')) + 1, {}, false ); }
+				var loc = base.$el.find('.mb-panel').index($(this).closest('.mb-panel')) + 1;
+				if (loc !== base.curPanel){ base.change( base.$el.find('.mb-panel').index($(this).closest('.mb-panel')) + 1, {}, false ); }
 			});
 
 			// Add keyboard navigation
 			$(document).keyup(function(e){
 				switch (e.which) {
 					case 39: case 32: // right arrow & space
-						if (base.$el.is('.active-slider')){
+						if (base.$el.is('.mb-active-slider')){
 							base.goForward();
 						}
 						break;
 					case 37: // left arrow
-						if (base.$el.is('.active-slider')){
+						if (base.$el.is('.mb-active-slider')){
 							base.goBack();
 						}
 						break;
@@ -124,14 +121,15 @@
 				base.change(startPanel, function(){
 
 					// Bind Events
-					$.each('initialized initChange beforeAnimation completed'.split(' '), function(i,o){
-						if ($.isFunction(base.options[o])){
-							base.$el.bind(o, base.options[o]);
+					$.each('initialized.movingBoxes initChange.movingBoxes beforeAnimation.movingBoxes completed.movingBoxes'.split(' '), function(i,o){
+						var evt = o.split('.')[0];
+						if ($.isFunction(base.options[evt])){
+							base.$el.bind(o, base.options[evt]);
 						}
 					});
 
 					base.initialized = true;
-					base.$el.trigger( 'initialized', base );
+					base.$el.trigger( 'initialized.movingBoxes', [ base, startPanel ] );
 				});
 			}, base.options.speed * 2 );
 
@@ -140,18 +138,18 @@
 		// Creates the numbered navigation links
 		base.buildNav = function() {
 			if (base.options.buildNav && (base.totalPanels > 1)) {
-				base.$nav = $('<div class="controls"><a class="testing"></a></div>').appendTo(base.$el);
+				base.$nav = $('<div class="mb-controls"><a class="mb-testing"></a></div>').appendTo(base.$el);
 				var j, a = '',
 				navFormat = $.isFunction(base.options.navFormatter),
 				// need link in place to get CSS properties
-				hiddenText = parseInt( base.$nav.find('.testing').css('text-indent'), 10) < 0;
+				hiddenText = parseInt( base.$nav.find('.mb-testing').css('text-indent'), 10) < 0;
 				base.$panels.each(function(i) {
 					j = i + 1;
-					a += '<a href="#" class="' + base.options.tooltipClass + ' panel' + j;
+					a += '<a href="#" class="mb-panel' + j;
 					// If a formatter function is present, use it
 					if (navFormat) {
 						var tmp = base.options.navFormatter(j, $(this));
-						a += (hiddenText) ? '" title="' + tmp : '';
+						a += (hiddenText) ? ' ' + base.options.tooltipClass +'" title="' + tmp : '';
 						a += '">' + tmp + '</a> ';
 						// Add formatting to title attribute if text is hidden
 					} else {
@@ -171,24 +169,20 @@
 		base.returnToNormal = function(num){
 			base.$panels.not(':eq(' + (num-1) + ')')
 				.removeClass(base.options.currentPanel)
-				.animate({ width: base.regWidth }, base.options.speed)
-				.find('img').animate({ width: base.regImgWidth, height: base.regImgHeight }, base.options.speed).end()
-				.find(base.options.panelTitle).animate({ fontSize: base.regTitleSize }, base.options.speed).end()
-				.find(base.options.panelText).animate({ fontSize: base.regParSize }, base.options.speed);
+				.animate({ width: base.regWidth, fontSize: base.options.reducedSize + 'em' }, base.options.speed)
+				.find('img').animate({ width: base.regImgWidth, height: base.regImgHeight }, base.options.speed);
 		};
 
 		// Zoom in on selected panel
 		base.growBigger = function(num){
 			base.$panels.eq(num-1)
 			.addClass(base.options.currentPanel)
-			.animate({ width: base.curWidth }, base.options.speed, function(){
+			.animate({ width: base.curWidth, fontSize: '1em' }, base.options.speed)
+			.find('img').animate({ width: base.curImgWidth, height: base.curImgHeight }, base.options.speed, function(){
 				// completed event trigger
 				// even though animation is not queued, trigger is here because it is the last animation to complete
-				if (base.initialized) { base.$el.trigger( 'completed', base ); }
-			})
-			.find('img').animate({ width: base.curImgWidth, height: base.curImgHeight }, base.options.speed).end()
-			.find(base.options.panelTitle).animate({ fontSize: base.curTitleSize }, base.options.speed).end()
-			.find(base.options.panelText).animate({ fontSize: base.curParSize }, base.options.speed);
+				if (base.initialized) { base.$el.trigger( 'completed.movingBoxes', [ base, num ] ); }
+			});
 		};
 
 		// go forward/back
@@ -199,15 +193,15 @@
 		// Change view to display selected panel
 		base.change = function(curPanel, callback, flag){
 
+			// make sure it's a number and not a string
+			curPanel = parseInt(curPanel, 10);
+
 			if (base.initialized) {
 				// make this moving box active
 				base.active();
 				// initChange event - has extra parameter with targeted panel (not cleaned)
-				base.$el.trigger( 'initChange', [ base, curPanel ] );
+				base.$el.trigger( 'initChange.movingBoxes', [ base, curPanel ] );
 			}
-
-			// make sure it's a number and not a string
-			curPanel = parseInt(curPanel, 10);
 
 			// psuedo wrap - it's a pain to clone the first & last panel then resize them correctly while wrapping AND make it look good
 			if ( base.options.wrap ) {
@@ -233,7 +227,7 @@
 				ani = (base.options.fixedHeight) ? { scrollLeft : leftValue } : { scrollLeft: leftValue, height: base.heights[curPanel - 1] };
 
 				// before animation trigger
-				if (base.initialized) { base.$el.trigger( 'beforeAnimation', [ base, curPanel ] ); }
+				if (base.initialized) { base.$el.trigger( 'beforeAnimation.movingBoxes', [ base, curPanel ] ); }
 
 				// animate the panels
 				base.$window.animate( ani,
@@ -243,9 +237,12 @@
 						easing   : base.options.easing,
 						complete : function(){
 							base.curPanel = curPanel;
-							if (base.initialized) { base.$panels.eq(curPanel - 1).find('a').focus(); }
+							if (base.initialized) {
+								base.$panels.eq(curPanel - 1).find('a').focus();
+								base.$window.scrollTop(0); // Opera fix - otherwise, it moves the focus link to the middle of the viewport
+							}
 							base.currentlyMoving = false;
-							if (typeof(callback) === 'function') { callback(); }
+							if (typeof(callback) === 'function') { callback(base); }
 						}
 					}
 				);
@@ -254,7 +251,7 @@
 				base.growBigger(curPanel);
 				if (base.options.hashTags) { base.setHash(curPanel); }
 			}
-			base.$el.find('.controls a')
+			base.$el.find('.mb-controls a')
 				.removeClass(base.options.currentPanel)
 				.eq(curPanel - 1).addClass(base.options.currentPanel);
 		};
@@ -275,8 +272,8 @@
 
 		// Make moving box active (for keyboard navigation)
 		base.active = function(el){
-			$('.active-slider').removeClass('active-slider');
-			base.$el.addClass('active-slider');
+			$('.mb-active-slider').removeClass('mb-active-slider');
+			base.$el.addClass('mb-active-slider');
 		};
 
 		// get: var currentPanel = $('.slider').data('movingBoxes').currentPanel();  // returns # of currently selected/enlarged panel
@@ -312,8 +309,7 @@
 		// Selectors & classes
 		currentPanel : 'current', // current panel class
 		tooltipClass : 'tooltip', // added to the navigation, but the title attribute is blank unless the link text-indent is negative
-		panelTitle   : 'h2',      // panel title selector; this can also be a jQuery selector, e.g. 'h2.title'
-		panelText    : 'p',       // panel content contained within this tag; this can also be a jQuery selector, e.g. 'p.wrap'
+		panelType    : '> div',   // selector to find the immediate (">") children "div" of the movingBoxes object)
 
 		// Callbacks
 		initialized     : null,   // callback when MovingBoxes has completed initialization
