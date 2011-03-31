@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.0
+ * Moving Boxes v2.0.1
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -60,7 +60,7 @@
 			// make scrollContainer wide enough to contain all the panels
 			base.$container.css({
 				position : 'absolute',
-				width    : (base.curWidth + 50) * base.totalPanels,
+				width    : (base.curWidth + 100) * base.totalPanels,
 				height   : Math.max.apply( this, base.heights )
 			});
 			base.$window.css({ height : Math.max.apply( this, base.heights ) });
@@ -102,6 +102,7 @@
 
 			// Add keyboard navigation
 			$(document).keyup(function(e){
+				if (e.target.tagName.match('TEXTAREA|INPUT|SELECT')) { return; }
 				switch (e.which) {
 					case 39: case 32: // right arrow & space
 						if (base.$el.is('.mb-active-slider')){

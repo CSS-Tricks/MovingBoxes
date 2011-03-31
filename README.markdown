@@ -107,6 +107,11 @@
 
 ## Changelog
 
+###Version 2.0.1 (3/31/2011)
+* Added more width to the scroll container. Fix for issue #19.
+* Centered the image... silly css problem. Fix for issue #20.
+* Moving boxes will no longer scroll when using the space bar or arrow keys inside an input, selector or textarea. Fix for issue #22.
+
 ###Version 2.0 (3/11/2011)
 * Made all css class name more unique by adding a "mb-" in front. Fix for [issue #15](https://github.com/chriscoyier/MovingBoxes/issues/15).
 * Removed font-size animation, and set percentage font sizes in the css. This reduces the amount of scripting and speeds up the script. CSS comments added to make these changes more clear.
