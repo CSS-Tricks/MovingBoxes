@@ -107,6 +107,10 @@
 
 ## Changelog
 
+###Version 2.0.2 (4/8/2011)
+* Changed default box shadow to be "inset".
+* Added a separate IE stylesheet for versions < 9. Older IE versions will use a background image to add an inner shadow. It is using a png file, so it may not work properly in all older versions.
+
 ###Version 2.0.1 (3/31/2011)
 * Added more width to the scroll container. Fix for issue #19.
 * Centered the image... silly css problem. Fix for issue #20.

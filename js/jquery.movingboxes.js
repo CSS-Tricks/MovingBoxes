@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.0.1
+ * Moving Boxes v2.0.2
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -26,7 +26,7 @@
 				.wrapInner('<div class="mb-scrollContainer" />')
 				.wrapInner('<div class="mb-scroll" />')
 				.prepend('<a class="mb-scrollButtons mb-left"></a>')
-				.append('<a class="mb-scrollButtons mb-right"></a>')
+				.append('<a class="mb-scrollButtons mb-right"></a><div class="mb-left-shadow"></div><div class="mb-right-shadow"></div>')
 				// find panels (immediate children of the starting element
 				.find('.mb-scrollContainer ' + base.options.panelType).addClass('mb-panel').wrapInner('<div class="mb-inside" />');
 

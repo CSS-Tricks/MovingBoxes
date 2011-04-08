@@ -1,0 +1,30 @@
+/* This css requires Moving Boxes v2.02+ */
+
+/* Inside slider shadow */
+.mb-left-shadow, .mb-right-shadow {
+  background: repeat-y scroll 0 0;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  width: 10px;
+}
+
+.mb-left-shadow {
+  background-image: url("../images/leftshadow.png");
+  left: 0;
+}
+
+.mb-right-shadow {
+  background-image: url("../images/rightshadow.png");
+  right: 0;
+}
+
+/*** Left & Right Navigation Arrows ***/
+a.mb-scrollButtons {
+  background: url(../images/arrows.gif) no-repeat;
+  margin: 0;
+  top: 40%;
+/*  the margin-top below may be causing problems, so adjust the % above... */
+/*  margin-top: -29px; if you change the arrow images, you may have to adjust this (1/2 height of arrow image) */
+  zoom: 1;
+}

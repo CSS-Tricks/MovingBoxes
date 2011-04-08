@@ -9,9 +9,9 @@
   border-radius: 1em;
   -moz-border-radius: 1em;
   -webkit-border-radius: 1em;
-  box-shadow: 0 0 10px #888;
-  -moz-box-shadow: 0 0 10px #888;
-  -webkit-box-shadow: 0 0 10px #888;
+  box-shadow: inset 0 0 10px #888;
+  -moz-box-shadow: inset 0 0 10px #888;
+  -webkit-box-shadow: inset 0 0 10px #888;
 }
 
 /* Panel Wrapper */
@@ -119,6 +119,8 @@ a.mb-scrollButtons.mb-right:hover {
   margin: 0 auto;
   text-align: center;
   background: #ccc;
+  position: relative;
+  z-index: 100;
 }
 .mb-controls a {
   color: #444;
