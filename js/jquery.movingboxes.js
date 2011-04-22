@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.0.2
+ * Moving Boxes v2.0.3
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -11,7 +11,7 @@
 		var base = this;
 
 		// Access to jQuery and DOM versions of element
-		base.$el = $(el).addClass('movingBoxes');
+		base.$el = $(el).addClass('mb-slider');
 		base.el = el;
 
 		// Add a reverse reference to the DOM object
@@ -21,63 +21,27 @@
 			base.options = $.extend({}, $.movingBoxes.defaultOptions, options);
 
 			// Setup formatting (to reduce the amount of initial HTML)
-			base.$el
-				.css({ width : base.options.width }) // override css width
-				.wrapInner('<div class="mb-scrollContainer" />')
-				.wrapInner('<div class="mb-scroll" />')
-				.prepend('<a class="mb-scrollButtons mb-left"></a>')
-				.append('<a class="mb-scrollButtons mb-right"></a><div class="mb-left-shadow"></div><div class="mb-right-shadow"></div>')
-				// find panels (immediate children of the starting element
-				.find('.mb-scrollContainer ' + base.options.panelType).addClass('mb-panel').wrapInner('<div class="mb-inside" />');
+			base.$el.wrap('<div class="movingBoxes mb-wrapper"><div class="mb-scroll" /></div>');
 
 			// defaults
-			base.$container = base.$el.find('.mb-scrollContainer');
-			base.$window = base.$el.find('.mb-scroll');
-			base.runTime = $('.movingBoxes').index(base.$el) + 1; // Get index (run time) of this slider on the page
+			base.$window = base.$el.parent();
+			base.$wrap = base.$window.parent()
+				.css({ width : base.options.width }) // override css width
+				.prepend('<a class="mb-scrollButtons mb-left"></a>')
+				.append('<a class="mb-scrollButtons mb-right"></a><div class="mb-left-shadow"></div><div class="mb-right-shadow"></div>');
+			base.$panels = base.$el.find(base.options.panelType).addClass('mb-panel');
+			base.runTime = $('.mb-slider').index(base.$el) + 1; // Get index (run time) of this slider on the page
 			base.regex = new RegExp('slider' + base.runTime + '=(\\d+)', 'i'); // hash tag regex
-			base.$navLinks = {};
 
-			// Set up panes & content sizes; default: panelWidth = 50% of entire width
-			base.$panels = base.$el.find('.mb-panel').css({ width : base.options.width * base.options.panelWidth });
-			base.totalPanels = base.$panels.length;
-
-			// save 'cur' numbers (current larger panel size)
-			base.curWidth = base.$panels.outerWidth();
-			base.curImgWidth = base.$panels.find('img').outerWidth(true);
-			base.curImgHeight = base.curImgWidth / base.options.imageRatio; // set images fit a 4:3 ratio
-
-			// save 'reg' (reduced size) numbers
-			base.regWidth = base.curWidth * base.options.reducedSize;
-			base.regImgWidth = base.curImgWidth * base.options.reducedSize;
-			base.regImgHeight = base.curImgHeight * base.options.reducedSize;
-
-			// set image heights so scrollContainer height is correctly set
-			base.$panels.find('img').css({ height: base.curImgHeight });
-
-			// save each panel height... script will resize container as needed
-			base.heights = base.$panels.map(function(i,e){ return $(e).outerHeight(true); }).get();
-
-			// make scrollContainer wide enough to contain all the panels
-			base.$container.css({
-				position : 'absolute',
-				width    : (base.curWidth + 100) * base.totalPanels,
-				height   : Math.max.apply( this, base.heights )
-			});
-			base.$window.css({ height : Math.max.apply( this, base.heights ) });
-			// add padding so scrollLeft = 0 centers the left-most panel (needed because scrollLeft cannot be < 0)
-			base.$panels.eq(0).css({ 'margin-left' : (base.options.width - base.curWidth) / 2 });
-
-			// Set up "Current" panel
-			var startPanel = (base.options.hashTags) ?  base.getHash() || base.options.startPanel : base.options.startPanel;
 			base.initialized = false;
 			base.currentlyMoving = false;
 			base.curPanel = 1;
-			base.change(1);
 
-			base.buildNav();
+			// code to run to update MovingBoxes when the number of panels change
+			base.update();
 
 			// Set up click on left/right arrows
-			base.$el.find('.mb-right').click(function(){
+			base.$wrap.find('.mb-right').click(function(){
 				base.goForward();
 				return false;
 			}).end().find('.mb-left').click(function(){
@@ -86,36 +50,40 @@
 			});
 
 			// go to clicked panel
-			base.$panels.click(function(){
+			base.$el.delegate('.mb-panel', 'click', function(){
 				base.change( base.$panels.index($(this)) + 1 );
 			});
 
 			// Activate moving box on click or when an internal link obtains focus
-			base.$el.click(function(){
+			base.$wrap.click(function(){
 				base.active();
 			});
-			base.$panels.find('a').focus(function(){
+			base.$panels.delegate('a', 'focus' ,function(){
 				// focused link centered in moving box
-				var loc = base.$el.find('.mb-panel').index($(this).closest('.mb-panel')) + 1;
-				if (loc !== base.curPanel){ base.change( base.$el.find('.mb-panel').index($(this).closest('.mb-panel')) + 1, {}, false ); }
+				var loc = base.$panels.index($(this).closest('.mb-panel')) + 1;
+				if (loc !== base.curPanel){ base.change( base.$panels.index($(this).closest('.mb-panel')) + 1, {}, false ); }
 			});
 
 			// Add keyboard navigation
 			$(document).keyup(function(e){
+				// ignore arrow/space keys if inside a form element
 				if (e.target.tagName.match('TEXTAREA|INPUT|SELECT')) { return; }
 				switch (e.which) {
 					case 39: case 32: // right arrow & space
-						if (base.$el.is('.mb-active-slider')){
+						if (base.$wrap.is('.mb-active-slider')){
 							base.goForward();
 						}
 						break;
 					case 37: // left arrow
-						if (base.$el.is('.mb-active-slider')){
+						if (base.$wrap.is('.mb-active-slider')){
 							base.goBack();
 						}
 						break;
 				}
 			});
+
+			// Set up "Current" panel
+			var startPanel = (base.options.hashTags) ?  base.getHash() || base.options.startPanel : base.options.startPanel;
 
 			// animate to chosen start panel - starting from the first panel makes it look better
 			setTimeout(function(){
@@ -133,13 +101,69 @@
 					base.$el.trigger( 'initialized.movingBoxes', [ base, startPanel ] );
 				});
 			}, base.options.speed * 2 );
+		};
 
-		}; // end base.init()
+		base.update = function(){
+			var t;
+			// Set up panes & content sizes; default: panelWidth = 50% of entire width
+			base.$panels = base.$el.find(base.options.panelType)
+				.addClass('mb-panel')
+				.css({ width : base.options.width * base.options.panelWidth })
+				// inner wrap of each panel
+				.each(function(){
+					if ($(this).find('.mb-inside').length === 0) {
+						$(this).wrapInner('<div class="mb-inside" />');
+					}
+				});
+			base.totalPanels = base.$panels.length;
+
+			// save 'cur' numbers (current larger panel size), use stored sizes if they exist
+			t = base.$panels.eq(base.curPanel - 1);
+			base.curWidth = base.curWidth || t.outerWidth();
+			base.curImgWidth = base.curImgWidth || t.find('img').outerWidth(true);
+			base.curImgHeight = base.curImgHeight || base.curImgWidth / base.options.imageRatio; // set images fit a 4:3 ratio
+
+			// save 'reg' (reduced size) numbers
+			base.regWidth = base.curWidth * base.options.reducedSize;
+			base.regImgWidth = base.curImgWidth * base.options.reducedSize;
+			base.regImgHeight = base.curImgHeight * base.options.reducedSize;
+
+			// set image heights so base container height is correctly set
+			base.$panels
+				.css({ width: base.curWidth, fontSize: '1em' }) // make all panels big
+				.find('img').css({ height: base.curImgHeight, width: base.curImgWidth });
+
+			// save each panel height... script will resize container as needed
+			base.heights = base.$panels.map(function(i,e){ return $(e).outerHeight(true); }).get();
+
+			base.returnToNormal(base.curPanel, true); // resize new panel
+			base.growBigger(base.curPanel, true);
+
+			// make base container wide enough to contain all the panels
+			base.$el.css({
+				position : 'absolute',
+				// add a bit more width to each box (100px should cover margin/padding, etc; then add 1/2 overall width in case only one panel exists
+				width    : (base.curWidth + 100) * base.totalPanels + (base.options.width - base.curWidth) / 2,
+				height   : Math.max.apply( this, base.heights ) + 10
+			});
+			base.$window.css({ height : (base.options.fixedHeight) ? Math.max.apply( this, base.heights ) : base.heights[base.curPanel-1] });
+			// add padding so scrollLeft = 0 centers the left-most panel (needed because scrollLeft cannot be < 0)
+			base.$panels.eq(0).css({ 'margin-left' : (base.options.width - base.curWidth) / 2 });
+
+			base.buildNav();
+
+			base.change(base.curPanel, {}, false); // initialize from first panel... then scroll to start panel
+
+		};
 
 		// Creates the numbered navigation links
 		base.buildNav = function() {
+
+			base.$navLinks = {};
+			if (base.$nav) { base.$nav.remove(); }
+
 			if (base.options.buildNav && (base.totalPanels > 1)) {
-				base.$nav = $('<div class="mb-controls"><a class="mb-testing"></a></div>').appendTo(base.$el);
+				base.$nav = $('<div class="mb-controls"><a class="mb-testing"></a></div>').appendTo(base.$wrap);
 				var j, a = '',
 				navFormat = $.isFunction(base.options.navFormatter),
 				// need link in place to get CSS properties
@@ -167,19 +191,19 @@
 		};
 
 		// Resize panels to normal
-		base.returnToNormal = function(num){
+		base.returnToNormal = function(num, quick){
 			base.$panels.not(':eq(' + (num-1) + ')')
 				.removeClass(base.options.currentPanel)
-				.animate({ width: base.regWidth, fontSize: base.options.reducedSize + 'em' }, base.options.speed)
-				.find('img').animate({ width: base.regImgWidth, height: base.regImgHeight }, base.options.speed);
+				.animate({ width: base.regWidth, fontSize: base.options.reducedSize + 'em' }, (quick) ? 0 : base.options.speed)
+				.find('img').animate({ width: base.regImgWidth, height: base.regImgHeight }, (quick) ? 0 : base.options.speed);
 		};
 
 		// Zoom in on selected panel
-		base.growBigger = function(num){
+		base.growBigger = function(num, quick){
 			base.$panels.eq(num-1)
 			.addClass(base.options.currentPanel)
-			.animate({ width: base.curWidth, fontSize: '1em' }, base.options.speed)
-			.find('img').animate({ width: base.curImgWidth, height: base.curImgHeight }, base.options.speed, function(){
+			.animate({ width: base.curWidth, fontSize: '1em' }, (quick) ? 0 : base.options.speed)
+			.find('img').animate({ width: base.curImgWidth, height: base.curImgHeight }, (quick) ? 0 : base.options.speed, function(){
 				// completed event trigger
 				// even though animation is not queued, trigger is here because it is the last animation to complete
 				if (base.initialized) { base.$el.trigger( 'completed.movingBoxes', [ base, num ] ); }
@@ -239,7 +263,7 @@
 						complete : function(){
 							base.curPanel = curPanel;
 							if (base.initialized) {
-								base.$panels.eq(curPanel - 1).find('a').focus();
+//								base.$panels.eq(curPanel - 1).find('a').focus();
 								base.$window.scrollTop(0); // Opera fix - otherwise, it moves the focus link to the middle of the viewport
 							}
 							base.currentlyMoving = false;
@@ -252,7 +276,7 @@
 				base.growBigger(curPanel);
 				if (base.options.hashTags) { base.setHash(curPanel); }
 			}
-			base.$el.find('.mb-controls a')
+			base.$wrap.find('.mb-controls a')
 				.removeClass(base.options.currentPanel)
 				.eq(curPanel - 1).addClass(base.options.currentPanel);
 		};
@@ -274,7 +298,7 @@
 		// Make moving box active (for keyboard navigation)
 		base.active = function(el){
 			$('.mb-active-slider').removeClass('mb-active-slider');
-			base.$el.addClass('mb-active-slider');
+			base.$wrap.addClass('mb-active-slider');
 		};
 
 		// get: var currentPanel = $('.slider').data('movingBoxes').currentPanel();  // returns # of currently selected/enlarged panel
@@ -319,14 +343,27 @@
 		completed       : null    // callback after animation completes
 	};
 
-	$.fn.movingBoxes = function(options){
+	$.fn.movingBoxes = function(options, callback){
+		var num, mb = this.data('movingBoxes');
 		return this.each(function(){
-			(new $.movingBoxes(this, options));
+			// initialize the slider but prevent multiple initializations
+			if ((typeof(options)).match('object|undefined')){
+				if (mb) {
+					mb.update();
+				} else {
+					(new $.movingBoxes(this, options));
+				}
+			} else if (/\d/.test(options) && !isNaN(options) && mb) {
+				num = (typeof(options) === "number") ? options : parseInt($.trim(options),10); // accepts "  4  "
+				// ignore out of bound panels
+				if ( num >= 1 && num <= mb.totalPanels ) {
+					mb.change(num, callback); // page #, autoplay, one time callback
+				}
+			}
 		});
 	};
 
-	// This function breaks the chain, but returns
-	// the movingBoxes if it has been attached to the object.
+	// Return the movingBoxes object
 	$.fn.getMovingBoxes = function(){
 		return this.data('movingBoxes');
 	};

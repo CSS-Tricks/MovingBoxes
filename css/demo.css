@@ -18,6 +18,12 @@ body {
   border: 0;
 }
 
+/* Add/remove panels buttons */
+.buttons {
+  padding: 5px 10px;
+  text-align: center;
+}
+
 /* direct link styling */
 .dlinks {
   text-align: center;
