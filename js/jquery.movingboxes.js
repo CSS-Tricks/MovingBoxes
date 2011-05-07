@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.0.3
+ * Moving Boxes v2.0.4
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -274,7 +274,7 @@
 
 				base.returnToNormal(curPanel);
 				base.growBigger(curPanel);
-				if (base.options.hashTags) { base.setHash(curPanel); }
+				if (base.options.hashTags && base.initialized) { base.setHash(curPanel); }
 			}
 			base.$wrap.find('.mb-controls a')
 				.removeClass(base.options.currentPanel)

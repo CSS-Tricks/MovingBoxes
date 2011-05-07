@@ -9,6 +9,9 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+###Version 2.0.4 (5/7/2011)
+* Fixed hash tags which apparently broke in the last version =/
+
 ###Version 2.0.3 (4/22/2011)
 * Adjusted width of MovingBoxes internal wrapper to fix issue #24.
 * Restructured the plugin to allow updating MovingBoxes after adding or removing a panel.
