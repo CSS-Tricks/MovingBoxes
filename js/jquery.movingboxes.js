@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.0.4
+ * Moving Boxes v2.0.5
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -108,7 +108,7 @@
 			// Set up panes & content sizes; default: panelWidth = 50% of entire width
 			base.$panels = base.$el.find(base.options.panelType)
 				.addClass('mb-panel')
-				.css({ width : base.options.width * base.options.panelWidth })
+				.css({ width : base.options.width * base.options.panelWidth, margin: 0 })
 				// inner wrap of each panel
 				.each(function(){
 					if ($(this).find('.mb-inside').length === 0) {
@@ -238,7 +238,7 @@
 			}
 
 			// don't do anything if it's the same panel
-			if (base.initialized && base.curPanel == curPanel && !flag) { return false; }
+			if (base.initialized && base.curPanel === curPanel && !flag) { return false; }
 
 			// abort if panel is already animating
 			if (!base.currentlyMoving) {

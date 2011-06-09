@@ -9,6 +9,9 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+###Version 2.0.5 (6/9/2011)
+* Fixed margins when MovingBoxes gets updated. Fix for issue #30.
+
 ###Version 2.0.4 (5/7/2011)
 * Fixed hash tags which apparently broke in the last version =/
 
