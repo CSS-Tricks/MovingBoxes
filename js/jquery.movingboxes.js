@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.0.5
+ * Moving Boxes v2.1
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -24,12 +24,12 @@
 			base.$el.wrap('<div class="movingBoxes mb-wrapper"><div class="mb-scroll" /></div>');
 
 			// defaults
-			base.$window = base.$el.parent();
-			base.$wrap = base.$window.parent()
+			base.$window = base.$el.parent(); // mb-scroll
+			base.$wrap = base.$window.parent() // mb-wrapper
 				.css({ width : base.options.width }) // override css width
 				.prepend('<a class="mb-scrollButtons mb-left"></a>')
 				.append('<a class="mb-scrollButtons mb-right"></a><div class="mb-left-shadow"></div><div class="mb-right-shadow"></div>');
-			base.$panels = base.$el.find(base.options.panelType).addClass('mb-panel');
+			base.$panels = base.$el.children().addClass('mb-panel');
 			base.runTime = $('.mb-slider').index(base.$el) + 1; // Get index (run time) of this slider on the page
 			base.regex = new RegExp('slider' + base.runTime + '=(\\d+)', 'i'); // hash tag regex
 
@@ -39,6 +39,7 @@
 
 			// code to run to update MovingBoxes when the number of panels change
 			base.update();
+			$(window).load(function(){ base.update(false); }); // animate height after all images load
 
 			// Set up click on left/right arrows
 			base.$wrap.find('.mb-right').click(function(){
@@ -85,28 +86,29 @@
 			// Set up "Current" panel
 			var startPanel = (base.options.hashTags) ?  base.getHash() || base.options.startPanel : base.options.startPanel;
 
+			// Bind Events
+			$.each('initialized.movingBoxes initChange.movingBoxes beforeAnimation.movingBoxes completed.movingBoxes'.split(' '), function(i,o){
+				var evt = o.split('.')[0];
+				if ($.isFunction(base.options[evt])){
+					base.$el.bind(o, base.options[evt]);
+				}
+			});
+
 			// animate to chosen start panel - starting from the first panel makes it look better
 			setTimeout(function(){
 				base.change(startPanel, function(){
-
-					// Bind Events
-					$.each('initialized.movingBoxes initChange.movingBoxes beforeAnimation.movingBoxes completed.movingBoxes'.split(' '), function(i,o){
-						var evt = o.split('.')[0];
-						if ($.isFunction(base.options[evt])){
-							base.$el.bind(o, base.options[evt]);
-						}
-					});
-
 					base.initialized = true;
 					base.$el.trigger( 'initialized.movingBoxes', [ base, startPanel ] );
 				});
 			}, base.options.speed * 2 );
+
 		};
 
-		base.update = function(){
+		// update the panel, flag is used to prevent events from firing
+		base.update = function(flag){
 			var t;
 			// Set up panes & content sizes; default: panelWidth = 50% of entire width
-			base.$panels = base.$el.find(base.options.panelType)
+			base.$panels = base.$el.children()
 				.addClass('mb-panel')
 				.css({ width : base.options.width * base.options.panelWidth, margin: 0 })
 				// inner wrap of each panel
@@ -120,24 +122,20 @@
 			// save 'cur' numbers (current larger panel size), use stored sizes if they exist
 			t = base.$panels.eq(base.curPanel - 1);
 			base.curWidth = base.curWidth || t.outerWidth();
-			base.curImgWidth = base.curImgWidth || t.find('img').outerWidth(true);
-			base.curImgHeight = base.curImgHeight || base.curImgWidth / base.options.imageRatio; // set images fit a 4:3 ratio
 
 			// save 'reg' (reduced size) numbers
 			base.regWidth = base.curWidth * base.options.reducedSize;
-			base.regImgWidth = base.curImgWidth * base.options.reducedSize;
-			base.regImgHeight = base.curImgHeight * base.options.reducedSize;
 
 			// set image heights so base container height is correctly set
-			base.$panels
-				.css({ width: base.curWidth, fontSize: '1em' }) // make all panels big
-				.find('img').css({ height: base.curImgHeight, width: base.curImgWidth });
+			base.$panels.css({ width: base.curWidth, fontSize: '1em' }); // make all panels big
 
 			// save each panel height... script will resize container as needed
+			// make sure current panel css is applied before measuring
+			base.$panels.eq(base.curPanel-1).addClass(base.options.currentPanel);
 			base.heights = base.$panels.map(function(i,e){ return $(e).outerHeight(true); }).get();
 
-			base.returnToNormal(base.curPanel, true); // resize new panel
-			base.growBigger(base.curPanel, true);
+			base.returnToNormal(base.curPanel, 0); // resize new panel, animation time
+			base.growBigger(base.curPanel, 0, flag);
 
 			// make base container wide enough to contain all the panels
 			base.$el.css({
@@ -191,29 +189,37 @@
 		};
 
 		// Resize panels to normal
-		base.returnToNormal = function(num, quick){
+		base.returnToNormal = function(num, time){
 			base.$panels.not(':eq(' + (num-1) + ')')
 				.removeClass(base.options.currentPanel)
-				.animate({ width: base.regWidth, fontSize: base.options.reducedSize + 'em' }, (quick) ? 0 : base.options.speed)
-				.find('img').animate({ width: base.regImgWidth, height: base.regImgHeight }, (quick) ? 0 : base.options.speed);
+				.animate({ width: base.regWidth, fontSize: base.options.reducedSize + 'em' }, (time === 0) ? time : base.options.speed);
 		};
 
 		// Zoom in on selected panel
-		base.growBigger = function(num, quick){
+		base.growBigger = function(num, time, flag){
 			base.$panels.eq(num-1)
-			.addClass(base.options.currentPanel)
-			.animate({ width: base.curWidth, fontSize: '1em' }, (quick) ? 0 : base.options.speed)
-			.find('img').animate({ width: base.curImgWidth, height: base.curImgHeight }, (quick) ? 0 : base.options.speed, function(){
+			.animate({ width: base.curWidth, fontSize: '1em' }, (time === 0) ? time : base.options.speed, function(){
 				// completed event trigger
 				// even though animation is not queued, trigger is here because it is the last animation to complete
-				if (base.initialized) { base.$el.trigger( 'completed.movingBoxes', [ base, num ] ); }
+				if (base.initialized) {
+					$(this).addClass(base.options.currentPanel); // add current panel class after animating in case it has sizing parameters
+					if (flag !== false) { base.$el.trigger( 'completed.movingBoxes', [ base, num ] ); }
+				}
 			});
 		};
 
 		// go forward/back
-		base.goForward = function(){ base.change(base.curPanel + 1); };
+		base.goForward = function(){
+			if (base.initialized) {
+				base.change(base.curPanel + 1); 
+			}
+		};
 
-		base.goBack = function(){ base.change(base.curPanel - 1); };
+		base.goBack = function(){
+			if (base.initialized) {
+				base.change(base.curPanel - 1);
+			}
+		};
 
 		// Change view to display selected panel
 		base.change = function(curPanel, callback, flag){
@@ -263,7 +269,6 @@
 						complete : function(){
 							base.curPanel = curPanel;
 							if (base.initialized) {
-//								base.$panels.eq(curPanel - 1).find('a').focus();
 								base.$window.scrollTop(0); // Opera fix - otherwise, it moves the focus link to the middle of the viewport
 							}
 							base.currentlyMoving = false;
@@ -320,7 +325,6 @@
 		width        : 800,       // overall width of movingBoxes
 		panelWidth   : 0.5,       // current panel width adjusted to 50% of overall width
 		reducedSize  : 0.8,       // non-current panel size: 80% of panel size
-		imageRatio   : 4/3,       // Image ratio set to 4:3
 		fixedHeight  : false,     // if true, slider height set to max panel height; if false, slider height will auto adjust.
 
 		// Behaviour
@@ -334,7 +338,6 @@
 		// Selectors & classes
 		currentPanel : 'current', // current panel class
 		tooltipClass : 'tooltip', // added to the navigation, but the title attribute is blank unless the link text-indent is negative
-		panelType    : '> div',   // selector to find the immediate (">") children "div" of the movingBoxes object)
 
 		// Callbacks
 		initialized     : null,   // callback when MovingBoxes has completed initialization

@@ -7,32 +7,29 @@ $(function(){
 	$('#slider-one').movingBoxes({
 		startPanel   : 4,      // start with this panel
 		width        : 300,    // overall width of movingBoxes (not including navigation arrows)
-		imageRatio   : 1,      // Image ration set to 1:1 (square image)
 		wrap         : true,   // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
 		buildNav     : true,   // if true, navigation links will be added
-		panelType    : '> li', // selector to find the immediate ">" children "li" of "#slider-one" in this case
 		navFormatter : function(){ return "&#9679;"; } // function which returns the navigation text for each panel
 	});
 
 	$('#slider-two').movingBoxes({
 		startPanel   : 3,      // start with this panel
-		width        : 600,    // overall width of movingBoxes (not including navigation arrows)
+		width        : 650,    // overall width of movingBoxes (not including navigation arrows)
 		panelWidth   : .7,     // current panel width adjusted to 70% of overall width
-		imageRatio   : 16/9,   // Image ratio set to 16:9
 		buildNav     : true,   // if true, navigation links will be added
 		navFormatter : function(index, panel){ return panel.find('h2 span').text(); } // function which gets nav text from span inside the panel header
 	});
 
 	// Add a slide
-	var imageNumber = 1,
-	panel = '<li><img src="images/*.jpg" alt="picture" /><h2>News Heading #*</h2><p>A very short exerpt goes here... <a href="#">more</a></p></li>',
+	var imageNumber = 0,
+	panel = '<li><img src="demo/*1.jpg" alt="picture" /><h2>News Heading #*2</h2><p>A very short exerpt goes here... <a href="#">more</a></p></li>',
 	// to test adding/removing panels to the second slider, comment out the line above and uncomment out the line below - slider-two uses divs instead of UL & LIs
 	// panel = '<div><img src="images/*.jpg" alt="picture" /><h2>News Heading #<span>*</span></h2><p>A very short exerpt goes here... <a href="#">more</a></p></div>',
 	slider = $('#slider-one'); // $('#slider-two'); // second slider
 
 	$('button.add').click(function(){
 		slider
-		.append(panel.replace(/\*/g, (++imageNumber%7 + 1)))
+		.append( panel.replace(/\*2/g, ++imageNumber).replace(/\*1/g, (imageNumber%7 + 1)) )
 		.movingBoxes(); // update movingBoxes
 	});
 

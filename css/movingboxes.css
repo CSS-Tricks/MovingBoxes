@@ -39,6 +39,7 @@
   width: 350px;  /* default, this is overridden by script settings */
   margin: 5px 0;
   padding: 5px;
+  display: block;
   cursor: pointer;
   float: left;
   list-style: none;
@@ -56,33 +57,8 @@
   border: 1px solid #999;
 }
 
-.mb-inside img {
-  display: block;
-  border: 1px solid #666;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.mb-inside h2 {
-  font-weight: normal;
-  color: #000;
-  font-size: 140%; /* Adjust panel header font size using em or % */
-  margin: 0 0 8px 0;
-}
-
-.mb-inside p {
-  font-size: 100%; /* Adjust panel text font size using em or % */
-  color: #444;
-}
-
-.mb-inside a {
-  color: #333;
-  text-decoration: none;
-  border-bottom: 1px dotted #ccc;
-}
-
-.mb-inside a:hover {
-  border-bottom: 1px solid #999;
+.mb-inside * {
+  max-width: 100%;
 }
 
 /*** Left & Right Navigation Arrows ***/

@@ -9,14 +9,24 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+###Version 2.1 (6/10/2011)
+* The script now prevents changing slides before it completes initialization. Fix for [issue #29](https://github.com/chriscoyier/MovingBoxes/issues/29).
+* Removed element specific resizing:
+ * Removed `imageRatio` option. Set the image using a percentage width and it will adjust the height automatically to maintain the image's aspect ratio.
+ * In the script, the portion which set the height of images was removed. So now all panel content is set using css percentage values (or "em" for font sizes).
+ * Moved CSS, including `.mb-inside img {}` to the demo.css since the layout now allows images of any size inside the panels. The dimensions should now be set in the css using a percentage value.
+ * MovingBoxes will update a second time once the page has completely loaded. This now causes a vertical height resizing animation in webkit browsers. One way to work around this is to set the image height of the "current" panel - see the demo.css file.
+* Removed `panelType` options as the script now automatically looks for immediate children of the initialized element. You shouldn't even notice a difference.
+* Moved all demo related files into a demo folder.
+
 ###Version 2.0.5 (6/9/2011)
-* Fixed margins when MovingBoxes gets updated. Fix for issue #30.
+* Fixed margins when MovingBoxes gets updated. Fix for [issue #30](https://github.com/chriscoyier/MovingBoxes/issues/30).
 
 ###Version 2.0.4 (5/7/2011)
 * Fixed hash tags which apparently broke in the last version =/
 
 ###Version 2.0.3 (4/22/2011)
-* Adjusted width of MovingBoxes internal wrapper to fix issue #24.
+* Adjusted width of MovingBoxes internal wrapper to fix [issue #24](https://github.com/chriscoyier/MovingBoxes/issues/24).
 * Restructured the plugin to allow updating MovingBoxes after adding or removing a panel.
  * To use, simply call the plugin a second time without any options: `$('.slider').movingBoxes();`
  * These new changes now require a minimum of jQuery version 1.4.2 (due to the use of "delegate()").
@@ -35,9 +45,9 @@
 * Added a separate IE stylesheet for versions < 9. Older IE versions will use a background image to add an inner shadow. It is using a png file, so it may not work properly in all older versions.
 
 ###Version 2.0.1 (3/31/2011)
-* Added more width to the scroll container. Fix for issue #19.
-* Centered the image... silly css problem. Fix for issue #20.
-* Moving boxes will no longer scroll when using the space bar or arrow keys inside an input, selector or textarea. Fix for issue #22.
+* Added more width to the scroll container. Fix for [issue #19](https://github.com/chriscoyier/MovingBoxes/issues/19).
+* Centered the image... silly css problem. Fix for [issue #20](https://github.com/chriscoyier/MovingBoxes/issues/20).
+* Moving boxes will no longer scroll when using the space bar or arrow keys inside an input, selector or textarea. Fix for [issue #22](https://github.com/chriscoyier/MovingBoxes/issues/22).
 
 ###Version 2.0 (3/11/2011)
 * Made all css class name more unique by adding a "mb-" in front. Fix for [issue #15](https://github.com/chriscoyier/MovingBoxes/issues/15).
