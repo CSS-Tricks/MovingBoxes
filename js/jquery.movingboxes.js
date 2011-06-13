@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.1
+ * Moving Boxes v2.1.1
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -190,22 +190,32 @@
 
 		// Resize panels to normal
 		base.returnToNormal = function(num, time){
-			base.$panels.not(':eq(' + (num-1) + ')')
-				.removeClass(base.options.currentPanel)
-				.animate({ width: base.regWidth, fontSize: base.options.reducedSize + 'em' }, (time === 0) ? time : base.options.speed);
+			var panels = base.$panels.not(':eq(' + (num-1) + ')').removeClass(base.options.currentPanel);
+			if (base.options.reducedSize === 1) {
+				panels.css({ width: base.regWidth }); // excluding fontsize change to prevent video flicker
+			} else {
+				panels.animate({ width: base.regWidth, fontSize: base.options.reducedSize + 'em' }, (time === 0) ? time : base.options.speed);
+			}
 		};
 
 		// Zoom in on selected panel
 		base.growBigger = function(num, time, flag){
-			base.$panels.eq(num-1)
-			.animate({ width: base.curWidth, fontSize: '1em' }, (time === 0) ? time : base.options.speed, function(){
-				// completed event trigger
-				// even though animation is not queued, trigger is here because it is the last animation to complete
-				if (base.initialized) {
-					$(this).addClass(base.options.currentPanel); // add current panel class after animating in case it has sizing parameters
-					if (flag !== false) { base.$el.trigger( 'completed.movingBoxes', [ base, num ] ); }
-				}
-			});
+			var panels = base.$panels.eq(num-1);
+			if (base.options.reducedSize === 1) {
+				panels.css({ width: base.curWidth }); // excluding fontsize change to prevent video flicker
+				if (base.initialized) { base.completed(num, flag); }
+			} else {
+				panels.animate({ width: base.curWidth, fontSize: '1em' }, (time === 0) ? time : base.options.speed, function(){
+					// completed event trigger
+					// even though animation is not queued, trigger is here because it is the last animation to complete
+					if (base.initialized) { base.completed(num, flag); }
+				});
+			}
+		};
+
+		base.completed = function(num, flag){
+			$(this).addClass(base.options.currentPanel); // add current panel class after animating in case it has sizing parameters
+			if (flag !== false) { base.$el.trigger( 'completed.movingBoxes', [ base, num ] ); }
 		};
 
 		// go forward/back

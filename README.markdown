@@ -9,6 +9,9 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+###Version 2.1.1 (6/13/2011)
+* Updated to not animate the panel when the `reducedSize` option is set to `1`. This prevents embeded video from restarting - fix for [issue #31](https://github.com/chriscoyier/MovingBoxes/issues/31).
+
 ###Version 2.1 (6/10/2011)
 * The script now prevents changing slides before it completes initialization. Fix for [issue #29](https://github.com/chriscoyier/MovingBoxes/issues/29).
 * Removed element specific resizing:
