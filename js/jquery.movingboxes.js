@@ -1,5 +1,5 @@
-/*
- * Moving Boxes v2.1.1
+﻿/*
+ * Moving Boxes v2.1.2
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -257,7 +257,8 @@
 			if (base.initialized && base.curPanel === curPanel && !flag) { return false; }
 
 			// abort if panel is already animating
-			if (!base.currentlyMoving) {
+			// animation callback to clear this flag is not called when the slider doesn't move, so include base.initialized
+			if (!base.currentlyMoving || !base.initialized) {
 				base.currentlyMoving = true;
 
 				// center panel in scroll window
