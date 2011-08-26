@@ -1,4 +1,4 @@
-﻿## MoxingBoxes jQuery Plugin
+## MoxingBoxes jQuery Plugin
 
 * [Documentation](https://github.com/chriscoyier/MovingBoxes/wiki) now maintained in the wiki pages.
 * [Original post](http://css-tricks.com/moving-boxes/) at CSS-Tricks.
@@ -8,6 +8,9 @@
 ## Changelog
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
+
+###Version 2.1.3 (8/26/2011)
+* Fixed a problem where the `currentPanel` class was not being applied to the current panel. Fix for [issue #35](https://github.com/chriscoyier/MovingBoxes/issues/35).
 
 ###Version 2.1.2 (8/22/2011)
 * Fixed a problem with the arrow buttons not working if the slider starts on any slide but the first - weird that it didn't rear it's ugly head until now... Fix for [issue #34](https://github.com/chriscoyier/MovingBoxes/issues/34).

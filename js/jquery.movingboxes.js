@@ -1,5 +1,5 @@
-﻿/*
- * Moving Boxes v2.1.2
+/*
+ * Moving Boxes v2.1.3
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -214,7 +214,8 @@
 		};
 
 		base.completed = function(num, flag){
-			$(this).addClass(base.options.currentPanel); // add current panel class after animating in case it has sizing parameters
+			// add current panel class after animating in case it has sizing parameters
+			base.$panels.eq(num-1).addClass(base.options.currentPanel);
 			if (flag !== false) { base.$el.trigger( 'completed.movingBoxes', [ base, num ] ); }
 		};
 
