@@ -89,6 +89,9 @@ a.mb-scrollButtons.mb-left:hover {
 a.mb-scrollButtons.mb-right:hover {
   background-position: right bottom;
 }
+a.mb-scrollButtons.disabled {
+  display: none;
+}
 
 /*** Controls added below the panels ***/
 .mb-controls {

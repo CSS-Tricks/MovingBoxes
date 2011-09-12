@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.1.3
+ * Moving Boxes v2.1.4
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -8,7 +8,7 @@
 	$.movingBoxes = function(el, options){
 		// To avoid scope issues, use 'base' instead of 'this'
 		// to reference this class from internal events and functions.
-		var base = this;
+		var o, base = this;
 
 		// Access to jQuery and DOM versions of element
 		base.$el = $(el).addClass('mb-slider');
@@ -18,7 +18,7 @@
 		base.$el.data('movingBoxes', base);
 
 		base.init = function(){
-			base.options = $.extend({}, $.movingBoxes.defaultOptions, options);
+			base.options = o = $.extend({}, $.movingBoxes.defaultOptions, options);
 
 			// Setup formatting (to reduce the amount of initial HTML)
 			base.$el.wrap('<div class="movingBoxes mb-wrapper"><div class="mb-scroll" /></div>');
@@ -26,7 +26,7 @@
 			// defaults
 			base.$window = base.$el.parent(); // mb-scroll
 			base.$wrap = base.$window.parent() // mb-wrapper
-				.css({ width : base.options.width }) // override css width
+				.css({ width : o.width }) // override css width
 				.prepend('<a class="mb-scrollButtons mb-left"></a>')
 				.append('<a class="mb-scrollButtons mb-right"></a><div class="mb-left-shadow"></div><div class="mb-right-shadow"></div>');
 			base.$panels = base.$el.children().addClass('mb-panel');
@@ -37,18 +37,19 @@
 			base.currentlyMoving = false;
 			base.curPanel = 1;
 
-			// code to run to update MovingBoxes when the number of panels change
-			base.update();
-			$(window).load(function(){ base.update(false); }); // animate height after all images load
-
 			// Set up click on left/right arrows
-			base.$wrap.find('.mb-right').click(function(){
-				base.goForward();
-				return false;
-			}).end().find('.mb-left').click(function(){
+			base.$left = base.$wrap.find('.mb-left').click(function(){
 				base.goBack();
 				return false;
 			});
+			base.$right = base.$wrap.find('.mb-right').click(function(){
+				base.goForward();
+				return false;
+			});
+
+			// code to run to update MovingBoxes when the number of panels change
+			base.update();
+			$(window).load(function(){ base.update(false); }); // animate height after all images load
 
 			// go to clicked panel
 			base.$el.delegate('.mb-panel', 'click', function(){
@@ -84,13 +85,13 @@
 			});
 
 			// Set up "Current" panel
-			var startPanel = (base.options.hashTags) ?  base.getHash() || base.options.startPanel : base.options.startPanel;
+			var startPanel = (o.hashTags) ?  base.getHash() || o.startPanel : o.startPanel;
 
 			// Bind Events
-			$.each('initialized.movingBoxes initChange.movingBoxes beforeAnimation.movingBoxes completed.movingBoxes'.split(' '), function(i,o){
-				var evt = o.split('.')[0];
-				if ($.isFunction(base.options[evt])){
-					base.$el.bind(o, base.options[evt]);
+			$.each('initialized.movingBoxes initChange.movingBoxes beforeAnimation.movingBoxes completed.movingBoxes'.split(' '), function(i,f){
+				var evt = f.split('.')[0];
+				if ($.isFunction(o[evt])){
+					base.$el.bind(f, o[evt]);
 				}
 			});
 
@@ -100,7 +101,7 @@
 					base.initialized = true;
 					base.$el.trigger( 'initialized.movingBoxes', [ base, startPanel ] );
 				});
-			}, base.options.speed * 2 );
+			}, o.speed * 2 );
 
 		};
 
@@ -110,7 +111,7 @@
 			// Set up panes & content sizes; default: panelWidth = 50% of entire width
 			base.$panels = base.$el.children()
 				.addClass('mb-panel')
-				.css({ width : base.options.width * base.options.panelWidth, margin: 0 })
+				.css({ width : o.width * o.panelWidth, margin: 0 })
 				// inner wrap of each panel
 				.each(function(){
 					if ($(this).find('.mb-inside').length === 0) {
@@ -124,29 +125,30 @@
 			base.curWidth = base.curWidth || t.outerWidth();
 
 			// save 'reg' (reduced size) numbers
-			base.regWidth = base.curWidth * base.options.reducedSize;
+			base.regWidth = base.curWidth * o.reducedSize;
 
 			// set image heights so base container height is correctly set
 			base.$panels.css({ width: base.curWidth, fontSize: '1em' }); // make all panels big
 
 			// save each panel height... script will resize container as needed
 			// make sure current panel css is applied before measuring
-			base.$panels.eq(base.curPanel-1).addClass(base.options.currentPanel);
+			base.$panels.eq(base.curPanel-1).addClass(o.currentPanel);
 			base.heights = base.$panels.map(function(i,e){ return $(e).outerHeight(true); }).get();
 
 			base.returnToNormal(base.curPanel, 0); // resize new panel, animation time
 			base.growBigger(base.curPanel, 0, flag);
+			if (!o.wrap) { base.updateArrows(base.curPanel); }
 
 			// make base container wide enough to contain all the panels
 			base.$el.css({
 				position : 'absolute',
 				// add a bit more width to each box (100px should cover margin/padding, etc; then add 1/2 overall width in case only one panel exists
-				width    : (base.curWidth + 100) * base.totalPanels + (base.options.width - base.curWidth) / 2,
+				width    : (base.curWidth + 100) * base.totalPanels + (o.width - base.curWidth) / 2,
 				height   : Math.max.apply( this, base.heights ) + 10
 			});
-			base.$window.css({ height : (base.options.fixedHeight) ? Math.max.apply( this, base.heights ) : base.heights[base.curPanel-1] });
+			base.$window.css({ height : (o.fixedHeight) ? Math.max.apply( this, base.heights ) : base.heights[base.curPanel-1] });
 			// add padding so scrollLeft = 0 centers the left-most panel (needed because scrollLeft cannot be < 0)
-			base.$panels.eq(0).css({ 'margin-left' : (base.options.width - base.curWidth) / 2 });
+			base.$panels.eq(0).css({ 'margin-left' : (o.width - base.curWidth) / 2 });
 
 			base.buildNav();
 
@@ -160,10 +162,10 @@
 			base.$navLinks = {};
 			if (base.$nav) { base.$nav.remove(); }
 
-			if (base.options.buildNav && (base.totalPanels > 1)) {
+			if (o.buildNav && (base.totalPanels > 1)) {
 				base.$nav = $('<div class="mb-controls"><a class="mb-testing"></a></div>').appendTo(base.$wrap);
 				var j, a = '',
-				navFormat = $.isFunction(base.options.navFormatter),
+				navFormat = $.isFunction(o.navFormatter),
 				// need link in place to get CSS properties
 				hiddenText = parseInt( base.$nav.find('.mb-testing').css('text-indent'), 10) < 0;
 				base.$panels.each(function(i) {
@@ -171,8 +173,8 @@
 					a += '<a href="#" class="mb-panel' + j;
 					// If a formatter function is present, use it
 					if (navFormat) {
-						var tmp = base.options.navFormatter(j, $(this));
-						a += (hiddenText) ? ' ' + base.options.tooltipClass +'" title="' + tmp : '';
+						var tmp = o.navFormatter(j, $(this));
+						a += (hiddenText) ? ' ' + o.tooltipClass +'" title="' + tmp : '';
 						a += '">' + tmp + '</a> ';
 						// Add formatting to title attribute if text is hidden
 					} else {
@@ -190,22 +192,22 @@
 
 		// Resize panels to normal
 		base.returnToNormal = function(num, time){
-			var panels = base.$panels.not(':eq(' + (num-1) + ')').removeClass(base.options.currentPanel);
-			if (base.options.reducedSize === 1) {
+			var panels = base.$panels.not(':eq(' + (num-1) + ')').removeClass(o.currentPanel);
+			if (o.reducedSize === 1) {
 				panels.css({ width: base.regWidth }); // excluding fontsize change to prevent video flicker
 			} else {
-				panels.animate({ width: base.regWidth, fontSize: base.options.reducedSize + 'em' }, (time === 0) ? time : base.options.speed);
+				panels.animate({ width: base.regWidth, fontSize: o.reducedSize + 'em' }, (time === 0) ? time : o.speed);
 			}
 		};
 
 		// Zoom in on selected panel
 		base.growBigger = function(num, time, flag){
 			var panels = base.$panels.eq(num-1);
-			if (base.options.reducedSize === 1) {
+			if (o.reducedSize === 1) {
 				panels.css({ width: base.curWidth }); // excluding fontsize change to prevent video flicker
 				if (base.initialized) { base.completed(num, flag); }
 			} else {
-				panels.animate({ width: base.curWidth, fontSize: '1em' }, (time === 0) ? time : base.options.speed, function(){
+				panels.animate({ width: base.curWidth, fontSize: '1em' }, (time === 0) ? time : o.speed, function(){
 					// completed event trigger
 					// even though animation is not queued, trigger is here because it is the last animation to complete
 					if (base.initialized) { base.completed(num, flag); }
@@ -215,7 +217,7 @@
 
 		base.completed = function(num, flag){
 			// add current panel class after animating in case it has sizing parameters
-			base.$panels.eq(num-1).addClass(base.options.currentPanel);
+			base.$panels.eq(num-1).addClass(o.currentPanel);
 			if (flag !== false) { base.$el.trigger( 'completed.movingBoxes', [ base, num ] ); }
 		};
 
@@ -246,7 +248,7 @@
 			}
 
 			// psuedo wrap - it's a pain to clone the first & last panel then resize them correctly while wrapping AND make it look good
-			if ( base.options.wrap ) {
+			if ( o.wrap ) {
 				if ( curPanel < 1 ) { curPanel = base.totalPanels; }
 				if ( curPanel > base.totalPanels ) { curPanel = 1; }
 			} else {
@@ -263,11 +265,11 @@
 				base.currentlyMoving = true;
 
 				// center panel in scroll window
-				var ani, leftValue = base.$panels.eq(curPanel-1).position().left - (base.options.width - base.curWidth) / 2;
+				var ani, leftValue = base.$panels.eq(curPanel-1).position().left - (o.width - base.curWidth) / 2;
 				// when scrolling right, add the difference of the larger current panel width
 				if (curPanel > base.curPanel) { leftValue -= ( base.curWidth - base.regWidth ); }
 
-				ani = (base.options.fixedHeight) ? { scrollLeft : leftValue } : { scrollLeft: leftValue, height: base.heights[curPanel - 1] };
+				ani = (o.fixedHeight) ? { scrollLeft : leftValue } : { scrollLeft: leftValue, height: base.heights[curPanel - 1] };
 
 				// before animation trigger
 				if (base.initialized) { base.$el.trigger( 'beforeAnimation.movingBoxes', [ base, curPanel ] ); }
@@ -276,8 +278,8 @@
 				base.$window.animate( ani,
 					{
 						queue    : false,
-						duration : base.options.speed,
-						easing   : base.options.easing,
+						duration : o.speed,
+						easing   : o.easing,
 						complete : function(){
 							base.curPanel = curPanel;
 							if (base.initialized) {
@@ -291,11 +293,17 @@
 
 				base.returnToNormal(curPanel);
 				base.growBigger(curPanel);
-				if (base.options.hashTags && base.initialized) { base.setHash(curPanel); }
+				if (!o.wrap) { base.updateArrows(curPanel); }
+				if (o.hashTags && base.initialized) { base.setHash(curPanel); }
 			}
 			base.$wrap.find('.mb-controls a')
-				.removeClass(base.options.currentPanel)
-				.eq(curPanel - 1).addClass(base.options.currentPanel);
+				.removeClass(o.currentPanel)
+				.eq(curPanel - 1).addClass(o.currentPanel);
+		};
+
+		base.updateArrows = function(cur){
+			base.$left.toggleClass(o.disabled, cur === 1);
+			base.$right.toggleClass(o.disabled, cur === base.totalPanels);
 		};
 
 		// get & set hash tags
@@ -350,6 +358,7 @@
 		// Selectors & classes
 		currentPanel : 'current', // current panel class
 		tooltipClass : 'tooltip', // added to the navigation, but the title attribute is blank unless the link text-indent is negative
+		disabled     : 'disabled',// class added to arrows that are disabled (left arrow when on first panel, right arrow on last panel)
 
 		// Callbacks
 		initialized     : null,   // callback when MovingBoxes has completed initialization
