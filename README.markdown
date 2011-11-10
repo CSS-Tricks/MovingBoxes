@@ -1,5 +1,6 @@
 # MoxingBoxes jQuery Plugin
 
+* [WordPress plugin](http://wordpress.org/extend/plugins/movingboxes-wp/) - by [Craftyhub](https://github.com/craftyhub).
 * [Documentation](https://github.com/chriscoyier/MovingBoxes/wiki) now maintained in the wiki pages.
 * [Original post](http://css-tricks.com/moving-boxes/) at CSS-Tricks.
 * Latest [MovingBoxes demo](http://chriscoyier.github.com/MovingBoxes).
@@ -8,6 +9,13 @@
 ## Changelog
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
+
+###Version 2.2 (11/9/2011)
+* Modified `wrap` option to now behave like an infinite slider
+  * When `true`, the first and last MovingBoxes panels are cloned and attached to either end of the slider.
+  * When `false`, the panels will stop at either end and the appropriate navigation arrow will get the `disabled` css class applied.
+* Added a basic demo page to make it easier to start out with the base code.
+* Added navigation buttons to the demo pages along with a link to a jsFiddle playground.
 
 ###Version 2.1.4 (9/11/2011)
 * Added `disabled` option

@@ -1,59 +1,36 @@
 /* Moving Boxes demo CSS */
-* {
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font: 11px Helvetica, Arial, sans-serif;
-}
-
+* { margin: 0; padding: 0; }
+body { font: 11px Helvetica, Arial, sans-serif; }
 #wrapper {}
 
+/* Navigation bar */
+#nav                   { display: block; width: auto; margin: 10px auto; text-align: center; white-space: nowrap; line-height: 3em; }
+#nav a                 { text-align: center; background: black; color: white; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; padding: 10px; text-decoration: none; font-size: 14px; }
+#nav a.git             { background: #006; }
+#nav a.play            { background: #060; }
+#nav a.issue           { background: #600; }
+#nav a:hover, #nav a.current { background: #666; }
+
 /* Moving Boxes title image wrapper */
-#title {
-  text-align: center;
-}
-#title img {
-  border: 0;
-}
+#title { text-align: center; }
+#title img { border: 0; }
 
 /* panel images */
-.mb-inside img {
-  width: 100%;
-}
+.mb-inside img { width: 100%; }
 
-
-#slider-two .current img {
-  /* height of the placeholder until image completely loads - needed for
-     webkit browsers, add this only if you don't want the height animation
-     on startup.
-
-     326px measures the height of the current image when enlarged 
-
-  height: 326px;
-
-  */
-}
+/* height of the placeholder until image completely loads - needed for
+   webkit browsers, add this only if you don't want the height animation
+   on startup. 326px measures the height of the current image when enlarged 
+*/
+#slider-two .current img { /* height: 326px; */ }
 
 /* panel links */
-.mb-inside a {
-  color: #333;
-  text-decoration: none;
-  border-bottom: 1px dotted #ccc;
-}
-.mb-inside a:hover {
-  border-bottom: 1px solid #999;
-}
+.mb-inside a { color: #333; text-decoration: none; border-bottom: 1px dotted #ccc; }
+.mb-inside a:hover { border-bottom: 1px solid #999; }
 
 /* Add/remove panels buttons */
-.buttons {
-  padding: 5px 10px;
-  text-align: center;
-}
+.buttons { padding: 5px 10px; text-align: center; }
 
 /* direct link styling */
-.dlinks {
-  text-align: center;
-  font-size: 20px;
-}
+.dlinks { text-align: center; font-size: 20px; }
+

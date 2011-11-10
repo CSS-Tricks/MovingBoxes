@@ -1,120 +1,121 @@
 /*** Overall MovingBoxes Slider ***/
 .mb-wrapper {
-  width: 900px; /* default, this is overridden by script settings */
-  border: 5px solid #ccc;
-  margin: 0 auto;
-  position: relative;
-  left: 0;
-  top: 0;
-  border-radius: 1em;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 1em;
-  box-shadow: inset 0 0 10px #888;
-  -moz-box-shadow: inset 0 0 10px #888;
-  -webkit-box-shadow: inset 0 0 10px #888;
+	width: 900px; /* default, this is overridden by script settings */
+	min-height: 200px;
+	border: 5px solid #ccc;
+	margin: 0 auto;
+	position: relative;
+	left: 0;
+	top: 0;
+	border-radius: 1em;
+	-moz-border-radius: 1em;
+	-webkit-border-radius: 1em;
+	box-shadow: inset 0 0 10px #888;
+	-moz-box-shadow: inset 0 0 10px #888;
+	-webkit-box-shadow: inset 0 0 10px #888;
 }
 
 /* Panel Wrapper */
 .mb-slider, .mb-scroll {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  margin: 0 auto;
-  padding: 0;
-  position: relative;
-  left: 0;
-  top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	margin: 0 auto;
+	padding: 0;
+	position: relative;
+	left: 0;
+	top: 0;
 
-  /***(>'-')> Control Panel Font size here <('-'<)***/
-  font-size: 18px;
+	/***(>'-')> Control Panel Font size here <('-'<)***/
+	font-size: 18px;
 }
 
 /* active slider border highlight */
 .mb-active-slider {
-  border-color: #999bff;
+	border-color: #999bff;
 }
 
 /*** Slider panel ***/
 .mb-slider .mb-panel {
-  width: 350px;  /* default, this is overridden by script settings */
-  margin: 5px 0;
-  padding: 5px;
-  display: block;
-  cursor: pointer;
-  float: left;
-  list-style: none;
+	width: 350px;  /* default, this is overridden by script settings */
+	margin: 5px 0;
+	padding: 5px;
+	display: block;
+	cursor: pointer;
+	float: left;
+	list-style: none;
 }
 
 /* Cursor to arrow over current panel, pointer for all others,
-  change .current class name using plugin option, currentPanel : 'current' */
+change .current class name using plugin option, currentPanel : 'current' */
 .mb-slider .mb-panel.current {
- cursor: auto;
+	cursor: auto;
 }
 
 /*** Inside the panel ***/
 .mb-inside {
-  padding: 10px;
-  border: 1px solid #999;
+	padding: 10px;
+	border: 1px solid #999;
 }
 
 .mb-inside * {
-  max-width: 100%;
+	max-width: 100%;
 }
 
 /*** Left & Right Navigation Arrows ***/
 a.mb-scrollButtons {
-  display: block;
-  width: 45px;
-  height: 58px;
-  background: transparent url(../images/arrows.png) no-repeat;
-  position: absolute;
-  top: 50%;
-  margin-top: -29px; /* if you change the arrow images, you may have to adjust this (1/2 height of arrow image) */
-  cursor: pointer;
-  text-decoration: none;
-  outline: 0;
-  border: 0;
+	display: block;
+	width: 45px;
+	height: 58px;
+	background: transparent url(../images/arrows.png) no-repeat;
+	position: absolute;
+	top: 50%;
+	margin-top: -29px; /* if you change the arrow images, you may have to adjust this (1/2 height of arrow image) */
+	cursor: pointer;
+	text-decoration: none;
+	outline: 0;
+	border: 0;
 }
 a.mb-scrollButtons.mb-left {
-  background-position: left top;
-  left: -45px;
+	background-position: left top;
+	left: -45px;
 }
 a.mb-scrollButtons.mb-right {
-  background-position: right top;
-  right: -45px;
+	background-position: right top;
+	right: -45px;
 }
 a.mb-scrollButtons.mb-left:hover {
-  background-position: left bottom;
+	background-position: left bottom;
 }
 a.mb-scrollButtons.mb-right:hover {
-  background-position: right bottom;
+	background-position: right bottom;
 }
 a.mb-scrollButtons.disabled {
-  display: none;
+	display: none;
 }
 
 /*** Controls added below the panels ***/
 .mb-controls {
-  margin: 0 auto;
-  text-align: center;
-  background: #ccc;
-  position: relative;
-  z-index: 100;
+	margin: 0 auto;
+	text-align: center;
+	background: #ccc;
+	position: relative;
+	z-index: 100;
 }
 .mb-controls a {
-  color: #444;
-  font: 12px Georgia, Serif;
-  display: inline-block;
-  text-decoration: none;
-  padding: 2px;
-  height: 18px;
-  margin: 0 5px 0 0;
-  text-align: center;
-  outline: 0;
+	color: #444;
+	font: 12px Georgia, Serif;
+	display: inline-block;
+	text-decoration: none;
+	padding: 2px;
+	height: 18px;
+	margin: 0 5px 0 0;
+	text-align: center;
+	outline: 0;
 }
 .mb-controls a.current, .mb-controls a:hover {
-  color: #fff;
+	color: #fff;
 }
 .mb-active-slider .mb-controls {
-  background: #999bff;
+	background: #999bff;
 }
