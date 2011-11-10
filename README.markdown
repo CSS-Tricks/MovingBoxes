@@ -10,6 +10,9 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+###Version 2.2.1 (11/10/2011)
+* Clicking on panels will now work properly. Fix for [issue #44](https://github.com/chriscoyier/MovingBoxes/issues/44).
+
 ###Version 2.2 (11/9/2011)
 * Modified `wrap` option to now behave like an infinite slider
   * When `true`, the first and last MovingBoxes panels are cloned and attached to either end of the slider.

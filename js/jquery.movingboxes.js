@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.2
+ * Moving Boxes v2.2.1
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -53,7 +53,7 @@
 
 			// go to clicked panel
 			base.$el.delegate('.mb-panel', 'click', function(){
-				base.change( base.$panels.index($(this)) + 1 );
+				base.change( base.$panels.index($(this)) + base.adj );
 			});
 
 			// Activate moving box on click or when an internal link obtains focus
