@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.2.1
+ * Moving Boxes v2.2.2
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -26,9 +26,9 @@
 			// defaults
 			base.$window = base.$el.parent(); // mb-scroll
 			base.$wrap = base.$window.parent() // mb-wrapper
-				.css({ width : o.width }) // override css width
 				.prepend('<a class="mb-scrollButtons mb-left"></a>')
 				.append('<a class="mb-scrollButtons mb-right"></a><div class="mb-left-shadow"></div><div class="mb-right-shadow"></div>');
+
 			base.$panels = base.$el.children().addClass('mb-panel');
 			base.runTime = $('.mb-slider').index(base.$el) + 1; // Get index (run time) of this slider on the page
 			base.regex = new RegExp('slider' + base.runTime + '=(\\d+)', 'i'); // hash tag regex
@@ -36,6 +36,14 @@
 			base.initialized = false;
 			base.currentlyMoving = false;
 			base.curPanel = 1;
+
+			// make backwards compatible - width & panelWidth deprecated in 2.2.2
+			if (!o.width) { o.width = base.$el.width(); }
+			if (!o.panelWidth) {
+				o.panelWidth = base.$panels.eq(0).width();
+			} else {
+				o.panelWidth = o.width * o.panelWidth; // change panelWidth (deprecation option) fraction into a px width
+			}
 
 			// Set up click on left/right arrows
 			base.$left = base.$wrap.find('.mb-left').click(function(){
@@ -99,7 +107,7 @@
 				base.change(startPanel, function(){
 					base.initialized = true;
 					base.$el.trigger( 'initialized.movingBoxes', [ base, startPanel ] );
-				});
+				}, false);
 			}, o.speed * 2 );
 
 		};
@@ -107,37 +115,41 @@
 		// update the panel, flag is used to prevent events from firing
 		base.update = function(flag){
 			var t;
+
 			// Infinite loop
 			base.$el.children('.cloned').remove();
 			base.$panels = base.$el.children();
 			base.adj = (o.wrap && base.$panels.length > 1) ? 0 : 1; // count adjustment for infinite panels
 
+			base.$wrap.css('width', o.width); // set wrapper width
+
 			if (o.wrap && base.$panels.length > 1) {
-				base.$el.prepend( base.$panels.filter(':last').clone().removeAttr('id').addClass('cloned') );
-				base.$el.append( base.$panels.filter(':first').clone().removeAttr('id').addClass('cloned') );
+				base.$el.prepend( base.$panels.filter(':last').clone().addClass('cloned') );
+				base.$el.append( base.$panels.filter(':first').clone().addClass('cloned') );
 				base.$el.find('.cloned').each(function(){
 					// disable all focusable elements in cloned panels to prevent shifting the panels by tabbing
 					$(this).find('a,input,textarea,select,button,area').attr('disabled', 'disabled');
-					$(this).find('[id]').removeAttr('id');
+					$(this).find('[id]').andSelf().removeAttr('id');
 				});
-			} 
+			}
 
-			// Set up panes & content sizes; default: panelWidth = 50% of entire width
+			// Set up panes & content sizes
+			// defined $panels again to include cloned panels
 			base.$panels = base.$el.children()
 				.addClass('mb-panel')
-				.css({ width : o.width * o.panelWidth, margin: 0 })
+				.css({ width : o.panelWidth, margin: 0 })
 				// inner wrap of each panel
 				.each(function(){
 					if ($(this).find('.mb-inside').length === 0) {
 						$(this).wrapInner('<div class="mb-inside" />');
 					}
 				});
-			base.totalPanels = base.$panels.length;
-			base.totalPanels -= (o.wrap && base.totalPanels > 1) ? 2 : 0; // don't include cloned panels in total
+			base.totalPanels = base.$panels.filter(':not(.cloned)').length; // don't include cloned panels in total
 
 			// save 'cur' numbers (current larger panel size), use stored sizes if they exist
 			t = base.$panels.eq(base.curPanel - base.adj);
-			base.curWidth = base.curWidth || t.outerWidth();
+			base.curWidth = t.width();
+			if (!o.panelWidth) { o.panelWidth = base.curWidth; }
 
 			// save 'reg' (reduced size) numbers
 			base.regWidth = base.curWidth * o.reducedSize;
@@ -236,7 +248,7 @@
 		// go forward/back
 		base.goForward = function(){
 			if (base.initialized) {
-				base.change(base.curPanel + 1); 
+				base.change(base.curPanel + 1);
 			}
 		};
 
@@ -294,11 +306,14 @@
 				base.currentlyMoving = true;
 
 				// center panel in scroll window
-				leftValue = base.$panels.eq(curPanel - base.adj).position().left - (o.width - base.curWidth) / 2;
+				base.$curPanel = base.$panels.eq(curPanel - base.adj);
+				leftValue = base.$curPanel.position().left - (o.width - base.curWidth) / 2;
 
 				// when scrolling right, add the difference of the larger current panel width
 				if (curPanel > base.curPanel || wrapped) { leftValue -= ( base.curWidth - base.regWidth ); }
 				ani = (o.fixedHeight) ? { scrollLeft : leftValue } : { scrollLeft: leftValue, height: base.heights[curPanel - base.adj] };
+
+				base.curPanel = curPanel;
 
 				// before animation trigger
 				if (base.initialized) { base.$el.trigger( 'beforeAnimation.movingBoxes', [ base, curPanel ] ); }
@@ -309,7 +324,6 @@
 						duration : o.speed,
 						easing   : o.easing,
 						complete : function(){
-							base.curPanel = curPanel;
 							if (base.initialized) {
 								base.$window.scrollTop(0); // Opera fix - otherwise, it moves the focus link to the middle of the viewport
 							}
@@ -320,8 +334,8 @@
 				);
 
 				base.returnToNormal(curPanel);
-				base.growBigger(curPanel);
-				if (!o.wrap) { base.updateArrows(curPanel); }
+				base.growBigger(curPanel, 1, flag); // 1 is the time, but it is ignored if not zero and set to o.speed
+				base.updateArrows(curPanel);
 				if (o.hashTags && base.initialized) { base.setHash(curPanel); }
 
 			}
@@ -336,8 +350,8 @@
 		};
 
 		base.updateArrows = function(cur){
-			base.$left.toggleClass(o.disabled, cur === base.adj);
-			base.$right.toggleClass(o.disabled, (cur === base.totalPanels || base.totalPanels === 0));
+			base.$left.toggleClass(o.disabled, !o.wrap && cur === base.adj);
+			base.$right.toggleClass(o.disabled, !o.wrap && (cur === base.totalPanels || base.totalPanels === 0));
 		};
 
 		// get & set hash tags
@@ -376,10 +390,11 @@
 	$.movingBoxes.defaultOptions = {
 		// Appearance
 		startPanel   : 1,         // start with this panel
-		width        : 800,       // overall width of movingBoxes
-		panelWidth   : 0.5,       // current panel width adjusted to 50% of overall width
 		reducedSize  : 0.8,       // non-current panel size: 80% of panel size
 		fixedHeight  : false,     // if true, slider height set to max panel height; if false, slider height will auto adjust.
+		// width and panelWidth are now set in the css, but these options still work for backwards compatibility
+		// width        : 800,       // overall width of movingBoxes
+		// panelWidth   : 500,       // current panel width adjusted to 50% of overall width
 
 		// Behaviour
 		speed        : 500,       // animation time in milliseconds

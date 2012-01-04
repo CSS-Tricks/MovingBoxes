@@ -6,18 +6,27 @@ $(function(){
 
 	$('#slider-one').movingBoxes({
 		startPanel   : 1,      // start with this panel
-		width        : 300,    // overall width of movingBoxes (not including navigation arrows)
+		reducedSize  : 0.8,    // non-current panel size: 80% of panel size
 		wrap         : true,   // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
 		buildNav     : true,   // if true, navigation links will be added
 		navFormatter : function(){ return "&#9679;"; } // function which returns the navigation text for each panel
+
+		// width and panelWidth options removed in v2.2.2, but still backwards compatible
+		// width        : 300,    // overall width of movingBoxes (not including navigation arrows)
+		// panelWidth   : 0.5,    // current panel width
+
 	});
 
 	$('#slider-two').movingBoxes({
 		startPanel   : 3,      // start with this panel
-		width        : 500,    // overall width of movingBoxes (not including navigation arrows)
-		panelWidth   : .7,     // current panel width adjusted to 70% of overall width
+		reducedSize  : 0.8,    // non-current panel size: 80% of panel size
 		buildNav     : true,   // if true, navigation links will be added
 		navFormatter : function(index, panel){ return panel.find('h2 span').text(); } // function which gets nav text from span inside the panel header
+
+		// width and panelWidth options removed in v2.2.2, but still backwards compatible
+		// width        : 500,    // overall width of movingBoxes (not including navigation arrows)
+		// panelWidth   : 0.7,    // current panel width
+
 	});
 
 	// Add a slide
@@ -76,15 +85,14 @@ $(function(){
 		return false;
 	});
 
-/*
 	// Report events to firebug console
 	$('.mb-slider').bind('initialized.movingBoxes initChange.movingBoxes beforeAnimation.movingBoxes completed.movingBoxes',function(e, slider, tar){
 		// show object ID + event in the firebug console
 		// namespaced events: e.g. e.type = "completed", e.namespace = "movingBoxes"
-		if (window.console && window.console.firebug){
+		if (window.console && window.console.log){
 			var txt = slider.$el[0].id + ': ' + e.type + ', now on panel #' + slider.curPanel + ', targeted panel is ' + tar;
-			console.debug( txt );
+			console.log( txt );
 		}
 	});
-*/
+
 });

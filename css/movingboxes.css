@@ -1,7 +1,16 @@
+/* Default MovingBoxes wrapper size */
+#movingboxes {
+	width: 900px;
+	min-height: 200px;
+}
+
+/* Default MovingBoxes panel size */
+#movingboxes > li {
+	width: 350px;
+}
+
 /*** Overall MovingBoxes Slider ***/
 .mb-wrapper {
-	width: 900px; /* default, this is overridden by script settings */
-	min-height: 200px;
 	border: 5px solid #ccc;
 	margin: 0 auto;
 	position: relative;
@@ -37,8 +46,7 @@
 
 /*** Slider panel ***/
 .mb-slider .mb-panel {
-	width: 350px;  /* default, this is overridden by script settings */
-	margin: 5px 0;
+	margin: 0;
 	padding: 5px;
 	display: block;
 	cursor: pointer;

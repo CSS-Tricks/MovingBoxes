@@ -16,13 +16,21 @@
 	
 	<!-- Demo only -->
 	<link href="demo/demo.css" media="screen" rel="stylesheet">
+	<style>
+		/* Dimensions set via css in MovingBoxes version 2.2.2+ */
+		#slider { width: 500px; }
+		#slider li { width: 250px; }
+	</style>
 	<script>
 	$(function(){
 
 		$('#slider').movingBoxes({
+			/* width and panelWidth options deprecated, but still work to keep the plugin backwards compatible
+			width: 500,
+			panelWidth: 0.5,
+			*/
 			startPanel   : 1,      // start with this panel
-			width        : 300,    // overall width of movingBoxes (not including navigation arrows)
-			wrap         : true,   // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
+			wrap         : false,   // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
 			buildNav     : true,   // if true, navigation links will be added
 			navFormatter : function(){ return "&#9679;"; } // function which returns the navigation text for each panel
 		});
@@ -41,7 +49,7 @@
 	<div id="nav">
 		<a href="index.html">Main Demo</a>
 		<a class="current" href="basic.html">Basic Demo</a>
-		<a class="play" href="http://jsfiddle.net/Mottie/SnjC4/">Playground</a>
+		<a class="play" href="http://jsfiddle.net/Mottie/jMXx3/">Playground</a>
 		<a class="git" href="https://github.com/chriscoyier/MovingBoxes/wiki">Documentation</a>
 		<a class="git" href="https://github.com/chriscoyier/MovingBoxes/downloads">Download</a>
 		<a class="issue" href="https://github.com/chriscoyier/MovingBoxes/issues">Issues</a>
