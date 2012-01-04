@@ -17,7 +17,7 @@
   * The plugin is still backwards compatible, so setting the `width` and `panelWidth` in the option will still override the css settings.
   * Updated the `movingboxes.css` with the following css:
 
-    ``css
+    ```css
     /* Default MovingBoxes wrapper size */
     #movingboxes {
       width: 900px;
