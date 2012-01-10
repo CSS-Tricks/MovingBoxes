@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.2.2
+ * Moving Boxes v2.2.3
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -35,15 +35,13 @@
 
 			base.initialized = false;
 			base.currentlyMoving = false;
-			base.curPanel = 1;
+			base.curPanel = (o.initAnimation) ? 1 : (o.hashTags) ?  base.getHash() || o.startPanel : o.startPanel;
 
-			// make backwards compatible - width & panelWidth deprecated in 2.2.2
-			if (!o.width) { o.width = base.$el.width(); }
-			if (!o.panelWidth) {
-				o.panelWidth = base.$panels.eq(0).width();
-			} else {
-				o.panelWidth = o.width * o.panelWidth; // change panelWidth (deprecation option) fraction into a px width
-			}
+			// save original slider width
+			base.width = (o.width) ? parseInt(o.width,10) : base.$el.width();
+			// save panel width, o.panelWidth originally a fraction (0.5 of o.width) if defined, or get first panel width
+			// now can be set after initialization to resize using fraction (value <= 2) or px (all values > 2)
+			base.pWidth = (o.panelWidth) ? (o.panelWidth <=2 ? o.panelWidth * base.width : o.panelWidth) : base.$panels.eq(0).width();
 
 			// Set up click on left/right arrows
 			base.$left = base.$wrap.find('.mb-left').click(function(){
@@ -56,12 +54,28 @@
 			});
 
 			// code to run to update MovingBoxes when the number of panels change
-			base.update();
-			$(window).load(function(){ base.update(false); }); // animate height after all images load
+			base.update(false);
+			$(window).load(function(){ // animate height after all images load
+				base.update(false);
+
+				// Set up "Current" panel
+				var startPanel = (o.hashTags) ?  base.getHash() || o.startPanel : o.startPanel;
+				// animate to chosen start panel - starting from the first panel makes it look better
+				setTimeout(function(){
+					base.change(startPanel, function(){
+						base.initialized = true;
+						base.$el.trigger( 'initialized.movingBoxes', [ base, startPanel ] );
+					}, false);
+				}, o.speed * 2 );
+
+			});
 
 			// go to clicked panel
-			base.$el.delegate('.mb-panel', 'click', function(){
-				base.change( base.$panels.index($(this)) + base.adj );
+			base.$el.delegate('.mb-panel', 'click', function(e){
+				if (!$(this).hasClass(o.currentPanel)) {
+					e.preventDefault();  // prevent non-current panel links from working
+					base.change( base.$panels.index($(this)) + base.adj );
+				}
 			});
 
 			// Activate moving box on click or when an internal link obtains focus
@@ -70,8 +84,10 @@
 			});
 			base.$panels.delegate('a', 'focus' ,function(){
 				// focused link centered in moving box
-				var loc = base.$panels.index($(this).closest('.mb-panel')) + 1;
-				if (loc !== base.curPanel){ base.change( base.$panels.index($(this).closest('.mb-panel')) + 1, {}, false ); }
+				var loc = base.$panels.index($(this).closest('.mb-panel')) + base.adj;
+				if (loc !== base.curPanel){
+					base.change( base.$panels.index($(this).closest('.mb-panel')) + base.adj, {}, false );
+				}
 			});
 
 			// Add keyboard navigation
@@ -92,9 +108,6 @@
 				}
 			});
 
-			// Set up "Current" panel
-			var startPanel = (o.hashTags) ?  base.getHash() || o.startPanel : o.startPanel;
-
 			// Bind Events
 			$.each('initialized initChange beforeAnimation completed'.split(' '), function(i,evt){
 				if ($.isFunction(o[evt])){
@@ -102,26 +115,18 @@
 				}
 			});
 
-			// animate to chosen start panel - starting from the first panel makes it look better
-			setTimeout(function(){
-				base.change(startPanel, function(){
-					base.initialized = true;
-					base.$el.trigger( 'initialized.movingBoxes', [ base, startPanel ] );
-				}, false);
-			}, o.speed * 2 );
-
 		};
 
 		// update the panel, flag is used to prevent events from firing
-		base.update = function(flag){
-			var t;
+		base.update = function(flag, callback){
 
 			// Infinite loop
 			base.$el.children('.cloned').remove();
 			base.$panels = base.$el.children();
 			base.adj = (o.wrap && base.$panels.length > 1) ? 0 : 1; // count adjustment for infinite panels
 
-			base.$wrap.css('width', o.width); // set wrapper width
+			base.width = (o.width) ? parseInt(o.width,10) : base.width;
+			base.$wrap.css('width', base.width); // set wrapper width
 
 			if (o.wrap && base.$panels.length > 1) {
 				base.$el.prepend( base.$panels.filter(':last').clone().addClass('cloned') );
@@ -137,7 +142,7 @@
 			// defined $panels again to include cloned panels
 			base.$panels = base.$el.children()
 				.addClass('mb-panel')
-				.css({ width : o.panelWidth, margin: 0 })
+				.css('margin',0)
 				// inner wrap of each panel
 				.each(function(){
 					if ($(this).find('.mb-inside').length === 0) {
@@ -147,9 +152,7 @@
 			base.totalPanels = base.$panels.filter(':not(.cloned)').length; // don't include cloned panels in total
 
 			// save 'cur' numbers (current larger panel size), use stored sizes if they exist
-			t = base.$panels.eq(base.curPanel - base.adj);
-			base.curWidth = t.width();
-			if (!o.panelWidth) { o.panelWidth = base.curWidth; }
+			base.curWidth = (o.panelWidth) ? (o.panelWidth <=2 ? o.panelWidth * base.width : o.panelWidth) : base.pWidth;
 
 			// save 'reg' (reduced size) numbers
 			base.regWidth = base.curWidth * o.reducedSize;
@@ -170,16 +173,16 @@
 			base.$el.css({
 				position : 'absolute',
 				// add a bit more width to each box (100px should cover margin/padding, etc; then add 1/2 overall width in case only one panel exists
-				width    : (base.curWidth + 100) * base.$panels.length + (o.width - base.curWidth) / 2,
+				width    : (base.curWidth + 100) * base.$panels.length + (base.width - base.curWidth) / 2,
 				height   : Math.max.apply( this, base.heights ) + 10
 			});
 			base.$window.css({ height : (o.fixedHeight) ? Math.max.apply( this, base.heights ) : base.heights[base.curPanel - base.adj] });
 			// add padding so scrollLeft = 0 centers the left-most panel (needed because scrollLeft cannot be < 0)
-			base.$panels.eq(0).css({ 'margin-left' : (o.width - base.curWidth) / 2 });
+			base.$panels.eq(0).css({ 'margin-left' : (base.width - base.curWidth) / 2 });
 
 			base.buildNav();
 
-			base.change(base.curPanel, null, true); // initialize from first panel... then scroll to start panel
+			base.change(base.curPanel, callback, (flag === false) ? false : true); // initialize from first panel... then scroll to start panel
 
 		};
 
@@ -229,12 +232,12 @@
 			var panels = base.$panels.eq(num - base.adj);
 			if (o.reducedSize === 1) {
 				panels.css({ width: base.curWidth }); // excluding fontsize change to prevent video flicker
-				if (base.initialized) { base.completed(num, flag); }
+				base.completed(num, flag);
 			} else {
 				panels.animate({ width: base.curWidth, fontSize: '1em' }, (time === 0) ? 0 : o.speed, function(){
 					// completed event trigger
 					// even though animation is not queued, trigger is here because it is the last animation to complete
-					if (base.initialized) { base.completed(num, flag); }
+					base.completed(num, flag);
 				});
 			}
 		};
@@ -265,11 +268,12 @@
 				return;
 			}
 			var ani, leftValue, wrapped = false;
+			flag = flag !== false;
 
 			// make sure it's a number and not a string
 			curPanel = parseInt(curPanel, 10);
 
-			if (base.initialized) {
+			if (base.initialized && flag) {
 				// make this moving box active
 				base.active();
 				// initChange event - has extra parameter with targeted panel (not cleaned)
@@ -283,22 +287,20 @@
 					curPanel = 1;
 					base.returnToNormal(0, 0);
 					base.growBigger(0, 0, false);
-					leftValue = base.$panels.eq(0).position().left - (o.width - base.curWidth) / 2; // - ( base.curWidth - base.regWidth );
+					leftValue = base.$panels.eq(0).position().left - (base.width - base.curWidth) / 2; // - ( base.curWidth - base.regWidth );
 					base.$window.scrollLeft(leftValue);
 				} else if (curPanel === 0) {
 					wrapped = false;
 					curPanel = base.totalPanels;
+					base.returnToNormal(curPanel + 1, 0);
 					base.growBigger(curPanel + 1, 0, false);
-					leftValue = base.$panels.eq(curPanel + 1).position().left - (o.width - base.curWidth) / 2; // - ( base.curWidth - base.regWidth );
+					leftValue = base.$panels.eq(curPanel + 1).position().left - (base.width - base.curWidth) / 2; // - ( base.curWidth - base.regWidth );
 					base.$window.scrollLeft(leftValue);
 				}
 			}
 
 			if ( curPanel < base.adj ) { curPanel = (o.wrap) ? base.totalPanels : 1; }
 			if ( curPanel > base.totalPanels - base.adj ) { curPanel = (o.wrap) ? 1 : base.totalPanels; }
-
-			// don't do anything if it's the same panel
-			if (base.initialized && base.curPanel === curPanel && !flag) { return false; }
 
 			// abort if panel is already animating
 			// animation callback to clear this flag is not called when the slider doesn't move, so include base.initialized
@@ -307,16 +309,15 @@
 
 				// center panel in scroll window
 				base.$curPanel = base.$panels.eq(curPanel - base.adj);
-				leftValue = base.$curPanel.position().left - (o.width - base.curWidth) / 2;
+				leftValue = base.$curPanel.position().left - (base.width - base.curWidth) / 2;
 
 				// when scrolling right, add the difference of the larger current panel width
 				if (curPanel > base.curPanel || wrapped) { leftValue -= ( base.curWidth - base.regWidth ); }
 				ani = (o.fixedHeight) ? { scrollLeft : leftValue } : { scrollLeft: leftValue, height: base.heights[curPanel - base.adj] };
 
 				base.curPanel = curPanel;
-
 				// before animation trigger
-				if (base.initialized) { base.$el.trigger( 'beforeAnimation.movingBoxes', [ base, curPanel ] ); }
+				if (base.initialized && flag) { base.$el.trigger( 'beforeAnimation.movingBoxes', [ base, curPanel ] ); }
 				// animate the panels
 				base.$window.animate( ani,
 					{
@@ -341,7 +342,7 @@
 			}
 
 			// Update navigation links
-			if (o.buildNav && base.$nav) {
+			if (o.buildNav && base.$nav.length) {
 				base.$nav.find('a')
 					.removeClass(o.currentPanel)
 					.eq(curPanel - 1).addClass(o.currentPanel);
@@ -398,6 +399,7 @@
 
 		// Behaviour
 		speed        : 500,       // animation time in milliseconds
+		initAnimation: true,      // if true, movingBoxes will initialize, then animate into the starting slide (if not the first slide)
 		hashTags     : true,      // if true, hash tags are enabled
 		wrap         : false,     // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
 		buildNav     : false,     // if true, navigation links will be added

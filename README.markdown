@@ -10,6 +10,43 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+###Version 2.2.3 (1/7/2012)
+
+* Added `initAnimation` option:
+  * When `true` (default), MovingBoxes will show the initial animation starting from the first panel and sliding into the current panel (as determined by the hash or `startPanel` option).
+  * If `false`, no animation will be seen and MovingBoxes will start on the appropriate panel.
+* The update method now has a flag to prevent callbacks from firing and also has it's own callback:
+  * Set the flag to `false` to prevent the built-in callbacks (initChange, beforeAnimation & completed) from firing during the update. This flag is useful if you plan to call the update method a lot, like when the window resizes.
+  * The callback for the update is used as follows:
+
+    ```javascript
+    // update(flag, callback);
+    $('#slider').data('movingBoxes').update(false, function(slider){
+      alert('update complete');
+    });
+    ```
+
+* Fixed clicking on links in the current panel would go to the next panel. Fix for [issue #60](https://github.com/chriscoyier/MovingBoxes/issues/60).
+* Updated method of plugin initialization to hopefully ensure that the `completed` callback will not fire until after initialization. Update for [issue #57](https://github.com/chriscoyier/MovingBoxes/issues/57).
+* Fixed a problem where the navigation was clearing the current panel after using the update method.
+* Hopefully fixed the problems brought up in [issue #49](https://github.com/chriscoyier/MovingBoxes/issues/49). So using this bit of code will allow you to set the MovingBoxes width as a **percentage value**.
+
+    ```javascript
+    $(function(){
+      $(window).resize(function(){
+        // get MovingBoxes plugin object
+        var slider = $('.slider').data('movingBoxes');
+        // set overall width to 50% of the browser width
+        slider.options.width = $(window).width() * 0.5;
+        // set panel Width to be 50% of MovingBoxes width (which ends up being 25% of browser width; 50% x 50%)
+        // OR you can set the panelWidth to a px amount, say 300 instead of a fraction: "slider.options.panelWidth = 300"
+        slider.options.panelWidth = 0.5;
+        // update the slider; include false flag to prevent built-in callbacks from firing (optional)
+        slider.update(false);
+      }).resize(); // trigger window resize to do the initial resizing.
+    });
+    ```
+
 ###Version 2.2.2 (1/3/2012)
 
 * Removed the `width` and `panelWidth` options.

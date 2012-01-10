@@ -32,7 +32,6 @@ $(function(){
 	// Add a slide
 	var imageNumber = 0,
 	// Set up demo external navigation links
-	// could also set len = $('#slider-one').getMovingBoxes().totalPanels;
 	navLinks = function(){
 		var i, t = '', len = $('#slider-one').getMovingBoxes().totalPanels + 1;
 		for ( i = 1; i < len; i++ ) {
