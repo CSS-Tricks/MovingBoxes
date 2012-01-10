@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.2.3
+ * Moving Boxes v2.2.4
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -292,7 +292,6 @@
 				} else if (curPanel === 0) {
 					wrapped = false;
 					curPanel = base.totalPanels;
-					base.returnToNormal(curPanel + 1, 0);
 					base.growBigger(curPanel + 1, 0, false);
 					leftValue = base.$panels.eq(curPanel + 1).position().left - (base.width - base.curWidth) / 2; // - ( base.curWidth - base.regWidth );
 					base.$window.scrollLeft(leftValue);

@@ -10,7 +10,11 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
-###Version 2.2.3 (1/7/2012)
+###Version 2.2.4 (1/10/2012)
+
+* Fixed a bug introduced in the last update where the last panel would be misaligned when scrolling in the previous direction.
+
+###Version 2.2.3 (1/10/2012)
 
 * Added `initAnimation` option:
   * When `true` (default), MovingBoxes will show the initial animation starting from the first panel and sliding into the current panel (as determined by the hash or `startPanel` option).
