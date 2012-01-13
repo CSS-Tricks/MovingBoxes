@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.2.4
+ * Moving Boxes v2.2.5
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -57,17 +57,6 @@
 			base.update(false);
 			$(window).load(function(){ // animate height after all images load
 				base.update(false);
-
-				// Set up "Current" panel
-				var startPanel = (o.hashTags) ?  base.getHash() || o.startPanel : o.startPanel;
-				// animate to chosen start panel - starting from the first panel makes it look better
-				setTimeout(function(){
-					base.change(startPanel, function(){
-						base.initialized = true;
-						base.$el.trigger( 'initialized.movingBoxes', [ base, startPanel ] );
-					}, false);
-				}, o.speed * 2 );
-
 			});
 
 			// go to clicked panel
@@ -114,6 +103,17 @@
 					base.$el.bind(evt + '.movingBoxes', o[evt]);
 				}
 			});
+
+			// Set up "Current" panel
+			base.curPanel = (o.hashTags) ?  base.getHash() || o.startPanel : o.startPanel;
+
+			// animate to chosen start panel - starting from the first panel makes it look better
+			setTimeout(function(){
+				base.change(base.curPanel, function(){
+					base.initialized = true;
+					base.$el.trigger( 'initialized.movingBoxes', [ base, base.curPanel ] );
+				}, false);
+			}, o.speed * 2 );
 
 		};
 
