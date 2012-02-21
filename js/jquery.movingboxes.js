@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.2.5
+ * Moving Boxes v2.2.6
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -63,7 +63,7 @@
 			base.$el.delegate('.mb-panel', 'click', function(e){
 				if (!$(this).hasClass(o.currentPanel)) {
 					e.preventDefault();  // prevent non-current panel links from working
-					base.change( base.$panels.index($(this)) + base.adj );
+					base.change( base.$panels.index($(this)) + base.adj, {}, true );
 				}
 			});
 
@@ -75,7 +75,7 @@
 				// focused link centered in moving box
 				var loc = base.$panels.index($(this).closest('.mb-panel')) + base.adj;
 				if (loc !== base.curPanel){
-					base.change( base.$panels.index($(this).closest('.mb-panel')) + base.adj, {}, false );
+					base.change( base.$panels.index($(this).closest('.mb-panel')) + base.adj, {}, true );
 				}
 			});
 

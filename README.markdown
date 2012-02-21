@@ -10,6 +10,15 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+###Version 2.2.6 (2/21/2012)
+
+* Clicking on panels to switch will now trigger callbacks. Fix for [issue #66](https://github.com/chriscoyier/MovingBoxes/issues/66).
+
+###Version 2.2.5 (1/13/2012)
+
+* Fixed a problem with multiple initializations.
+* Remove the name attribute from inputs in cloned panels.
+
 ###Version 2.2.4 (1/10/2012)
 
 * Fixed a bug introduced in the last update where the last panel would be misaligned when scrolling in the previous direction.
