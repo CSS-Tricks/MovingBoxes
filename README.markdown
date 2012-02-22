@@ -10,6 +10,10 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.2.8 (2/22/2012)
+
+* Clicking on side panels should not follow the link. A better fix for [issue #67](https://github.com/chriscoyier/MovingBoxes/issues/67).
+
 ### Version 2.2.7 (2/21/2012)
 
 * Clicking on the side panels that are completely wrapped in a link should no longer open that link. Attempt to fix [issue #67](https://github.com/chriscoyier/MovingBoxes/issues/67).

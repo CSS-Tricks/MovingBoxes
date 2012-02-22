@@ -1,5 +1,5 @@
 /*
- * Moving Boxes v2.2.7
+ * Moving Boxes v2.2.8
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -233,7 +233,10 @@
 			var panels = base.$panels.eq(num - base.adj);
 			if (o.reducedSize === 1) {
 				panels.css({ width: base.curWidth }); // excluding fontsize change to prevent video flicker
-				base.completed(num, flag);
+				// time delay prevents click outer panel from following links - fixes issue #67
+				setTimeout(function(){
+					base.completed(num, flag);
+				}, (time === 0) ? 0 : o.speed);
 			} else {
 				panels.animate({ width: base.curWidth, fontSize: '1em' }, (time === 0) ? 0 : o.speed, function(){
 					// completed event trigger
