@@ -1,5 +1,5 @@
-/*
- * Moving Boxes v2.2.8
+﻿/*
+ * Moving Boxes v2.2.9
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -69,7 +69,9 @@
 
 			// Activate moving box on click or when an internal link obtains focus
 			base.$wrap.click(function(){
-				base.active();
+				if (!base.$wrap.hasClass('mb-active-slider')) {
+					base.active();
+				}
 			});
 			base.$panels.delegate('a', 'focus' ,function(e){
 				e.preventDefault();
@@ -99,7 +101,7 @@
 			});
 
 			// Bind Events
-			$.each('initialized initChange beforeAnimation completed'.split(' '), function(i,evt){
+			$.each('preinit initialized initChange beforeAnimation completed'.split(' '), function(i,evt){
 				if ($.isFunction(o[evt])){
 					base.$el.bind(evt + '.movingBoxes', o[evt]);
 				}
@@ -107,6 +109,8 @@
 
 			// Set up "Current" panel
 			base.curPanel = (o.hashTags) ?  base.getHash() || o.startPanel : o.startPanel;
+
+			base.$el.trigger( 'preinit.movingBoxes', [ base, base.curPanel ] );
 
 			// animate to chosen start panel - starting from the first panel makes it look better
 			setTimeout(function(){
@@ -189,30 +193,37 @@
 
 		// Creates the numbered navigation links
 		base.buildNav = function() {
-			if (base.$nav) { base.$nav.remove(); }
+			if (base.$nav) {
+				base.$nav.find('.mb-links').empty();
+			} else {
+				base.$nav = $('<div class="mb-controls"><span class="mb-links"></span></div>').appendTo(base.$wrap);
+			}
 			if (o.buildNav && base.totalPanels > 1) {
-				base.$nav = $('<div class="mb-controls"><a class="mb-testing"></a></div>').appendTo(base.$wrap);
-				var j, a = '',
-				navFormat = $.isFunction(o.navFormatter),
-				// need link in place to get CSS properties
-				hiddenText = parseInt( base.$nav.find('.mb-testing').css('text-indent'), 10) < 0;
-				base.$panels.filter(':not(.cloned)').each(function(i) {
+				var t, j, a = '', $a,
+				navFormat = $.isFunction(o.navFormatter);
+				base.$panels.filter(':not(.cloned)').each(function(i){
 					j = i + 1;
-					a += '<a href="#" class="mb-panel' + j;
+					a = '<a class="mb-link mb-panel' + j + '" href="#"></a>';
+					$a = $(a);
 					// If a formatter function is present, use it
-					if (navFormat) {
-						var tmp = o.navFormatter(j, $(this));
-						// Add formatting to title attribute if text is hidden
-						a += (hiddenText) ? ' ' + o.tooltipClass +'" title="' + tmp : '';
-						a += '">' + tmp + '</a> ';
+					if ($.isFunction(o.navigationFormatter)) {
+						t = o.navigationFormatter(i, $(this));
+						if (typeof(t) === "string") {
+							$a.html(t);
+						} else {
+							$a = $('<a/>', t);
+						}
 					} else {
-						a += '">' + j + '</a> ';
+						$a.html(j);
 					}
+					$a
+					.appendTo(base.$nav.find('.mb-links'))
+					.addClass('mb-link mb-panel' + j)
+					.data('index', j);
 				});
 				base.$nav
-					.html(a)
-					.find('a').bind('click', function() {
-						base.change( $(this).index() + 1 );
+					.find('a.mb-link').bind('click', function() {
+						base.change( $(this).data('index') );
 						return false;
 					});
 			}
@@ -279,7 +290,7 @@
 
 			if (base.initialized && flag) {
 				// make this moving box active
-				base.active();
+				if (!base.$wrap.hasClass('mb-active-slider')) { base.active(); }
 				// initChange event - has extra parameter with targeted panel (not cleaned)
 				base.$el.trigger( 'initChange.movingBoxes', [ base, curPanel ] );
 			}
@@ -346,7 +357,7 @@
 
 			// Update navigation links
 			if (o.buildNav && base.$nav.length) {
-				base.$nav.find('a')
+				base.$nav.find('a.mb-link')
 					.removeClass(o.currentPanel)
 					.eq(curPanel - 1).addClass(o.currentPanel);
 			}
@@ -415,8 +426,9 @@
 		disabled     : 'disabled',// class added to arrows that are disabled (left arrow when on first panel, right arrow on last panel)
 
 		// Callbacks
-		initialized     : null,   // callback when MovingBoxes has completed initialization
-		initChange      : null,   // callback upon change panel initialization
+		preinit         : null,   // callback after the basic MovingBoxes structure has been built; before "initialized"
+		initialized     : null,   // callback when MovingBoxes has completed initialization; all images loaded
+		initChange      : null,   // callback upon change panel change initialization
 		beforeAnimation : null,   // callback before any animation occurs
 		completed       : null    // callback after animation completes
 	};
