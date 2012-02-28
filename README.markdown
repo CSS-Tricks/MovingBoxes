@@ -10,6 +10,10 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.2.10 (2/28/2012)
+
+* Fixed navFormatter - I copied the code from AnythingSlider which has its option named "navigationFormatter", not "navFormatter". That'll teach me for not testing!
+
 ### Version 2.2.9 (2/27/2012)
 
 * Added `preinit` callback/event

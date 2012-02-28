@@ -1,5 +1,5 @@
 ﻿/*
- * Moving Boxes v2.2.9
+ * Moving Boxes v2.2.10
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -199,15 +199,14 @@
 				base.$nav = $('<div class="mb-controls"><span class="mb-links"></span></div>').appendTo(base.$wrap);
 			}
 			if (o.buildNav && base.totalPanels > 1) {
-				var t, j, a = '', $a,
-				navFormat = $.isFunction(o.navFormatter);
+				var t, j, a = '', $a;
 				base.$panels.filter(':not(.cloned)').each(function(i){
 					j = i + 1;
 					a = '<a class="mb-link mb-panel' + j + '" href="#"></a>';
 					$a = $(a);
 					// If a formatter function is present, use it
-					if ($.isFunction(o.navigationFormatter)) {
-						t = o.navigationFormatter(i, $(this));
+					if ($.isFunction(o.navFormatter)) {
+						t = o.navFormatter(i, $(this));
 						if (typeof(t) === "string") {
 							$a.html(t);
 						} else {
