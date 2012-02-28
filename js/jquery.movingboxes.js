@@ -206,7 +206,7 @@
 					$a = $(a);
 					// If a formatter function is present, use it
 					if ($.isFunction(o.navFormatter)) {
-						t = o.navFormatter(i, $(this));
+						t = o.navFormatter(j, $(this));
 						if (typeof(t) === "string") {
 							$a.html(t);
 						} else {

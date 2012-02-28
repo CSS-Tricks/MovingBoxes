@@ -12,7 +12,9 @@
 
 ### Version 2.2.10 (2/28/2012)
 
-* Fixed navFormatter - I copied the code from AnythingSlider which has its option named "navigationFormatter", not "navFormatter". That'll teach me for not testing!
+* Fixed navFormatter
+ * I copied the code from AnythingSlider which has its option named "navigationFormatter", not "navFormatter". That'll teach me for not testing!
+ * Fixed the index since it was sending the navFormatter a zero-based index instead of the expected one-based index.
 
 ### Version 2.2.9 (2/27/2012)
 
