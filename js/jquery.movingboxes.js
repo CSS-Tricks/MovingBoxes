@@ -1,5 +1,5 @@
 ﻿/*
- * Moving Boxes v2.2.10
+ * Moving Boxes v2.2.11
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -78,7 +78,7 @@
 				// focused link centered in moving box
 				var loc = base.$panels.index($(this).closest('.mb-panel')) + base.adj;
 				if (loc !== base.curPanel){
-					base.change( base.$panels.index($(this).closest('.mb-panel')) + base.adj, {}, true );
+					base.change( loc, {}, true );
 				}
 			});
 
@@ -258,7 +258,8 @@
 
 		base.completed = function(num, flag){
 			// add current panel class after animating in case it has sizing parameters
-			base.$panels.eq(num - base.adj).addClass(o.currentPanel);
+			var loc = base.$panels.eq(num - base.adj);
+			if (!loc.hasClass('cloned')) { loc.addClass(o.currentPanel); }
 			if (flag !== false) { base.$el.trigger( 'completed.movingBoxes', [ base, num ] ); }
 		};
 
