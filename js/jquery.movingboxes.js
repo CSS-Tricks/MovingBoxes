@@ -1,10 +1,10 @@
 ﻿/*
- * Moving Boxes v2.2.12
+ * Moving Boxes v2.2.13
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
 
-(function($){
+!(function($){
 	$.movingBoxes = function(el, options){
 		// To avoid scope issues, use 'base' instead of 'this'
 		// to reference this class from internal events and functions.
@@ -234,7 +234,7 @@
 			if (o.reducedSize === 1) {
 				panels.css({ width: base.regWidth }); // excluding fontsize change to prevent video flicker
 			} else {
-				panels.animate({ width: base.regWidth, fontSize: o.reducedSize + 'em' }, (time === 0) ? 0 : o.speed);
+				panels.stop(true,true).animate({ width: base.regWidth, fontSize: o.reducedSize + 'em' }, (time === 0) ? 0 : o.speed);
 			}
 		};
 
@@ -248,7 +248,7 @@
 					base.completed(num, flag);
 				}, (time === 0) ? 0 : o.speed);
 			} else {
-				panels.animate({ width: base.curWidth, fontSize: '1em' }, (time === 0) ? 0 : o.speed, function(){
+				panels.stop(true,true).animate({ width: base.curWidth, fontSize: '1em' }, (time === 0) ? 0 : o.speed, function(){
 					// completed event trigger
 					// even though animation is not queued, trigger is here because it is the last animation to complete
 					base.completed(num, flag);
@@ -278,7 +278,7 @@
 
 		// Change view to display selected panel
 		base.change = function(curPanel, callback, flag){
-			if (base.currentlyMoving) { return; } // animation flag
+			//if (base.currentlyMoving) { return; } // animation flag
 			if (base.totalPanels < 1) {
 				if (typeof(callback) === 'function') { callback(base); }
 				return;
@@ -321,7 +321,7 @@
 			// animation callback needed to clear this flag, but there is no animation before base.initialized is set
 			if (!base.currentlyMoving || !base.initialized) {
 				// set animation flag; animation callback will clear this flag
-				base.currentlyMoving = true;
+				base.currentlyMoving = !o.stopAnimation;
 
 				// center panel in scroll window
 				base.$curPanel = base.$panels.eq(curPanel - base.adj);
@@ -335,7 +335,7 @@
 				// before animation trigger
 				if (base.initialized && flag) { base.$el.trigger( 'beforeAnimation.movingBoxes', [ base, curPanel ] ); }
 				// animate the panels
-				base.$window.animate( ani,
+				base.$window.stop(true,true).animate( ani,
 					{
 						queue    : false,
 						duration : o.speed,
@@ -416,6 +416,7 @@
 		// Behaviour
 		speed        : 500,       // animation time in milliseconds
 		initAnimation: true,      // if true, movingBoxes will initialize, then animate into the starting slide (if not the first slide)
+		stopAnimation: false,     // if true, movingBoxes will force the animation to complete immediately, if the user selects the next panel
 		hashTags     : true,      // if true, hash tags are enabled
 		wrap         : false,     // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
 		buildNav     : false,     // if true, navigation links will be added

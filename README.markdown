@@ -10,6 +10,14 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.2.13 (3/2/2012)
+
+* Added `stopAnimation` option.
+ * If false, movingBoxes will continue to behave as it always has. Any attempt to navigation using arrows or the navigation panel will be ignored until the animation has completed.
+ * When true, movingBoxes will force the animation to complete immediately, if the user selects the next panel.
+ * This will speed up the animation between panels, but the slider will jump to the next slide instead of smoothly animating.
+ * Setting this to true appears to work nicely when adding [navigation using a mousewheel](http://jsfiddle.net/Mottie/jMXx3/749/).
+
 ### Version 2.2.12 (3/2/2012)
 
 * Added callbacks to the `goForward()` and `goBack()` internal functions. Previously only the `change()` function had a callback option. Use it as follows:
