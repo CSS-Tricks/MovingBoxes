@@ -1,5 +1,5 @@
 ﻿/*
- * Moving Boxes v2.2.11
+ * Moving Boxes v2.2.12
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -264,20 +264,21 @@
 		};
 
 		// go forward/back
-		base.goForward = function(){
+		base.goForward = function(callback){
 			if (base.initialized) {
-				base.change(base.curPanel + 1);
+				base.change(base.curPanel + 1, callback);
 			}
 		};
 
-		base.goBack = function(){
+		base.goBack = function(callback){
 			if (base.initialized) {
-				base.change(base.curPanel - 1);
+				base.change(base.curPanel - 1, callback);
 			}
 		};
 
 		// Change view to display selected panel
 		base.change = function(curPanel, callback, flag){
+			if (base.currentlyMoving) { return; } // animation flag
 			if (base.totalPanels < 1) {
 				if (typeof(callback) === 'function') { callback(base); }
 				return;
@@ -317,8 +318,9 @@
 			if ( curPanel > base.totalPanels - base.adj ) { curPanel = (o.wrap) ? 1 : base.totalPanels; }
 
 			// abort if panel is already animating
-			// animation callback to clear this flag is not called when the slider doesn't move, so include base.initialized
+			// animation callback needed to clear this flag, but there is no animation before base.initialized is set
 			if (!base.currentlyMoving || !base.initialized) {
+				// set animation flag; animation callback will clear this flag
 				base.currentlyMoving = true;
 
 				// center panel in scroll window

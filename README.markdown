@@ -10,6 +10,26 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.2.12 (3/2/2012)
+
+* Added callbacks to the `goForward()` and `goBack()` internal functions. Previously only the `change()` function had a callback option. Use it as follows:
+
+    ```javascript
+    var mb = $('#slider').data('movingBoxes');
+
+    // change needs a panel number: mb.change(2, callback);
+
+    // mb.goForward(callback) or mb.goBack(callback)
+    mb.goForward(function(){
+       // do something after MovingBoxes has finished the animation
+    });
+    ```
+
+* Modified the internal `change` function:
+ * Multiple calls to it in rapid succession will no longer break the appearance of the slider.
+ * Changed to make this [mousewheel demo](http://jsfiddle.net/Mottie/jMXx3/744/) would work properly.
+ * In response to [issue #71](https://github.com/chriscoyier/MovingBoxes/issues/71).
+
 ### Version 2.2.11 (2/28/2012)
 
 * Fixed cloned panels getting labeled with the "current" class. This will fix [issue #67](https://github.com/chriscoyier/MovingBoxes/issues/67).
