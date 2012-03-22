@@ -1,10 +1,9 @@
-﻿/*
- * Moving Boxes v2.2.13
+﻿/*!
+ * Moving Boxes v2.2.14
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
-
-!(function($){
+;(function($){
 	$.movingBoxes = function(el, options){
 		// To avoid scope issues, use 'base' instead of 'this'
 		// to reference this class from internal events and functions.
@@ -35,7 +34,7 @@
 
 			base.initialized = false;
 			base.currentlyMoving = false;
-			base.curPanel = (o.initAnimation) ? 1 : (o.hashTags) ?  base.getHash() || o.startPanel : o.startPanel;
+			base.curPanel = (o.initAnimation) ? 1 : base.getHash() || o.startPanel;
 
 			// save original slider width
 			base.width = (o.width) ? parseInt(o.width,10) : base.$el.width();
@@ -108,7 +107,7 @@
 			});
 
 			// Set up "Current" panel
-			base.curPanel = (o.hashTags) ?  base.getHash() || o.startPanel : o.startPanel;
+			base.curPanel = base.getHash() || o.startPanel;
 
 			base.$el.trigger( 'preinit.movingBoxes', [ base, base.curPanel ] );
 
@@ -234,7 +233,7 @@
 			if (o.reducedSize === 1) {
 				panels.css({ width: base.regWidth }); // excluding fontsize change to prevent video flicker
 			} else {
-				panels.stop(true,true).animate({ width: base.regWidth, fontSize: o.reducedSize + 'em' }, (time === 0) ? 0 : o.speed);
+				panels.stop(true,false).animate({ width: base.regWidth, fontSize: o.reducedSize + 'em' }, (time === 0) ? 0 : o.speed);
 			}
 		};
 
@@ -248,7 +247,7 @@
 					base.completed(num, flag);
 				}, (time === 0) ? 0 : o.speed);
 			} else {
-				panels.stop(true,true).animate({ width: base.curWidth, fontSize: '1em' }, (time === 0) ? 0 : o.speed, function(){
+				panels.stop(true,false).animate({ width: base.curWidth, fontSize: '1em' }, (time === 0) ? 0 : o.speed, function(){
 					// completed event trigger
 					// even though animation is not queued, trigger is here because it is the last animation to complete
 					base.completed(num, flag);
@@ -286,8 +285,14 @@
 			var ani, leftValue, wrapped = false;
 			flag = flag !== false;
 
-			// make sure it's a number and not a string
-			curPanel = parseInt(curPanel, 10);
+			// check if curPanel is an id or class name
+			if (/^[#|.]/.test(curPanel) && $(curPanel).length) {
+				curPanel = $(curPanel).closest('.mb-panel').index() + base.adj;
+			} else {
+
+				// make sure it's a number and not a string
+				curPanel = parseInt(curPanel, 10);
+			}
 
 			if (base.initialized && flag) {
 				// make this moving box active
@@ -335,7 +340,7 @@
 				// before animation trigger
 				if (base.initialized && flag) { base.$el.trigger( 'beforeAnimation.movingBoxes', [ base, curPanel ] ); }
 				// animate the panels
-				base.$window.stop(true,true).animate( ani,
+				base.$window.scrollTop(0).stop(true,false).animate( ani,
 					{
 						queue    : false,
 						duration : o.speed,
@@ -371,12 +376,27 @@
 			base.$right.toggleClass(o.disabled, !o.wrap && (cur === base.totalPanels || base.totalPanels === 0));
 		};
 
-		// get & set hash tags
+		// This method tries to find a hash that matches an ID and slider-X
+		// If either found, it tries to find a matching item
+		// If that is found as well, then it returns the page number
 		base.getHash = function(){
-			var n = window.location.hash.match(base.regex);
-			return (n===null) ? '' : parseInt(n[1],10);
+			var h = window.location.hash,
+				i = h.indexOf('&'),
+				n = h.match(base.regex);
+			// test for "/#/" or "/#!/" used by the jquery address plugin - $('#/') breaks jQuery
+			if (n === null && !/^#&/.test(h) && !/#!?\//.test(h)) {
+				// #quote2&panel1-3&panel3-3
+				h = h.substring(0, (i >= 0 ? i : h.length));
+				// ensure the element is in the same slider
+				n = ($(h).length && $(h).closest('.mb-slider')[0] === base.el) ? $(h).closest('.mb-panel').index() + base.adj : null;
+			} else if (n !== null) {
+				// #&panel1-3&panel3-3
+				n = (o.hashTags) ? parseInt(n[1],10) : null;
+			}
+			return n;
 		};
 
+		// set hash tags
 		base.setHash = function(n){
 			var s = 'slider' + base.runTime + "=",
 				h = window.location.hash;

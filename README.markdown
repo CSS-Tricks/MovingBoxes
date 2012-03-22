@@ -10,6 +10,14 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.2.14 (3/22/2012)
+
+* Modified `hashTags` option and internal change function to now accept jquery id or class selectors:
+  * Call it as follows: `$('#slider').data('movingBoxes').change('#astronaut');`
+  * Link to main demo slide: [http://chriscoyier.github.com/MovingBoxes/index.html#astronaut](index.html#astronaut).
+  * On page load, hash tags will now set the initial slide and ignore the `hashTag` option setting. Previously it would ignore all hash tags if the option was `false`.
+* Animation stops have been modified to now complete the animation instead of jumping to the end. This will smooth out the animation and resolve [issue #73](https://github.com/chriscoyier/MovingBoxes/issues/73).
+
 ### Version 2.2.13 (3/2/2012)
 
 * Added `stopAnimation` option.
