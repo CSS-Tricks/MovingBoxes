@@ -10,6 +10,10 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/chriscoyier/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.2.15 (4/23/2012)
+
+* The `initAnimation` option should again prevent the initial animation. Fix for [issue #79](https://github.com/chriscoyier/MovingBoxes/issues/79).
+
 ### Version 2.2.14 (3/22/2012)
 
 * Modified `hashTags` option and internal change function to now accept jquery id or class selectors:

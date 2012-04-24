@@ -1,5 +1,5 @@
 ﻿/*!
- * Moving Boxes v2.2.14
+ * Moving Boxes v2.2.15
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -35,7 +35,6 @@
 			base.initialized = false;
 			base.currentlyMoving = false;
 			base.curPanel = (o.initAnimation) ? 1 : base.getHash() || o.startPanel;
-
 			// save original slider width
 			base.width = (o.width) ? parseInt(o.width,10) : base.$el.width();
 			// save panel width, o.panelWidth originally a fraction (0.5 of o.width) if defined, or get first panel width
@@ -55,7 +54,7 @@
 			// code to run to update MovingBoxes when the number of panels change
 			base.update(false);
 			$(window).load(function(){ // animate height after all images load
-				base.update(false);
+				base.update();
 			});
 
 			// go to clicked panel
@@ -116,7 +115,7 @@
 				base.change(base.curPanel, function(){
 					base.initialized = true;
 					base.$el.trigger( 'initialized.movingBoxes', [ base, base.curPanel ] );
-				}, false);
+				});
 			}, o.speed * 2 );
 
 		};
@@ -186,7 +185,7 @@
 
 			base.buildNav();
 
-			base.change(base.curPanel, callback, (flag === false) ? false : true); // initialize from first panel... then scroll to start panel
+			base.change(base.curPanel, callback, flag); // initialize from first panel... then scroll to start panel
 
 		};
 
@@ -277,13 +276,14 @@
 
 		// Change view to display selected panel
 		base.change = function(curPanel, callback, flag){
-			//if (base.currentlyMoving) { return; } // animation flag
+
 			if (base.totalPanels < 1) {
 				if (typeof(callback) === 'function') { callback(base); }
 				return;
 			}
-			var ani, leftValue, wrapped = false;
+			var ani, leftValue, t, wrapped = false;
 			flag = flag !== false;
+			t = (flag) ? o.speed : 0;
 
 			// check if curPanel is an id or class name
 			if (/^[#|.]/.test(curPanel) && $(curPanel).length) {
@@ -335,7 +335,6 @@
 				// when scrolling right, add the difference of the larger current panel width
 				if (curPanel > base.curPanel || wrapped) { leftValue -= ( base.curWidth - base.regWidth ); }
 				ani = (o.fixedHeight) ? { scrollLeft : leftValue } : { scrollLeft: leftValue, height: base.heights[curPanel - base.adj] };
-
 				base.curPanel = curPanel;
 				// before animation trigger
 				if (base.initialized && flag) { base.$el.trigger( 'beforeAnimation.movingBoxes', [ base, curPanel ] ); }
@@ -343,7 +342,7 @@
 				base.$window.scrollTop(0).stop(true,false).animate( ani,
 					{
 						queue    : false,
-						duration : o.speed,
+						duration : t,
 						easing   : o.easing,
 						complete : function(){
 							if (base.initialized) {
@@ -355,8 +354,8 @@
 					}
 				);
 
-				base.returnToNormal(curPanel);
-				base.growBigger(curPanel, 1, flag); // 1 is the time, but it is ignored if not zero and set to o.speed
+				base.returnToNormal(curPanel, t);
+				base.growBigger(curPanel, t, flag);
 				base.updateArrows(curPanel);
 				if (o.hashTags && base.initialized) { base.setHash(curPanel); }
 
@@ -456,7 +455,7 @@
 		completed       : null    // callback after animation completes
 	};
 
-	$.fn.movingBoxes = function(options, callback){
+	$.fn.movingBoxes = function(options, callback, flag){
 		var num, mb;
 		return this.each(function(){
 			mb = $(this).data('movingBoxes');
@@ -471,7 +470,8 @@
 				num = (typeof(options) === "number") ? options : parseInt($.trim(options),10); // accepts "  4  "
 				// ignore out of bound panels
 				if ( num >= 1 && num <= mb.totalPanels ) {
-					mb.change(num, callback); // page #, autoplay, one time callback
+					// page #, autoplay, one time callback, if flag is false then no events triggered and animation time = 0
+					mb.change(num, callback, flag);
 				}
 			}
 		});
