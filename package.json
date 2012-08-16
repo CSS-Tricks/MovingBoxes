@@ -9,7 +9,7 @@
     "licenses": [
         {
             "type": "GPL3",
-            "url": "https://github.com/chriscoyier/MovingBoxes/blob/master/license.txt"
+            "url": "https://github.com/CSS-Tricks/MovingBoxes/blob/master/license.txt"
         }
     ],
     "dependencies": {
@@ -22,8 +22,8 @@
         "zoom"
     ],
     "homepage": "http://css-tricks.com/moving-boxes/",
-    "demo": "http://chriscoyier.github.com/MovingBoxes/",
-    "docs": "https://github.com/chriscoyier/MovingBoxes/wiki",
+    "demo": "http://css-tricks.github.com/MovingBoxes/",
+    "docs": "https://github.com/CSS-Tricks/MovingBoxes/wiki",
     "maintainers": [
         {
             "name": "Rob Garrison",
