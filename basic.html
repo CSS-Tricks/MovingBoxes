@@ -1,26 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+
 	<meta charset="utf-8">
+
 	<title>Moving Boxes</title>
 	
 	<!-- Required CSS -->
-	<link href="css/movingboxes.css" media="screen" rel="stylesheet">
+	<link href="css/movingboxes.css" rel="stylesheet">
 	<!--[if lt IE 9]>
 	<link href="css/movingboxes-ie.css" rel="stylesheet" media="screen" />
 	<![endif]-->
 	
 	<!-- Required script -->
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 	<script src="js/jquery.movingboxes.js"></script>
 
 	<!-- Demo only -->
-	<link href="demo/demo.css" media="screen" rel="stylesheet">
+	<link href="demo/demo.css" rel="stylesheet">
+
 	<style>
 		/* Dimensions set via css in MovingBoxes version 2.2.2+ */
 		#slider { width: 500px; }
 		#slider li { width: 250px; }
 	</style>
+
 	<script>
 	$(function(){
 
@@ -37,67 +42,67 @@
 
 	});
 	</script>
+
 </head>
+
 <body>
 
-<div id="wrapper">
+	<div id="wrapper">
 
-	<div id="title">
-		<a href="http://github.com/CSS-Tricks/MovingBoxes"><img src="demo/movingboxes.png" alt="moving boxes"></a>
-	</div>
+		<h1 class="demo-title">Moving Boxes</h1>
 
-	<div id="nav">
-		<a href="index.html">Main Demo</a>
-		<a class="current" href="basic.html">Basic Demo</a>
-		<a class="play" href="http://jsfiddle.net/Mottie/acV4n/">Playground</a>
-		<a class="git" href="https://github.com/CSS-Tricks/MovingBoxes/wiki">Documentation</a>
-		<a class="git" href="https://github.com/CSS-Tricks/MovingBoxes/downloads">Download</a>
-		<a class="issue" href="https://github.com/CSS-Tricks/MovingBoxes/issues">Issues</a>
-	</div>
-	<br>
+		<nav class="main-nav">
+			<a class="current" href="index.html">Main Demo</a>
+			<a href="basic.html">Basic Demo</a>
+			<a class="play" href="http://jsfiddle.net/Mottie/acV4n/">Playground</a>
+			<a class="git" href="https://github.com/CSS-Tricks/MovingBoxes/wiki">Documentation</a>
+			<a class="git" href="https://github.com/CSS-Tricks/MovingBoxes/downloads">Download</a>
+			<a class="issue" href="https://github.com/CSS-Tricks/MovingBoxes/issues">Issues</a>
+		</nav>
 
-	<!-- MovingBoxes Slider -->
-	<ul id="slider">
+		<!-- MovingBoxes Slider -->
+		<ul id="slider">
 
-		<li>
-			<img src="demo/1.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/justbcuz/112479862/">more</a></p>
-		</li>
+			<li>
+				<img src="demo/1.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/justbcuz/112479862/">more</a></p>
+			</li>
 
-		<li>
-			<img src="demo/2.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a> and a whole lot more text goes here, so we can see the height adjust.</p>
-		</li>
+			<li>
+				<img src="demo/2.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a> and a whole lot more text goes here, so we can see the height adjust.</p>
+			</li>
 
-		<li>
-			<img src="demo/3.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more</a></p>
-		</li>
+			<li>
+				<img src="demo/3.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more</a></p>
+			</li>
 
-		<li>
-			<img src="demo/4.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/emikohime/294092478/">more</a></p>
-		</li>
+			<li>
+				<img src="demo/4.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/emikohime/294092478/">more</a></p>
+			</li>
 
-		<li>
-			<img src="demo/5.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="http://www.flickr.com/photos/fensterbme/499006584/">more</a></p>
-		</li>
+			<li>
+				<img src="demo/5.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="http://www.flickr.com/photos/fensterbme/499006584/">more</a></p>
+			</li>
 
-		<li>
-			<img src="demo/6.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="#">more</a></p>
-		</li>
+			<li>
+				<img src="demo/6.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="#">more</a></p>
+			</li>
 
-	</ul> <!-- end Slider #1 -->
+		</ul><!-- end Slider #1 -->
 
-</div> <!-- end wrapper -->
+	</div><!-- end wrapper -->
 
 </body>
+
 </html>

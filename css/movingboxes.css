@@ -1,27 +1,12 @@
-/* Default MovingBoxes wrapper size */
-#movingboxes {
-	width: 900px;
-	min-height: 200px;
-}
-
-/* Default MovingBoxes panel size */
-#movingboxes > li {
-	width: 350px;
-}
-
 /*** Overall MovingBoxes Slider ***/
 .mb-wrapper {
 	border: 5px solid #ccc;
-	margin: 0 auto;
+	margin: 0 auto 20px;
 	position: relative;
 	left: 0;
 	top: 0;
-	border-radius: 1em;
-	-moz-border-radius: 1em;
-	-webkit-border-radius: 1em;
+	border-radius: 10px;
 	box-shadow: inset 0 0 10px #888;
-	-moz-box-shadow: inset 0 0 10px #888;
-	-webkit-box-shadow: inset 0 0 10px #888;
 }
 
 /* Panel Wrapper */
@@ -41,13 +26,13 @@
 
 /* active slider border highlight */
 .mb-active-slider {
-	border-color: #999bff;
+	border-color: #333;
 }
 
 /*** Slider panel ***/
 .mb-slider .mb-panel {
 	margin: 0;
-	padding: 5px;
+	padding: 20px;
 	display: block;
 	cursor: pointer;
 	float: left;
@@ -111,19 +96,21 @@ a.mb-scrollButtons.disabled {
 	z-index: 100;
 }
 .mb-controls a {
-	color: #444;
-	font: 12px Georgia, Serif;
+	color: #666;
+	font: 18px/2.2 Georgia, Serif;
 	display: inline-block;
 	text-decoration: none;
 	padding: 2px;
-	height: 18px;
 	margin: 0 5px 0 0;
 	text-align: center;
 	outline: 0;
 }
-.mb-controls a.current, .mb-controls a:hover {
-	color: #fff;
+.mb-controls a:hover {
+	color: black;
+}
+.mb-controls a.current {
+	color: white;
 }
 .mb-active-slider .mb-controls {
-	background: #999bff;
+	background: #333;
 }

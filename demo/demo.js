@@ -84,9 +84,9 @@ $(function(){
 		return false;
 	});
 
-	// Report events to firebug console
+	// Report events to console
 	$('.mb-slider').bind('initialized.movingBoxes initChange.movingBoxes beforeAnimation.movingBoxes completed.movingBoxes',function(e, slider, tar){
-		// show object ID + event in the firebug console
+		// show object ID + event in the console
 		// namespaced events: e.g. e.type = "completed", e.namespace = "movingBoxes"
 		if (window.console && window.console.log){
 			var txt = slider.$el[0].id + ': ' + e.type + ', now on panel #' + slider.curPanel + ', targeted panel is ' + tar;

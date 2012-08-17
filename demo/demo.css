@@ -1,21 +1,53 @@
 /* Moving Boxes demo CSS */
-* { margin: 0; padding: 0; }
-body { font: 11px Helvetica, Arial, sans-serif; }
-#wrapper {}
+
+@import url(http://fonts.googleapis.com/css?family=PT+Sans:400,700);
+
+* { 
+  margin: 0; 
+  padding: 0; 
+}
+
+body { 
+  font: 16px/1.4 'PT Sans', sans-serif;
+}
+
+.demo-title {
+  text-align: center;
+  color: #a71700;
+  text-transform: uppercase;
+  padding: 30px 0 0;
+  font-size: 60px;
+}
 
 /* Navigation bar */
-#nav                   { display: block; width: auto; margin: 10px auto; text-align: center; white-space: nowrap; line-height: 3em; }
-#nav a                 { text-align: center; background: black; color: white; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; padding: 10px; text-decoration: none; font-size: 14px; }
-#nav a.git             { background: #006; }
-#nav a.play            { background: #060; }
-#nav a.issue           { background: #600; }
-#nav a:hover, #nav a.current { background: #666; }
+.main-nav { 
+  display: block; 
+  text-align: center; 
+  border-bottom: 2px solid #a71700;
+  margin: 0 0 20px 0;
+  padding: 0 0 10px 0;
+}
+
+.main-nav a { 
+  text-decoration: none;
+  color: #3e63ec;
+  font-size: 18px;
+  margin: 0 8px;
+}
+.main-nav a:hover {
+  color: black;
+  border-bottom: 2px solid black;
+}
 
 /* Moving Boxes title image wrapper */
-#title { text-align: center; }
-#title img { border: 0; }
+#title { 
+  text-align: center; 
+}
+#title img { 
+  border: 0; 
+}
 
-/* panel images */
+/* Panel images */
 .mb-inside img { width: 100%; }
 
 /* height of the placeholder until image completely loads - needed for
@@ -24,13 +56,18 @@ body { font: 11px Helvetica, Arial, sans-serif; }
 */
 #slider-two .current img { /* height: 326px; */ }
 
-/* panel links */
+/* Panel links */
 .mb-inside a { color: #333; text-decoration: none; border-bottom: 1px dotted #ccc; }
 .mb-inside a:hover { border-bottom: 1px solid #999; }
 
 /* Add/remove panels buttons */
 .buttons { padding: 5px 10px; text-align: center; }
 
-/* direct link styling */
-.dlinks { text-align: center; font-size: 20px; }
-
+/* Direct link styling */
+.dlinks { 
+  text-align: center;
+  margin: 0 0 20px 0;
+}
+.dlinks * {
+  vertical-align: middle;
+}

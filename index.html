@@ -1,146 +1,140 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
 	<meta charset="utf-8">
 	<title>Moving Boxes</title>
 
 	<!-- Required CSS -->
-	<link href="css/movingboxes.css" media="screen" rel="stylesheet">
+	<link href="css/movingboxes.css" rel="stylesheet">
 	<!--[if lt IE 9]>
-	<link href="css/movingboxes-ie.css" rel="stylesheet" media="screen" />
+	<link href="css/movingboxes-ie.css" rel="stylesheet" media="screen">
 	<![endif]-->
 
 	<!-- Required script -->
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 	<script src="js/jquery.movingboxes.js"></script>
 
 	<!-- Demo only -->
-	<link href="demo/demo.css" media="screen" rel="stylesheet">
+	<link href="demo/demo.css" rel="stylesheet">
 	<script src="demo/demo.js"></script>
 	<style>
 		/* Overall & panel width defined using css in MovingBoxes version 2.2.2+ */
-		ul#slider-one { width: 300px; }
-		ul#slider-one > li { width: 150px; }
-		div#slider-two { width: 500px; }
-		div#slider-two > div { width: 360px; }
+		#slider-one { width: 300px; }
+		#slider-one > li { width: 150px; }
+
+		#slider-two { width: 500px; }
+		#slider-two > div { width: 360px; }
 	</style>
 
 </head>
+
 <body>
 
-<div id="wrapper">
-	<div id="title">
-		<a href="http://github.com/CSS-Tricks/MovingBoxes"><img src="demo/movingboxes.png" alt="moving boxes"></a>
-	</div>
+	<div class="wrapper">
 
-	<div id="nav">
-		<a class="current" href="index.html">Main Demo</a>
-		<a href="basic.html">Basic Demo</a>
-		<a class="play" href="http://jsfiddle.net/Mottie/acV4n/">Playground</a>
-		<a class="git" href="https://github.com/CSS-Tricks/MovingBoxes/wiki">Documentation</a>
-		<a class="git" href="https://github.com/CSS-Tricks/MovingBoxes/downloads">Download</a>
-		<a class="issue" href="https://github.com/CSS-Tricks/MovingBoxes/issues">Issues</a>
-	</div>
+		<h1 class="demo-title">Moving Boxes</h1>
 
-	<br>
-	<div class="dlinks">
-		Go to Panel: <span></span>
-	</div>
-	<br>
+		<nav class="main-nav">
+			<a class="current" href="index.html">Main Demo</a>
+			<a href="basic.html">Basic Demo</a>
+			<a class="play" href="http://jsfiddle.net/Mottie/acV4n/">Playground</a>
+			<a class="git" href="https://github.com/CSS-Tricks/MovingBoxes/wiki">Documentation</a>
+			<a class="git" href="https://github.com/CSS-Tricks/MovingBoxes/downloads">Download</a>
+			<a class="issue" href="https://github.com/CSS-Tricks/MovingBoxes/issues">Issues</a>
+		</nav>
 
-	<div class="buttons">
-		<button class="add">&nbsp;Add Panel&nbsp;</button>
-		<button class="remove">&nbsp;Remove Panel&nbsp;</button>
-	</div>
-	<br>
+		<div class="dlinks">
+			Go to Panel: <span></span>
 
-	<!-- Slider #1 -->
-	<ul id="slider-one">
-
-		<li>
-			<img src="demo/1.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/justbcuz/112479862/">more</a></p>
-		</li>
-
-		<li>
-			<img src="demo/2.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a> and a whole lot more text goes here, so we can see the height adjust.</p>
-		</li>
-
-		<li>
-			<img src="demo/3.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more</a></p>
-		</li>
-
-		<li>
-			<img src="demo/4.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/emikohime/294092478/">more</a></p>
-		</li>
-
-		<li>
-			<img src="demo/5.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="http://www.flickr.com/photos/fensterbme/499006584/">more</a></p>
-		</li>
-
-		<li>
-			<img src="demo/6.jpg" alt="picture" id="astronaut">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="#">more</a></p>
-		</li>
-
-		<li>
-			<img src="demo/7.jpg" alt="picture">
-			<h2>News Heading</h2>
-			<p>Add a short exerpt here... <a href="#">more</a></p>
-		</li>
-
-	</ul> <!-- end Slider #1 -->
-
-	<br><br>
-
-	<!-- Slider #2 (images of slider #1 reversed) -->
-	<div id="slider-two">
-
-		<div>
-			<img src="demo/5.jpg" alt="picture">
-			<h2>News Heading - <span>Lisa</span></h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/fensterbme/499006584/">more</a></p>
+			<button class="add">&nbsp;Add Panel&nbsp;</button>
+			<button class="remove">&nbsp;Remove Panel&nbsp;</button>
 		</div>
 
-		<div>
-			<img src="demo/4.jpg" alt="picture">
-			<h2>News Heading - <span>Monica</span></h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/emikohime/294092478/">more</a></p>
+		<!-- Slider #1 -->
+		<ul id="slider-one">
+
+			<li>
+				<img src="demo/1.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/justbcuz/112479862/">more</a></p>
+			</li>
+
+			<li>
+				<img src="demo/2.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a> and a whole lot more text goes here, so we can see the height adjust.</p>
+			</li>
+
+			<li>
+				<img src="demo/3.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more</a></p>
+			</li>
+
+			<li>
+				<img src="demo/4.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/emikohime/294092478/">more</a></p>
+			</li>
+
+			<li>
+				<img src="demo/5.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="http://www.flickr.com/photos/fensterbme/499006584/">more</a></p>
+			</li>
+
+			<li>
+				<img src="demo/6.jpg" alt="picture" id="astronaut">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="#">more</a></p>
+			</li>
+
+			<li>
+				<img src="demo/7.jpg" alt="picture">
+				<h2>News Heading</h2>
+				<p>Add a short exerpt here... <a href="#">more</a></p>
+			</li>
+
+		</ul><!-- end Slider #1 -->
+
+		<!-- Slider #2 (images of slider #1 reversed) -->
+		<div id="slider-two">
+
+			<div>
+				<img src="demo/5.jpg" alt="picture">
+				<h2>News Heading - <span>Lisa</span></h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/fensterbme/499006584/">more</a></p>
+			</div>
+
+			<div>
+				<img src="demo/4.jpg" alt="picture">
+				<h2>News Heading - <span>Monica</span></h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/emikohime/294092478/">more</a></p>
+			</div>
+
+			<div>
+				<img src="demo/3.jpg" alt="picture">
+				<h2>News Heading - <span>Lin</span></h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more</a></p>
+			</div>
+
+			<div>
+				<img src="demo/2.jpg" alt="picture">
+				<h2>News Heading - <span>Shiela</span></h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a></p>
+			</div>
+
+			<div>
+				<img src="demo/1.jpg" alt="picture">
+				<h2>News Heading - <span>Joanne</span></h2>
+				<p>Add a short exerpt here... <a href="http://flickr.com/photos/justbcuz/112479862/">more</a></p>
+			</div>
+
 		</div>
 
-		<div>
-			<img src="demo/3.jpg" alt="picture">
-			<h2>News Heading - <span>Lin</span></h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/ruudvanleeuwen/468309897/">more</a></p>
-		</div>
-
-		<div>
-			<img src="demo/2.jpg" alt="picture">
-			<h2>News Heading - <span>Shiela</span></h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/joshuacraig/2698975899/">more</a></p>
-		</div>
-
-		<div>
-			<img src="demo/1.jpg" alt="picture">
-			<h2>News Heading - <span>Joanne</span></h2>
-			<p>Add a short exerpt here... <a href="http://flickr.com/photos/justbcuz/112479862/">more</a></p>
-		</div>
-
-	</div>
-
-	<br><br>
-
-</div> <!-- end wrapper -->
+	</div><!-- end wrapper -->
 
 </body>
+
 </html>
