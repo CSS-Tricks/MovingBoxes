@@ -10,6 +10,12 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/CSS-Tricks/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.2.16 (8/17/2012)
+
+* Added new styling to the demo pages (Chris)
+* Updated to jQuery v1.8
+* Included padding and margins in the panel position calculation to better center them.
+
 ### Moved repo to CSS-Tricks (8/15/2012)
 
 * Sorry for the inconvience, but we've moved the MovingBoxes repository from chriscoyier's account over to the CSS-Tricks organization's account.

@@ -1,5 +1,5 @@
 ﻿/*!
- * Moving Boxes v2.2.15
+ * Moving Boxes v2.2.16
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -129,6 +129,8 @@
 			base.adj = (o.wrap && base.$panels.length > 1) ? 0 : 1; // count adjustment for infinite panels
 
 			base.width = (o.width) ? parseInt(o.width,10) : base.width;
+			// don't include margin from the first panel as it is added by this plugin to center the panel
+			base.padding = parseInt(base.$panels.css('padding-left'), 10) + parseInt(base.$panels.eq(1).css('margin-left'), 10);
 			base.$wrap.css('width', base.width); // set wrapper width
 
 			if (o.wrap && base.$panels.length > 1) {
@@ -308,13 +310,13 @@
 					curPanel = 1;
 					base.returnToNormal(0, 0);
 					base.growBigger(0, 0, false);
-					leftValue = base.$panels.eq(0).position().left - (base.width - base.curWidth) / 2; // - ( base.curWidth - base.regWidth );
+					leftValue = base.$panels.eq(0).position().left - (base.width - base.curWidth) / 2 + base.padding;
 					base.$window.scrollLeft(leftValue);
 				} else if (curPanel === 0) {
 					wrapped = false;
 					curPanel = base.totalPanels;
 					base.growBigger(curPanel + 1, 0, false);
-					leftValue = base.$panels.eq(curPanel + 1).position().left - (base.width - base.curWidth) / 2; // - ( base.curWidth - base.regWidth );
+					leftValue = base.$panels.eq(curPanel + 1).position().left - (base.width - base.curWidth) / 2 + base.padding;
 					base.$window.scrollLeft(leftValue);
 				}
 			}
@@ -330,7 +332,7 @@
 
 				// center panel in scroll window
 				base.$curPanel = base.$panels.eq(curPanel - base.adj);
-				leftValue = base.$curPanel.position().left - (base.width - base.curWidth) / 2;
+				leftValue = base.$curPanel.position().left - (base.width - base.curWidth) / 2 + base.padding;
 
 				// when scrolling right, add the difference of the larger current panel width
 				if (curPanel > base.curPanel || wrapped) { leftValue -= ( base.curWidth - base.regWidth ); }
@@ -405,7 +407,7 @@
 		};
 
 		// Make moving box active (for keyboard navigation)
-		base.active = function(el){
+		base.active = function(){
 			$('.mb-active-slider').removeClass('mb-active-slider');
 			base.$wrap.addClass('mb-active-slider');
 		};
