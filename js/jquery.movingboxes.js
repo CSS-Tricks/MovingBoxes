@@ -1,5 +1,5 @@
-﻿/*!
- * Moving Boxes v2.2.16
+/*!
+ * Moving Boxes v2.3
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -50,13 +50,10 @@
 				base.goForward();
 				return false;
 			});
-
 			// code to run to update MovingBoxes when the number of panels change
 			base.update(false);
-			$(window).load(function(){ // animate height after all images load
-				base.update();
-			});
-
+			// set current panel
+			//if (o.initAnimation) { base.change(base.curPanel, {}, false); }
 			// go to clicked panel
 			base.$el.delegate('.mb-panel', 'click', function(e){
 				if (!$(this).hasClass(o.currentPanel)) {
@@ -105,18 +102,7 @@
 				}
 			});
 
-			// Set up "Current" panel
-			base.curPanel = base.getHash() || o.startPanel;
-
 			base.$el.trigger( 'preinit.movingBoxes', [ base, base.curPanel ] );
-
-			// animate to chosen start panel - starting from the first panel makes it look better
-			setTimeout(function(){
-				base.change(base.curPanel, function(){
-					base.initialized = true;
-					base.$el.trigger( 'initialized.movingBoxes', [ base, base.curPanel ] );
-				});
-			}, o.speed * 2 );
 
 		};
 
@@ -129,8 +115,6 @@
 			base.adj = (o.wrap && base.$panels.length > 1) ? 0 : 1; // count adjustment for infinite panels
 
 			base.width = (o.width) ? parseInt(o.width,10) : base.width;
-			// don't include margin from the first panel as it is added by this plugin to center the panel
-			base.padding = parseInt(base.$panels.css('padding-left'), 10) + parseInt(base.$panels.eq(1).css('margin-left'), 10);
 			base.$wrap.css('width', base.width); // set wrapper width
 
 			if (o.wrap && base.$panels.length > 1) {
@@ -147,7 +131,6 @@
 			// defined $panels again to include cloned panels
 			base.$panels = base.$el.children()
 				.addClass('mb-panel')
-				.css('margin',0)
 				// inner wrap of each panel
 				.each(function(){
 					if ($(this).find('.mb-inside').length === 0) {
@@ -156,19 +139,44 @@
 				});
 			base.totalPanels = base.$panels.filter(':not(.cloned)').length; // don't include cloned panels in total
 
+			base.setSizes(flag);
+
+			base.buildNav();
+
+			base.change(base.curPanel, callback, flag); // initialize from first panel... then scroll to start panel
+
+			// check panel height after all images load
+			base.imagesLoaded(function(){
+				base.setSizes(false);
+				base.change(base.curPanel, {}, false);
+
+				// animate to chosen start panel - starting from the first panel makes it look better
+				if (!base.initialized){
+					setTimeout(function(){
+						base.change(base.getHash() || o.startPanel);
+						base.initialized = true;
+						base.$el.trigger( 'initialized.movingBoxes', [ base, base.curPanel ] );
+					}, o.speed * 2 );
+				}
+
+			});
+
+		};
+
+		base.setSizes = function(flag){
+			// include padding & margins around the panels
+			base.padding = parseInt(base.$panels.css('padding-left'), 10) + parseInt(base.$panels.css('margin-left'), 10);
+
 			// save 'cur' numbers (current larger panel size), use stored sizes if they exist
 			base.curWidth = (o.panelWidth) ? (o.panelWidth <=2 ? o.panelWidth * base.width : o.panelWidth) : base.pWidth;
-
 			// save 'reg' (reduced size) numbers
 			base.regWidth = base.curWidth * o.reducedSize;
-
 			// set image heights so base container height is correctly set
 			base.$panels.css({ width: base.curWidth, fontSize: '1em' }); // make all panels big
-
 			// save each panel height... script will resize container as needed
 			// make sure current panel css is applied before measuring
 			base.$panels.eq(base.curPanel - base.adj).addClass(o.currentPanel);
-			base.heights = base.$panels.map(function(i,e){ return $(e).outerHeight(true); }).get();
+			base.heights = base.$panels.css('height','auto').map(function(i,e){ return $(e).outerHeight(true); }).get();
 
 			base.returnToNormal(base.curPanel, 0); // resize new panel, animation time
 			base.growBigger(base.curPanel, 0, flag);
@@ -177,18 +185,13 @@
 			// make base container wide enough to contain all the panels
 			base.$el.css({
 				position : 'absolute',
-				// add a bit more width to each box (100px should cover margin/padding, etc; then add 1/2 overall width in case only one panel exists
-				width    : (base.curWidth + 100) * base.$panels.length + (base.width - base.curWidth) / 2,
-				height   : Math.max.apply( this, base.heights ) + 10
+				// add a bit more width to each box (base.padding *2; then add 1/2 overall width in case only one panel exists)
+				width    : (base.curWidth + base.padding * 2) * base.$panels.length + (base.width - base.curWidth) / 2,
+				height   : Math.max.apply( this, base.heights ) + 10,
+				// add padding so scrollLeft = 0 centers the left-most panel (needed because scrollLeft cannot be < 0)
+				'padding-left' : (base.width - base.curWidth) / 2
 			});
 			base.$window.css({ height : (o.fixedHeight) ? Math.max.apply( this, base.heights ) : base.heights[base.curPanel - base.adj] });
-			// add padding so scrollLeft = 0 centers the left-most panel (needed because scrollLeft cannot be < 0)
-			base.$panels.eq(0).css({ 'margin-left' : (base.width - base.curWidth) / 2 });
-
-			base.buildNav();
-
-			base.change(base.curPanel, callback, flag); // initialize from first panel... then scroll to start panel
-
 		};
 
 		// Creates the numbered navigation links
@@ -256,6 +259,12 @@
 			}
 		};
 
+		base.setWrap = function(panel){
+			base.growBigger(panel, 0, false);
+			var leftValue = base.$panels.eq(panel).position().left - (base.width - base.curWidth) / 2 + base.padding;
+			base.$window.scrollLeft(leftValue);
+		};
+
 		base.completed = function(num, flag){
 			// add current panel class after animating in case it has sizing parameters
 			var loc = base.$panels.eq(num - base.adj);
@@ -309,15 +318,11 @@
 					wrapped = true;
 					curPanel = 1;
 					base.returnToNormal(0, 0);
-					base.growBigger(0, 0, false);
-					leftValue = base.$panels.eq(0).position().left - (base.width - base.curWidth) / 2 + base.padding;
-					base.$window.scrollLeft(leftValue);
+					base.setWrap(0);
 				} else if (curPanel === 0) {
 					wrapped = false;
 					curPanel = base.totalPanels;
-					base.growBigger(curPanel + 1, 0, false);
-					leftValue = base.$panels.eq(curPanel + 1).position().left - (base.width - base.curWidth) / 2 + base.padding;
-					base.$window.scrollLeft(leftValue);
+					base.setWrap(curPanel + 1);
 				}
 			}
 
@@ -333,7 +338,6 @@
 				// center panel in scroll window
 				base.$curPanel = base.$panels.eq(curPanel - base.adj);
 				leftValue = base.$curPanel.position().left - (base.width - base.curWidth) / 2 + base.padding;
-
 				// when scrolling right, add the difference of the larger current panel width
 				if (curPanel > base.curPanel || wrapped) { leftValue -= ( base.curWidth - base.regWidth ); }
 				ani = (o.fixedHeight) ? { scrollLeft : leftValue } : { scrollLeft: leftValue, height: base.heights[curPanel - base.adj] };
@@ -419,6 +423,40 @@
 				base.change(panel, callback); // parse in case someone sends a string
 			}
 			return base.curPanel;
+		};
+
+		// based on https://github.com/Mottie/imagesLoaded plugin
+		base.imagesLoaded = function(callback, img, cycling) {
+			var i, ic,
+				c = true, // complete flag
+				t = img ? $(img) : base.$panels.find('img'),
+				l = t.length,
+				img = img || []; // array of images that didn't complete
+			for ( i = 0; i < l; i++ ) {
+				if (t[i].tagName === "IMG") {
+					// IE: fileSize property = -1 before image has loaded & if image load error, so if false is returned
+					// 10x, then just assume it's an error & call it complete - it's what Firefox & webkit does
+					ic = ('fileSize' in t[i] && t[i].fileSize < 0 && t[i].count > 10) ? true : t[i].complete;
+					// complete flag, checks previous flag status, complete flag & image height
+					// image height may need to be > 20 (or whatever the line-height is) because the alt text is included
+					c = (c && ic && t[i].height !== 0); // complete flag
+					// save non-complete images for next iteration
+					if (ic === false) {
+						img.push(t[i]);
+						// iteration count for IE
+						t[i].count = (t[i].count || 0) + 1;
+					}
+				}
+			}
+			if (c) {
+				// all complete, run the callback
+				if (typeof callback === "function") { callback(); }
+			} else {
+				// some images not loaded, rinse & repeat
+				setTimeout(function(){
+					base.imagesLoaded( callback, img, true );
+				}, 200);
+			}
 		};
 
 		// Run initializer
