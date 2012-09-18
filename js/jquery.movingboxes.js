@@ -4,6 +4,7 @@
  * http://css-tricks.com/moving-boxes/
  */
 ;(function($){
+	"use strict";
 	$.movingBoxes = function(el, options){
 		// To avoid scope issues, use 'base' instead of 'this'
 		// to reference this class from internal events and functions.
@@ -347,7 +348,7 @@
 
 				if (o.delayBeforeAnimate) {
 					// delay starting slide animation
-					setTimeout(function(d){
+					setTimeout(function(){
 						base.animateBoxes(curPanel, ani, t, flag, callback);
 					}, parseInt(o.delayBeforeAnimate, 10) || 0);
 				} else {
@@ -384,14 +385,12 @@
 		};
 
 		base.endAnimation = function(){
-			
 			// Update navigation links
 			if (o.buildNav && base.$nav.length) {
 				base.$nav.find('a.mb-link')
 					.removeClass(o.currentPanel)
 					.eq(base.curPanel - 1).addClass(o.currentPanel);
 			}
-
 		};
 
 		base.updateArrows = function(cur){
@@ -444,12 +443,12 @@
 		};
 
 		// based on https://github.com/Mottie/imagesLoaded plugin
-		base.imagesLoaded = function(callback, img, cycling) {
+		base.imagesLoaded = function(callback, img) {
 			var i, ic,
 				c = true, // complete flag
 				t = img ? $(img) : base.$panels.find('img'),
-				l = t.length,
-				img = img || []; // array of images that didn't complete
+				l = t.length;
+			img = img || []; // array of images that didn't complete
 			for ( i = 0; i < l; i++ ) {
 				if (t[i].tagName === "IMG") {
 					// IE: fileSize property = -1 before image has loaded & if image load error, so if false is returned
@@ -472,7 +471,7 @@
 			} else {
 				// some images not loaded, rinse & repeat
 				setTimeout(function(){
-					base.imagesLoaded( callback, img, true );
+					base.imagesLoaded(callback, img);
 				}, 200);
 			}
 		};

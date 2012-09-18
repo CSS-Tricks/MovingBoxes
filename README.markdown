@@ -10,6 +10,18 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/CSS-Tricks/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.3 (9/18/2012)
+
+* Added a method to check when all images have loaded, then reevaluate the height of each panel.
+  * The plugin that was incorporated is called [imagesLoaded](https://github.com/Mottie/imagesLoaded).
+  * This entailed rewritting and fixing the plugin initialization function ([issue #92](https://github.com/CSS-Tricks/MovingBoxes/issues/92) and initAnimation problems ([issue #79](https://github.com/CSS-Tricks/MovingBoxes/issues/79)).
+  * I hope this also includes fixing whatever is going on in [issue #62](https://github.com/CSS-Tricks/MovingBoxes/issues/62).
+* Added a `delayBeforeAnimate` option:
+  * The `beforeAnimation` event will be fired, then the animation will be delayed by the value in `delayBeforeAnimate` in milliseconds.
+  * See [issue #80](https://github.com/CSS-Tricks/MovingBoxes/issues/80) on how this could be useful :). Thanks to [Alfazo](https://github.com/Alfazo) for the suggestion.
+* Modified the layout so that the UL now gets the margin to center the panels within the frame instead of the first LI. This fixes the animation jump seen when switching from the second to first panel.
+* Removed byte order mark (BOM) from the js files. Fix for [issue #94](https://github.com/CSS-Tricks/MovingBoxes/issues/94).
+
 ### Version 2.2.16 (8/17/2012)
 
 * Added new styling to the demo pages (Chris)
