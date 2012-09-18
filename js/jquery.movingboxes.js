@@ -331,7 +331,7 @@
 
 			// abort if panel is already animating
 			// animation callback needed to clear this flag, but there is no animation before base.initialized is set
-			if (!base.currentlyMoving || !base.initialized) {
+			if (base.curPanel !== curPanel && (!base.currentlyMoving || !base.initialized)) {
 				// set animation flag; animation callback will clear this flag
 				base.currentlyMoving = !o.stopAnimation;
 
@@ -344,34 +344,52 @@
 				base.curPanel = curPanel;
 				// before animation trigger
 				if (base.initialized && flag) { base.$el.trigger( 'beforeAnimation.movingBoxes', [ base, curPanel ] ); }
-				// animate the panels
-				base.$window.scrollTop(0).stop(true,false).animate( ani,
-					{
-						queue    : false,
-						duration : t,
-						easing   : o.easing,
-						complete : function(){
-							if (base.initialized) {
-								base.$window.scrollTop(0); // Opera fix - otherwise, it moves the focus link to the middle of the viewport
-							}
-							base.currentlyMoving = false;
-							if (typeof(callback) === 'function') { callback(base); }
-						}
-					}
-				);
 
-				base.returnToNormal(curPanel, t);
-				base.growBigger(curPanel, t, flag);
-				base.updateArrows(curPanel);
-				if (o.hashTags && base.initialized) { base.setHash(curPanel); }
-
+				if (o.delayBeforeAnimate) {
+					// delay starting slide animation
+					setTimeout(function(d){
+						base.animateBoxes(curPanel, ani, t, flag, callback);
+					}, parseInt(o.delayBeforeAnimate, 10) || 0);
+				} else {
+					base.animateBoxes(curPanel, ani, t, flag, callback);
+				}
+			} else {
+				base.endAnimation();
 			}
+		};
 
+		base.animateBoxes = function(curPanel, ani, t, flag, callback){
+			// animate the panels
+			base.$window.scrollTop(0).stop(true,false).animate( ani,
+				{
+					queue    : false,
+					duration : t,
+					easing   : o.easing,
+					complete : function(){
+						if (base.initialized) {
+							base.$window.scrollTop(0); // Opera fix - otherwise, it moves the focus link to the middle of the viewport
+						}
+						base.currentlyMoving = false;
+						if (typeof(callback) === 'function') { callback(base); }
+					}
+				}
+			);
+
+			base.returnToNormal(curPanel, t);
+			base.growBigger(curPanel, t, flag);
+			base.updateArrows(curPanel);
+			if (o.hashTags && base.initialized) { base.setHash(curPanel); }
+			base.endAnimation();
+
+		};
+
+		base.endAnimation = function(){
+			
 			// Update navigation links
 			if (o.buildNav && base.$nav.length) {
 				base.$nav.find('a.mb-link')
 					.removeClass(o.currentPanel)
-					.eq(curPanel - 1).addClass(o.currentPanel);
+					.eq(base.curPanel - 1).addClass(o.currentPanel);
 			}
 
 		};
@@ -473,7 +491,6 @@
 		// panelWidth   : 500,       // current panel width adjusted to 50% of overall width
 
 		// Behaviour
-		speed        : 500,       // animation time in milliseconds
 		initAnimation: true,      // if true, movingBoxes will initialize, then animate into the starting slide (if not the first slide)
 		stopAnimation: false,     // if true, movingBoxes will force the animation to complete immediately, if the user selects the next panel
 		hashTags     : true,      // if true, hash tags are enabled
@@ -481,6 +498,10 @@
 		buildNav     : false,     // if true, navigation links will be added
 		navFormatter : null,      // function which returns the navigation text for each panel
 		easing       : 'swing',   // anything other than "linear" or "swing" requires the easing plugin
+
+		// Times
+		speed              : 500, // animation time in milliseconds
+		delayBeforeAnimate : 0,   // time to delay in milliseconds before MovingBoxes animates to the selected panel
 
 		// Selectors & classes
 		currentPanel : 'current', // current panel class
@@ -490,7 +511,7 @@
 		// Callbacks
 		preinit         : null,   // callback after the basic MovingBoxes structure has been built; before "initialized"
 		initialized     : null,   // callback when MovingBoxes has completed initialization; all images loaded
-		initChange      : null,   // callback upon change panel change initialization
+		initChange      : null,   // callback upon change panel initialization
 		beforeAnimation : null,   // callback before any animation occurs
 		completed       : null    // callback after animation completes
 	};
