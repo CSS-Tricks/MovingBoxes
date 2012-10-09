@@ -1,5 +1,5 @@
 /*!
- * Moving Boxes v2.3
+ * Moving Boxes v2.3.1
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -53,6 +53,8 @@
 			});
 			// code to run to update MovingBoxes when the number of panels change
 			base.update(false);
+			// make sure current panel is centered
+			base.setWrap(base.curPanel);
 			// set current panel
 			//if (o.initAnimation) { base.change(base.curPanel, {}, false); }
 			// go to clicked panel
@@ -260,6 +262,7 @@
 			}
 		};
 
+		// instantly center the indicated panel
 		base.setWrap = function(panel){
 			base.growBigger(panel, 0, false);
 			var leftValue = base.$panels.eq(panel).position().left - (base.width - base.curWidth) / 2 + base.padding;
@@ -329,7 +332,6 @@
 
 			if ( curPanel < base.adj ) { curPanel = (o.wrap) ? base.totalPanels : 1; }
 			if ( curPanel > base.totalPanels - base.adj ) { curPanel = (o.wrap) ? 1 : base.totalPanels; }
-
 			// abort if panel is already animating
 			// animation callback needed to clear this flag, but there is no animation before base.initialized is set
 			if (base.curPanel !== curPanel && (!base.currentlyMoving || !base.initialized)) {

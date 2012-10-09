@@ -10,6 +10,10 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/CSS-Tricks/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.3.1 (10/9/2012)
+
+* MovingBoxes will no longer start on the first cloned panel when the `wrap` option is set to `true`. Fixes [issue #97](https://github.com/CSS-Tricks/MovingBoxes/issues/97).
+
 ### Version 2.3 (9/18/2012)
 
 * Added a method to check when all images have loaded, then reevaluate the height of each panel.
