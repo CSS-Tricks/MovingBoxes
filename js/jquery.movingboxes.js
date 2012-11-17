@@ -1,5 +1,5 @@
 /*!
- * Moving Boxes v2.3.1
+ * Moving Boxes v2.3.2
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
@@ -139,6 +139,8 @@
 					}
 				});
 			base.totalPanels = base.$panels.filter(':not(.cloned)').length; // don't include cloned panels in total
+			// in case current panel no longer exists
+			if (base.totalPanels <= 1) { base.curPanel = 1; }
 
 			base.setSizes(flag);
 
@@ -155,7 +157,6 @@
 				if (!base.initialized){
 					setTimeout(function(){
 						base.initialized = true;
-						//base.curPanel = -1; // make sure panel is positioned; change() won't move if panel matches base.curPanel
 						base.change(base.getHash() || o.startPanel, {}, false);
 						base.$el.trigger( 'initialized.movingBoxes', [ base, base.curPanel ] );
 					}, o.speed * 2 );
@@ -263,9 +264,11 @@
 
 		// instantly center the indicated panel
 		base.setWrap = function(panel){
-			base.growBigger(panel, 0, false);
-			var leftValue = base.$panels.eq(panel - base.adj).position().left - (base.width - base.curWidth) / 2 + base.padding;
-			base.$window.scrollLeft(leftValue);
+			if (base.totalPanels >= 1) {
+				base.growBigger(panel, 0, false);
+				var leftValue = base.$panels.eq(panel - base.adj).position().left - (base.width - base.curWidth) / 2 + base.padding;
+				base.$window.scrollLeft(leftValue);
+			}
 		};
 
 		base.completed = function(num, flag){
@@ -394,8 +397,8 @@
 		};
 
 		base.updateArrows = function(cur){
-			base.$left.toggleClass(o.disabled, !o.wrap && cur === base.adj);
-			base.$right.toggleClass(o.disabled, !o.wrap && (cur === base.totalPanels || base.totalPanels === 0));
+			base.$left.toggleClass(o.disabled, (!o.wrap && cur === base.adj) || base.totalPanels <= 1);
+			base.$right.toggleClass(o.disabled, (!o.wrap && cur === base.totalPanels) || base.totalPanels <= 1);
 		};
 
 		// This method tries to find a hash that matches an ID and slider-X
@@ -415,7 +418,7 @@
 				// #&panel1-3&panel3-3
 				n = (o.hashTags) ? parseInt(n[1],10) : null;
 			}
-			return n;
+			return (n > base.totalPanels) ? null : n;
 		};
 
 		// set hash tags
@@ -485,9 +488,6 @@
 		startPanel   : 1,         // start with this panel
 		reducedSize  : 0.8,       // non-current panel size: 80% of panel size
 		fixedHeight  : false,     // if true, slider height set to max panel height; if false, slider height will auto adjust.
-		// width and panelWidth are now set in the css, but these options still work for backwards compatibility
-		// width        : 800,       // overall width of movingBoxes
-		// panelWidth   : 500,       // current panel width adjusted to 50% of overall width
 
 		// Behaviour
 		initAnimation: true,      // if true, movingBoxes will initialize, then animate into the starting slide (if not the first slide)
@@ -513,6 +513,12 @@
 		initChange      : null,   // callback upon change panel initialization
 		beforeAnimation : null,   // callback before any animation occurs
 		completed       : null    // callback after animation completes
+
+		// deprecated options - but still used to keep the plugin backwards compatible
+		// and allow resizing the overall width and panel width dynamically (i.e. on window resize)
+		// width        : 800,       // overall width of movingBoxes (not including navigation arrows)
+		// panelWidth   : 0.5        // current panel width adjusted to 50% of overall width
+
 	};
 
 	$.fn.movingBoxes = function(options, callback, flag){
