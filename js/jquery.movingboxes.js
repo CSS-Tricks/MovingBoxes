@@ -55,8 +55,6 @@
 			base.update(false);
 			// make sure current panel is centered
 			base.setWrap(base.curPanel);
-			// set current panel
-			//if (o.initAnimation) { base.change(base.curPanel, {}, false); }
 			// go to clicked panel
 			base.$el.delegate('.mb-panel', 'click', function(e){
 				if (!$(this).hasClass(o.currentPanel)) {
@@ -151,13 +149,14 @@
 			// check panel height after all images load
 			base.imagesLoaded(function(){
 				base.setSizes(false);
-				base.change(base.curPanel, {}, false);
+				base.setWrap(base.curPanel);
 
 				// animate to chosen start panel - starting from the first panel makes it look better
 				if (!base.initialized){
 					setTimeout(function(){
-						base.change(base.getHash() || o.startPanel);
 						base.initialized = true;
+						//base.curPanel = -1; // make sure panel is positioned; change() won't move if panel matches base.curPanel
+						base.change(base.getHash() || o.startPanel, {}, false);
 						base.$el.trigger( 'initialized.movingBoxes', [ base, base.curPanel ] );
 					}, o.speed * 2 );
 				}
@@ -265,7 +264,7 @@
 		// instantly center the indicated panel
 		base.setWrap = function(panel){
 			base.growBigger(panel, 0, false);
-			var leftValue = base.$panels.eq(panel).position().left - (base.width - base.curWidth) / 2 + base.padding;
+			var leftValue = base.$panels.eq(panel - base.adj).position().left - (base.width - base.curWidth) / 2 + base.padding;
 			base.$window.scrollLeft(leftValue);
 		};
 
@@ -296,9 +295,8 @@
 				if (typeof(callback) === 'function') { callback(base); }
 				return;
 			}
-			var ani, leftValue, t, wrapped = false;
+			var ani, leftValue, wrapped = false;
 			flag = flag !== false;
-			t = (flag) ? o.speed : 0;
 
 			// check if curPanel is an id or class name
 			if (/^[#|.]/.test(curPanel) && $(curPanel).length) {
@@ -342,7 +340,7 @@
 				base.$curPanel = base.$panels.eq(curPanel - base.adj);
 				leftValue = base.$curPanel.position().left - (base.width - base.curWidth) / 2 + base.padding;
 				// when scrolling right, add the difference of the larger current panel width
-				if (curPanel > base.curPanel || wrapped) { leftValue -= ( base.curWidth - base.regWidth ); }
+				if (base.initialized && (curPanel > base.curPanel || wrapped)) { leftValue -= ( base.curWidth - base.regWidth ); }
 				ani = (o.fixedHeight) ? { scrollLeft : leftValue } : { scrollLeft: leftValue, height: base.heights[curPanel - base.adj] };
 				base.curPanel = curPanel;
 				// before animation trigger
@@ -351,22 +349,22 @@
 				if (o.delayBeforeAnimate) {
 					// delay starting slide animation
 					setTimeout(function(){
-						base.animateBoxes(curPanel, ani, t, flag, callback);
+						base.animateBoxes(curPanel, ani, flag, callback);
 					}, parseInt(o.delayBeforeAnimate, 10) || 0);
 				} else {
-					base.animateBoxes(curPanel, ani, t, flag, callback);
+					base.animateBoxes(curPanel, ani, flag, callback);
 				}
 			} else {
 				base.endAnimation();
 			}
 		};
 
-		base.animateBoxes = function(curPanel, ani, t, flag, callback){
+		base.animateBoxes = function(curPanel, ani, flag, callback){
 			// animate the panels
 			base.$window.scrollTop(0).stop(true,false).animate( ani,
 				{
 					queue    : false,
-					duration : t,
+					duration : o.speed,
 					easing   : o.easing,
 					complete : function(){
 						if (base.initialized) {
@@ -378,8 +376,8 @@
 				}
 			);
 
-			base.returnToNormal(curPanel, t);
-			base.growBigger(curPanel, t, flag);
+			base.returnToNormal(curPanel);
+			base.growBigger(curPanel, o.speed, flag);
 			base.updateArrows(curPanel);
 			if (o.hashTags && base.initialized) { base.setHash(curPanel); }
 			base.endAnimation();
