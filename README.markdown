@@ -14,6 +14,7 @@
 ### Version 2.3.2 (11/17/2012)
 
 * Updated the API used to change panels. It will now accept a jQuery object of the panel or an element anywhere inside panel:
+
     ```javascript
     // go to panel 3
     var lnk3 = $('.link3'); // link inside panel 3
@@ -21,7 +22,9 @@
       alert('Now on panel #' + api.curPanel);
     });
     ```
+
     You can also call the api directly
+
     ```javascript
     // go to panel 3
     var api = $('#boxes').data('movingBoxes'), // movingboxes object (api)
@@ -30,6 +33,7 @@
         alert('Now on panel #' + api.curPanel);
     });
     ```
+
 * Fixed the issue with the first panel not positioning correctly when the hash is not set.
 * Fixed issues with dealing with only one panel:
   * MovingBoxes with one or less panels will now properly hide the navigation arrows.
