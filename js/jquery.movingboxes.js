@@ -3,6 +3,7 @@
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
+/*jshint browser:true, jquery:true */
 ;(function($){
 	"use strict";
 	$.movingBoxes = function(el, options){
@@ -52,7 +53,7 @@
 				return false;
 			});
 			// code to run to update MovingBoxes when the number of panels change
-			base.update(false);
+			base.update({}, false);
 			// make sure current panel is centered
 			base.setWrap(base.curPanel);
 			// go to clicked panel
@@ -108,7 +109,7 @@
 		};
 
 		// update the panel, flag is used to prevent events from firing
-		base.update = function(flag, callback){
+		base.update = function(callback, flag){
 
 			// Infinite loop
 			base.$el.children('.cloned').remove();
@@ -301,11 +302,11 @@
 			var ani, leftValue, wrapped = false;
 			flag = flag !== false;
 
-			// check if curPanel is an id or class name
-			if (/^[#|.]/.test(curPanel) && $(curPanel).length) {
+			// check if curPanel is a jQuery selector or object
+			// $('' + curPanel) needed because $(3) = [3], but $('3') = []
+			if ($('' + curPanel).length || (curPanel instanceof $ && $(curPanel).length)) {
 				curPanel = $(curPanel).closest('.mb-panel').index() + base.adj;
 			} else {
-
 				// make sure it's a number and not a string
 				curPanel = parseInt(curPanel, 10);
 			}
@@ -493,7 +494,7 @@
 		initAnimation: true,      // if true, movingBoxes will initialize, then animate into the starting slide (if not the first slide)
 		stopAnimation: false,     // if true, movingBoxes will force the animation to complete immediately, if the user selects the next panel
 		hashTags     : true,      // if true, hash tags are enabled
-		wrap         : false,     // if true, the panel will "wrap" (it really rewinds/fast forwards) at the ends
+		wrap         : false,     // if true, the panel will loop through the panels infinitely
 		buildNav     : false,     // if true, navigation links will be added
 		navFormatter : null,      // function which returns the navigation text for each panel
 		easing       : 'swing',   // anything other than "linear" or "swing" requires the easing plugin
@@ -522,23 +523,22 @@
 	};
 
 	$.fn.movingBoxes = function(options, callback, flag){
-		var num, mb;
+		var mb;
 		return this.each(function(){
 			mb = $(this).data('movingBoxes');
 			// initialize the slider but prevent multiple initializations
 			if ((typeof(options)).match('object|undefined')){
-				if (mb) {
-					mb.update();
+				if (mb && options instanceof $ && options.length) {
+					// pass a jQuery object to change panels
+					mb.change(options, callback, flag);
+				} else if (mb) {
+					mb.update(callback, flag);
 				} else {
 					(new $.movingBoxes(this, options));
 				}
-			} else if (/\d/.test(options) && !isNaN(options) && mb) {
-				num = (typeof(options) === "number") ? options : parseInt($.trim(options),10); // accepts "  4  "
-				// ignore out of bound panels
-				if ( num >= 1 && num <= mb.totalPanels ) {
-					// page #, autoplay, one time callback, if flag is false then no events triggered and animation time = 0
-					mb.change(num, callback, flag);
-				}
+			} else if (mb) {
+				// page #, autoplay, one time callback, if flag is false then no events triggered and animation time = 0
+				mb.change(options, callback, flag);
 			}
 		});
 	};

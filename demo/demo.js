@@ -31,32 +31,34 @@ $(function(){
 
 	// Add a slide
 	var imageNumber = 0,
+	panel = '<li><img src="demo/*1.jpg" alt="picture" /><h2>News Heading #*2</h2><p>A very short exerpt goes here... <a href="#">more</a></p></li>',
+	// to test adding/removing panels to the second slider, comment out the line above and uncomment out the line below - slider-two uses divs instead of UL & LIs
+	// panel = '<div><img src="demo/*1.jpg" alt="picture" /><h2>News Heading #*2</h2><p>A very short exerpt goes here... <a href="#">more</a></p></div>',
+	slider = $('#slider-one'), // $('#slider-two'); // second slider
+	api = slider.data('movingBoxes'),
+
 	// Set up demo external navigation links
 	navLinks = function(){
-		var i, t = '', len = $('#slider-one').getMovingBoxes().totalPanels + 1;
+		var i, t = '', len = api.totalPanels + 1;
 		for ( i = 1; i < len; i++ ) {
 			t += '<a href="#">' + i + '</a> ';
 		}
 		$('.dlinks').find('span').html(t);
-	},
-	panel = '<li><img src="demo/*1.jpg" alt="picture" /><h2>News Heading #*2</h2><p>A very short exerpt goes here... <a href="#">more</a></p></li>',
-	// to test adding/removing panels to the second slider, comment out the line above and uncomment out the line below - slider-two uses divs instead of UL & LIs
-	// panel = '<div><img src="demo/*1.jpg" alt="picture" /><h2>News Heading #*2</h2><p>A very short exerpt goes here... <a href="#">more</a></p></div>',
-	slider = $('#slider-one'); // $('#slider-two'); // second slider
+	};
 
 	$('button.add').click(function(){
+		imageNumber = api.totalPanels + 1; console.debug('adding # ' + imageNumber);
 		slider
-			.append( panel.replace(/\*2/g, ++imageNumber).replace(/\*1/g, (imageNumber%7 + 1)) )
+			.append( panel.replace(/\*2/g, imageNumber).replace(/\*1/g, (imageNumber%7 + 1)) )
 			.movingBoxes(); // update movingBoxes
 		navLinks(); // update go to panel links
 	});
 
 	// Remove a slide
 	$('button.remove').click(function(){
-		var d = slider.data('movingBoxes'),
-			c = d.curPanel,
-			t = d.totalPanels;
-		if (t > 1) {
+		var c = api.curPanel,
+			t = api.totalPanels;
+		if (t > 0) {
 			slider.find('.mb-panel:not(.cloned):last').remove();
 			if (c > t - 1) { c = t - 1; }
 			slider.movingBoxes(); // update movingBoxes
