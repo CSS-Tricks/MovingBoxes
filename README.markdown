@@ -11,6 +11,11 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/CSS-Tricks/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.3.2b (1/6/2013)
+
+* Updated playground demo. Using jQuery edge appears to mess up the scrolling behavior.
+* Added .gitignore and .gitattributes files.
+
 ### Version 2.3.2 (11/17/2012)
 
 * Updated the API used to change panels. It will now accept a jQuery object of the panel or an element anywhere inside panel:
