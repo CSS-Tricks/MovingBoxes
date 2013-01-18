@@ -1,34 +1,35 @@
 ﻿{
     "name": "MovingBoxes",
-    "version": "2.3.2",
     "title": "MovingBoxes",
+    "version": "2.3.3",
+    "description": "This slider is similar to AnythingSlider, but it can enlarge (zoom in) the current panel content. Fun!",
     "author": {
         "name": "Chris Coyier",
         "url": "https://github.com/chriscoyier"
     },
+    "maintainers": [
+        {
+            "name": "Rob Garrison",
+            "url": "https://github.com/Mottie"
+        }
+    ],
     "licenses": [
         {
             "type": "GPL3",
             "url": "https://github.com/CSS-Tricks/MovingBoxes/blob/master/license.txt"
         }
     ],
+    "bugs": "https://github.com/CSS-Tricks/MovingBoxes/issues",
+    "homepage": "http://css-tricks.com/moving-boxes/",
+    "docs": "https://github.com/CSS-Tricks/MovingBoxes/wiki",
+    "demo": "http://css-tricks.github.com/MovingBoxes/",
     "dependencies": {
         "jquery": ">=1.4.2"
     },
-    "description": "This slider is similar to AnythingSlider, but it can enlarge (zoom in) the current panel content. Fun!",
     "keywords": [
         "slider",
         "resizable",
         "zoom"
-    ],
-    "homepage": "http://css-tricks.com/moving-boxes/",
-    "demo": "http://css-tricks.github.com/MovingBoxes/",
-    "docs": "https://github.com/CSS-Tricks/MovingBoxes/wiki",
-    "maintainers": [
-        {
-            "name": "Rob Garrison",
-            "url": "https://github.com/Mottie"
-        }
     ],
     "files": [
         "css/movingboxes.css",

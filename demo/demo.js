@@ -47,7 +47,7 @@ $(function(){
 	};
 
 	$('button.add').click(function(){
-		imageNumber = api.totalPanels + 1; console.debug('adding # ' + imageNumber);
+		imageNumber = api.totalPanels + 1;
 		slider
 			.append( panel.replace(/\*2/g, imageNumber).replace(/\*1/g, (imageNumber%7 + 1)) )
 			.movingBoxes(); // update movingBoxes

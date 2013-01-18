@@ -11,6 +11,10 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/CSS-Tricks/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.3.3 (1/18/2013)
+
+* New version labeled to enable updating the [jquery plugin registry](http://plugins.jquery.com/).
+
 ### Version 2.3.2b (1/6/2013)
 
 * Updated playground demo. Using jQuery edge appears to mess up the scrolling behavior.
