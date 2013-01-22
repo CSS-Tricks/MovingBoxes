@@ -1,7 +1,7 @@
 ﻿{
-    "name": "MovingBoxes",
+    "name": "movingboxes",
     "title": "MovingBoxes",
-    "version": "2.3.3",
+    "version": "2.3.4",
     "description": "This slider is similar to AnythingSlider, but it can enlarge (zoom in) the current panel content. Fun!",
     "author": {
         "name": "Chris Coyier",

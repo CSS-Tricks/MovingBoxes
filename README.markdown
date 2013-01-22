@@ -11,6 +11,10 @@
 
 (Only the most recent changes are shown below, see the [wiki page](https://github.com/CSS-Tricks/MovingBoxes/wiki/Change-Log) for a complete listing)
 
+### Version 2.3.4 (1/21/2013)
+
+* Version bump to [register the plugin](http://plugins.jquery.com/movingboxes).
+
 ### Version 2.3.3 (1/18/2013)
 
 * New version labeled to enable updating the [jquery plugin registry](http://plugins.jquery.com/).

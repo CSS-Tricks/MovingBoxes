@@ -1,5 +1,5 @@
 /*!
- * Moving Boxes v2.3.3
+ * Moving Boxes v2.3.4
  * by Chris Coyier
  * http://css-tricks.com/moving-boxes/
  */
